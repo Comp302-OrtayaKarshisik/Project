@@ -1,4 +1,4 @@
 package domain.Agent.Monster;
 
-public class Monster {
+public abstract class Monster {
 }

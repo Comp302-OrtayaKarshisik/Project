@@ -1,4 +1,8 @@
 package UI.Graphics;
 
-public class EntityGraphics {
+public abstract class EntityGraphics {
+
+    protected int x;
+    protected int y;
+
 }
