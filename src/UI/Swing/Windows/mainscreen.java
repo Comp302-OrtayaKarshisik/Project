@@ -1,9 +1,9 @@
-package ui.windows;
+package UI.Swing.Windows;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-public class mainscreen extends JFrame implements ActionListener{
+public class mainscreen extends JFrame implements ActionListener {
 	 JButton startButton;
 	 JButton helpButton;
 	 public mainscreen(){
