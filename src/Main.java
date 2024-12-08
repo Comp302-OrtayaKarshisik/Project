@@ -1,6 +1,11 @@
-import ui.windows.*;
+import ui.windows.WindowManager;
+
 public class Main {
     public static void main(String[] args) {
-        mainscreen screen = new mainscreen();
+
+        WindowManager window = WindowManager.getInstance();
+        window.openMainMenu();
+
+        //buildScreen.startBuildThread();
     }
 }
