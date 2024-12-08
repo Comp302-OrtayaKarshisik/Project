@@ -1,4 +1,4 @@
-package comp302;
+package ui.windows;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 public class mainscreen extends JFrame implements ActionListener{
 	 JButton startButton;
 	 JButton helpButton;
-	 mainscreen(){
+	 public mainscreen(){
 	        // Add the background image
-	        ImageIcon Icon = new ImageIcon("LOGO.png");
+	        ImageIcon Icon = new ImageIcon("src/assets/LOGO.png");
 	        JLabel backgroundLabel = new JLabel(Icon);
 	        backgroundLabel.setHorizontalAlignment(JLabel.CENTER);
 	        backgroundLabel.setVerticalAlignment(JLabel.TOP);

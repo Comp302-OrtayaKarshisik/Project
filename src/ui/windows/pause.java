@@ -12,7 +12,7 @@ or do some writing that says Paused and the buttons under it as well
 just on the screen.
 
 */
-package comp302;
+package ui.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,7 +33,7 @@ public class pause extends JFrame implements ActionListener{
 
 	 JButton resumeButton;
 	 JButton helpButton;
-	 pause(){
+	 public pause(){
 		 	ImageIcon icon=new ImageIcon("pause.png");
 	        JLabel backgroundLabel = new JLabel();
 	        
