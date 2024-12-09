@@ -1,3 +1,4 @@
+package domain;
 
 import ui.windows.MainMenu;
 
