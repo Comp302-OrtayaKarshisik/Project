@@ -2,7 +2,8 @@ package UI.Graphics;
 
 public abstract class EntityGraphics {
 
-    protected int x;
-    protected int y;
+    protected int xCord;
+    protected int yCord;
+
 
 }

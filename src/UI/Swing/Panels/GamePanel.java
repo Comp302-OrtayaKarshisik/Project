@@ -1,6 +1,10 @@
 package UI.Swing.Panels;
 
 import UI.EventHandler.KeyHandler;
+import UI.Graphics.AgentGrapichs.ArcherGraphics;
+import UI.Graphics.AgentGrapichs.FighterGraphics;
+import UI.Graphics.AgentGrapichs.PlayerGraphics;
+import UI.Graphics.AgentGrapichs.WizardGraphics;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,10 +37,10 @@ public class GamePanel extends JPanel {
 
     KeyHandler keyHandler = new KeyHandler();
 
-    private int x = 0;
-    private int y = 0;
-    private int speed = 16;
-
+    private PlayerGraphics playerGraphics;
+    private FighterGraphics fighterGraphics;
+    private ArcherGraphics archerGraphics;
+    private WizardGraphics wizardGraphics;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(width, height));
@@ -44,6 +48,10 @@ public class GamePanel extends JPanel {
         this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
+        playerGraphics = new PlayerGraphics(baseTileSize, 16, keyHandler,horizontalBound,verticalBound);
+        fighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+        archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+        wizardGraphics = new WizardGraphics(baseTileSize);
     }
 
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
@@ -52,6 +60,7 @@ public class GamePanel extends JPanel {
     }
 
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
+
         this.scalingFactor = scalingFactor;
         this.horizontalSquares = horizontalSquares;
         this.verticalSquares = verticalSquares;
@@ -61,6 +70,10 @@ public class GamePanel extends JPanel {
         this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
+        playerGraphics = new PlayerGraphics(baseTileSize, 16, keyHandler,horizontalBound,verticalBound);
+        fighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+        archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+        wizardGraphics = new WizardGraphics(baseTileSize);
     }
 
     public void startGame () {
@@ -71,35 +84,20 @@ public class GamePanel extends JPanel {
     }
 
     private void update() {
-        //This update only lets one key movement to be recorded at the same time
-        //For diagonal movements switch else ifs to just ifs
-        if (keyHandler.goDown)  {
-            y += speed;
-            if (y  >= verticalBound)
-                y =  verticalBound;
-        }
-        else if (keyHandler.goUp)  {
-            y -= speed;
-            if (y <= 0)
-                y = 0;
-        }
-        else if (keyHandler.goLeft)  {
-            x -= speed;
-            if (x <= 0)
-                x = 0;
-        }
-        else if (keyHandler.goRight)  {
-            x += speed;
-            if (x >= horizontalBound)
-                x = horizontalBound;
-        }
+        playerGraphics.update();
+        fighterGraphics.update();
+        archerGraphics.update();
+
+        // update also the other graphics in this place
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.WHITE);
-        g2.fillRect(x,y,64,64);
+        playerGraphics.draw(g2);
+        fighterGraphics.draw(g2);
+        archerGraphics.draw(g2);
+        wizardGraphics.draw(g2);
         g2.dispose();
     }
 
@@ -119,6 +117,7 @@ public class GamePanel extends JPanel {
                 currentTime = System.nanoTime();
                 diff += (currentTime - lastTime)/frameInterval;
                 lastTime = System.nanoTime();
+
 
                 if (diff >= 1) {
                     update();
