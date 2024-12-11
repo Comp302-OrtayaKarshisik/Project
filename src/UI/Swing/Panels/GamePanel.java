@@ -60,7 +60,6 @@ public class GamePanel extends JPanel {
     }
 
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
-
         this.scalingFactor = scalingFactor;
         this.horizontalSquares = horizontalSquares;
         this.verticalSquares = verticalSquares;
@@ -87,7 +86,6 @@ public class GamePanel extends JPanel {
         playerGraphics.update();
         fighterGraphics.update();
         archerGraphics.update();
-
         // update also the other graphics in this place
     }
 

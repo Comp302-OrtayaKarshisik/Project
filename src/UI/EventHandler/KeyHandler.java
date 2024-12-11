@@ -22,7 +22,6 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_DOWN) goDown = true;
         if (key == KeyEvent.VK_LEFT) goLeft = true;
         if (key == KeyEvent.VK_RIGHT) goRight = true;
-
         if (key == KeyEvent.VK_ESCAPE) options = true;
     }
 

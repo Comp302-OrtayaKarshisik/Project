@@ -20,7 +20,7 @@ public class MobilMonsterGraphics extends EntityGraphics {
 
     public MobilMonsterGraphics(int size, int speed, int horizontalBound, int verticalBound) {
         this.size = size;
-        this.speed = speed;
+        this.speed = 32;
         this.horizontalBound = horizontalBound;
         this.verticalBound = verticalBound;
         xCord = random.nextInt(50,700);
@@ -32,7 +32,7 @@ public class MobilMonsterGraphics extends EntityGraphics {
         //For diagonal movements switch else ifs to just ifs
         int dir = random.nextInt(4);
 
-        if (delta == 6) {
+        if (delta == 4) {
             if (dir == 0) {
                 yCord += speed;
                 if (yCord >= verticalBound)

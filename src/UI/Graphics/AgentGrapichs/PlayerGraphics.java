@@ -21,14 +21,12 @@ public class PlayerGraphics extends EntityGraphics {
     private BufferedImage currentImg;
 
     public PlayerGraphics(int size, int speed, KeyHandler keyHandler, int horizontalBound, int verticalBound) {
-
         this.size = size;
         this.speed = speed;
         this.keyHandler = keyHandler;
         this.horizontalBound = horizontalBound;
         this.verticalBound = verticalBound;
         getDefaultImages();
-
     }
 
     private void getDefaultImages()   {
