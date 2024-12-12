@@ -1,6 +1,6 @@
-package UI.Graphics.AgentGrapichs;
+package ui.Graphics.AgentGrapichs;
 
-import UI.Graphics.EntityGraphics;
+import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

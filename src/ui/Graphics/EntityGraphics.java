@@ -1,4 +1,4 @@
-package UI.Graphics;
+package ui.Graphics;
 
 public abstract class EntityGraphics {
 

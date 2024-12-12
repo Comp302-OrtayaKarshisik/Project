@@ -1,12 +1,14 @@
-package UI.Swing.Panels;
+package ui.Swing.Panels;
 
-import UI.EventHandler.KeyHandler;
-import UI.Graphics.AgentGrapichs.ArcherGraphics;
-import UI.Graphics.AgentGrapichs.FighterGraphics;
-import UI.Graphics.AgentGrapichs.PlayerGraphics;
-import UI.Graphics.AgentGrapichs.WizardGraphics;
+import ui.EventHandler.KeyHandler;
 
 import javax.swing.*;
+
+import ui.Graphics.AgentGrapichs.ArcherGraphics;
+import ui.Graphics.AgentGrapichs.FighterGraphics;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
+import ui.Graphics.AgentGrapichs.WizardGraphics;
+
 import java.awt.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -69,7 +71,7 @@ public class GamePanel extends JPanel {
         this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
-        playerGraphics = new PlayerGraphics(baseTileSize, 16, keyHandler,horizontalBound,verticalBound);
+        playerGraphics = new PlayerGraphics(baseTileSize, 16, keyHandler, horizontalBound, verticalBound);
         fighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         wizardGraphics = new WizardGraphics(baseTileSize);

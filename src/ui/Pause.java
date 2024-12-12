@@ -1,18 +1,5 @@
-/*To implement the pause we will make a game state variable like this
- * public int gameState;
- * public final int playState=1;
- * public final int pauseState=2;
-in the method that updates the game and player we
-will put an if state that says dont update
-Then in the controller when the pause button is clicked
-change the gamestate to pausestate 
-Then for the resume button we make the gamestate to playstate again
-For the pause screen we can use this panels that I created
-or do some writing that says Paused and the buttons under it as well
-just on the screen.
+package ui;
 
-*/
-package UI.Swing.Windows;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,11 +15,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class pause extends JFrame implements ActionListener{
+public class Pause extends JFrame implements ActionListener{
 
 	 JButton resumeButton;
 	 JButton helpButton;
-	 public pause(){
+	 public Pause(){
 		 	ImageIcon icon=new ImageIcon("pause.png");
 	        JLabel backgroundLabel = new JLabel();
 	        

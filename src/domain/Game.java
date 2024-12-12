@@ -1,5 +1,6 @@
 package domain;
 
+
 import domain.Agent.Monster.Monster;
 import domain.Agent.Player;
 import domain.Level.Hall;
@@ -9,10 +10,20 @@ import java.util.Timer;
 
 public class Game {
 
+	private static Game instance;
+	private RegularObject[] objects; 
     private Player player;
     private Timer timer;
     private List<Monster> monsters;
     private Hall[] halls;
+    
+    
+    public static Game getInstance() {
+		if (instance == null) {
+			instance = new Game();
+		}
+		return instance;
+	}
 
     public void spawnMonster() {}
     public void removeEnch() {}
@@ -53,4 +64,26 @@ public class Game {
     public void setPlayer(Player player) {
         this.player = player;
     }
+    
+/*
+	
+	public void placeObject(Coordinate c, ObjectType t) {
+		
+	}
+	
+	public void removeObject(Coordinate mouseCoordinates, ObjectType type) {
+		
+	}	
+	
+	public Tile[][] getGrid({
+		
+	} 
+	
+	public List<GameObject> getObjects() {
+		
+	}
+	
+	*/
+	
+
 }

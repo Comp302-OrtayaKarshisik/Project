@@ -1,20 +1,31 @@
 
-package ui.windows;
+package ui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-public class MainMenu extends JFrame implements ActionListener{
+
+public class MainMenuPage extends Page implements ActionListener{
 	
     private JButton startButton;
     private JButton helpButton;
-    private static MainMenu instance;
+    private ImageIcon icon;
 
-    private MainMenu() {
+    MainMenuPage() {
         // Add the background image
-        ImageIcon Icon = new ImageIcon("src/assets/LOGO.png");
-        JLabel backgroundLabel = new JLabel(Icon);
+    	
+    	super();
+    	
+    	initUI();
+
+    }
+    
+    protected void initUI() {
+    	
+    	
+    	icon = new ImageIcon("src/assets/LOGO.png");
+        JLabel backgroundLabel = new JLabel(icon);
         backgroundLabel.setHorizontalAlignment(JLabel.CENTER);
         backgroundLabel.setVerticalAlignment(JLabel.TOP);
         backgroundLabel.setBackground(Color.black);
@@ -35,36 +46,23 @@ public class MainMenu extends JFrame implements ActionListener{
         buttonPanel.setBackground(Color.BLACK);
         buttonPanel.setOpaque(true);
         // Create the main frame
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000, 800); // Adjust size as needed
         this.setLayout(new BorderLayout());
+        this.setPreferredSize(new Dimension(1000, 800));
         this.add(backgroundLabel, BorderLayout.NORTH); // Add image at the top
         this.add(buttonPanel, BorderLayout.CENTER); // Add buttons at the bottom
 
         startButton.addActionListener(this);
         helpButton.addActionListener(this);
-
-        this.setVisible(true);
-
     }
-
-    public static MainMenu getInstance() {
-        if (instance == null) {
-            // If no instance exists, create one
-            instance = new MainMenu();
-        }
-        // Return the existing instance
-        return instance;
-    }
-
+    
+    
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==startButton) {
             //open build mode
-            HallDesigner halldesigner = new HallDesigner();
-            halldesigner.setVisible(true);
-            this.setVisible(false);
+        	
+            PageManager.getInstance().showBuildingModePage();
         }
 
         if(e.getSource()==helpButton){
