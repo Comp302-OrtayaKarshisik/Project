@@ -1,10 +1,19 @@
 
-import ui.windows.MainMenu;
+import javax.swing.SwingUtilities;
+
+import domain.Game;
+import ui.MainMenuPage;
+import ui.PageManager;
 
 public class Main {
     public static void main(String[] args) {
 
-    	 MainMenu mm = MainMenu.getInstance();
+    	SwingUtilities.invokeLater(() -> {
+            PageManager navigator = PageManager.getInstance();
+            navigator.showMainMenuPage();
+            navigator.showFrame();
+
+        });
 
     }
 }
