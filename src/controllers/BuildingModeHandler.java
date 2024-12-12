@@ -1,6 +1,6 @@
 package controllers;
-import domain.*;
 import ui.BuildModePage;
+import domain.*;
 
 public class BuildingModeHandler {
 	
