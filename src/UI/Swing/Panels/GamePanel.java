@@ -5,6 +5,7 @@ import UI.Graphics.AgentGrapichs.ArcherGraphics;
 import UI.Graphics.AgentGrapichs.FighterGraphics;
 import UI.Graphics.AgentGrapichs.PlayerGraphics;
 import UI.Graphics.AgentGrapichs.WizardGraphics;
+import UI.Swing.Windows.pause;
 
 import javax.swing.*;
 
@@ -36,10 +37,16 @@ public class GamePanel extends JPanel {
     private int height = verticalSquares * (scalingFactor * baseTileSize); // vertical pixels
     private int verticalBound = height - (scalingFactor*baseTileSize); //Lowest Pixel the player can go
 
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
+
+
     private int FPS = 60; // frames per second classic, can change but the default is 60
-   TileManager tileMa=new TileManager(this);
-    KeyHandler keyHandler = new KeyHandler();
-   public CollisionChecker check=new CollisionChecker(this);
+    TileManager tileMa=new TileManager(this);
+    KeyHandler keyHandler = new KeyHandler(this);
+
+    public CollisionChecker check=new CollisionChecker(this);
     private PlayerGraphics playerGraphics;
     private FighterGraphics fighterGraphics;
     private ArcherGraphics archerGraphics;
@@ -55,6 +62,8 @@ public class GamePanel extends JPanel {
         fighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         wizardGraphics = new WizardGraphics(baseTileSize);
+
+        gameState = playState;
     }
 
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
@@ -86,21 +95,50 @@ public class GamePanel extends JPanel {
     }
 
     private void update() {
-        playerGraphics.update();
-        fighterGraphics.update();
-        archerGraphics.update();
+        if (gameState == playState) {
+            playerGraphics.update();
+            fighterGraphics.update();
+            archerGraphics.update();
+        }
         // update also the other graphics in this place
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        tileMa.draw(g2);//for tire logic
-        playerGraphics.draw(g2);
-        fighterGraphics.draw(g2);
-        archerGraphics.draw(g2);
-        wizardGraphics.draw(g2);
+        if (gameState == playState) {
+            tileMa.draw(g2);//for tile logic
+            playerGraphics.draw(g2);
+            fighterGraphics.draw(g2);
+            archerGraphics.draw(g2);
+            wizardGraphics.draw(g2);
+        }else if(gameState == pauseState){
+            drawPauseScreen(g2);
+        }
+
         g2.dispose();
+    }
+
+    private void drawPauseScreen(Graphics2D g2) {
+        // background
+        g2.setColor(new Color(101, 67, 33));
+        g2.fillRect(0, 0, width, height);
+
+        // pause text
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Gongster", Font.BOLD, 80));
+        String pauseText = "Game Paused";
+        int textWidth = g2.getFontMetrics().stringWidth(pauseText);
+        g2.drawString(pauseText, (width - textWidth) / 2, height / 3);
+
+        g2.setFont(new Font("Gongster", Font.BOLD, 50));
+        String resumeText = "Press ESC to Resume";
+        textWidth = g2.getFontMetrics().stringWidth(resumeText);
+        g2.drawString(resumeText, (width - textWidth) / 2, height / 2);
+
+        String helpText = "Press H for Help";
+        textWidth = g2.getFontMetrics().stringWidth(helpText);
+        g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
     }
 
     private class UpdateAndRender implements Runnable {
