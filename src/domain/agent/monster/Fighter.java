@@ -1,6 +1,6 @@
-package domain.Agent.Monster;
+package domain.agent.monster;
 
-import domain.Agent.Player;
+import domain.agent.Player;
 
 public class Fighter {
 

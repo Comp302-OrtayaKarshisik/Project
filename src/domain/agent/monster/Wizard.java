@@ -1,4 +1,4 @@
-package domain.Agent.Monster;
+package domain.agent.monster;
 
 public class Wizard {
 

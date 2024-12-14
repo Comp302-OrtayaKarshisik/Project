@@ -1,5 +1,5 @@
 package domain.entities;
 
-public class Monster {
+public class RegularObject {
 
 }

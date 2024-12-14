@@ -1,4 +1,6 @@
-package domain;
+package domain.level;
+
+import domain.util.Coordinate;
 
 import java.awt.image.BufferedImage;
 

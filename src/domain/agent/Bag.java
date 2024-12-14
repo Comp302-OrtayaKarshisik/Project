@@ -1,6 +1,6 @@
-package domain.Agent;
+package domain.agent;
 
-import domain.Collectables.Enchantment;
+import domain.collectables.Enchantment;
 
 import java.util.HashMap;
 

@@ -1,9 +1,10 @@
 package domain;
 
 
-import domain.Agent.Monster.Monster;
-import domain.Agent.Player;
-import domain.Level.Hall;
+import domain.agent.monster.Monster;
+import domain.agent.Player;
+import domain.entities.RegularObject;
+import domain.level.Hall;
 
 import java.util.List;
 import java.util.Timer;
@@ -11,7 +12,7 @@ import java.util.Timer;
 public class Game {
 
 	private static Game instance;
-	private RegularObject[] objects; 
+	private RegularObject[] objects;
     private Player player;
     private Timer timer;
     private List<Monster> monsters;
