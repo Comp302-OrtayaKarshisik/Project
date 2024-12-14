@@ -1,8 +1,8 @@
-package domain.Level;
+package domain.level;
 
-import domain.Agent.Player;
-import domain.Collectables.EnchType;
-import domain.Collectables.Enchantment;
+import domain.agent.Player;
+import domain.collectables.EnchType;
+import domain.collectables.Enchantment;
 
 import java.security.Key;
 import java.util.HashMap;

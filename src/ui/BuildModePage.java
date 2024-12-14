@@ -3,21 +3,15 @@ package ui;
 import javax.swing.*;
 
 import controllers.BuildingModeHandler;
-import domain.Coordinate;
+import domain.util.Coordinate;
 import domain.Textures;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
-
-import java.awt.*;
-
 
 
 public class BuildModePage extends Page implements ActionListener {

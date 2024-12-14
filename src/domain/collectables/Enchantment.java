@@ -1,4 +1,4 @@
-package domain.Collectables;
+package domain.collectables;
 
 public class Enchantment {
 

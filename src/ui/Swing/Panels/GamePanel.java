@@ -1,6 +1,6 @@
 package ui.Swing.Panels;
 
-import ui.EventHandler.KeyHandler;
+import controllers.KeyHandler;
 
 import javax.swing.*;
 

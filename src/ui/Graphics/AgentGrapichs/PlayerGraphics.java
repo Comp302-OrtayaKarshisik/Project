@@ -1,6 +1,6 @@
 package ui.Graphics.AgentGrapichs;
 
-import ui.EventHandler.KeyHandler;
+import controllers.KeyHandler;
 import ui.Graphics.EntityGraphics;
 
 import javax.imageio.ImageIO;
