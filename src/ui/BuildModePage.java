@@ -82,7 +82,7 @@ public class BuildModePage extends Page implements ActionListener {
         
         btnNewButton_1 = new JButton();
         btnNewButton_1.setBackground(Color.GRAY);
-        btnNewButton_1.setIcon(new ImageIcon(BuildModePage.class.getResource("/assets/chest_closed.png")));
+        btnNewButton_1.setIcon(new ImageIcon("src/assets/chest_closed.png"));
         btnNewButton_1.setAlignmentY(Component.TOP_ALIGNMENT);
         btnNewButton_1.setForeground(Color.LIGHT_GRAY);
         btnNewButton_1.setContentAreaFilled(false); // Remove background color
@@ -93,7 +93,7 @@ public class BuildModePage extends Page implements ActionListener {
         
         btnNewButton_2 = new JButton();
         btnNewButton_2.setBackground(Color.LIGHT_GRAY);
-        btnNewButton_2.setIcon(new ImageIcon(BuildModePage.class.getResource("/assets/column.png")));
+        btnNewButton_2.setIcon(new ImageIcon("src/assets/column.png"));
         btnNewButton_2.setForeground(Color.GRAY);
         btnNewButton_2.setContentAreaFilled(false); // Remove background color
         btnNewButton_2.setBorderPainted(false);    // Remove the border
