@@ -55,7 +55,7 @@ public class BuildingModeHandler {
 			return true;
 		}
 		if(currentGameHall == gameHallCount -1) {
-			PageManager.getInstance().showPlayModePage();
+			PageManager.getInstance().showPlayModePage(gameHalls);
 		}
 		currentGameHall += 1;
 		return false;
