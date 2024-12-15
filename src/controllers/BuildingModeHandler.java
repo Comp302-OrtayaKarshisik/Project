@@ -5,6 +5,7 @@ import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import ui.BuildModePage;
 import domain.*;
+import ui.PageManager;
 
 public class BuildingModeHandler {
 	
@@ -52,6 +53,9 @@ public class BuildingModeHandler {
 			currentGameHall += 1;
 			System.out.println("Last hall.");
 			return true;
+		}
+		if(currentGameHall == gameHallCount -1) {
+			PageManager.getInstance().showPlayModePage();
 		}
 		currentGameHall += 1;
 		return false;

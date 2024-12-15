@@ -38,6 +38,8 @@ public class PageManager {
 	
     public void showBuildingModePage() { showPage(new BuildModePage()); }
 
+	public void showPlayModePage() { showPage(new PlayModePage()); }
+
     public void showFrame() {
         mainFrame.setVisible(true);
     }

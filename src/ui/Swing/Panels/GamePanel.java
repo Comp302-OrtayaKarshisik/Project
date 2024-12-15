@@ -84,6 +84,7 @@ public class GamePanel extends JPanel {
         executor.execute(ur);
     }
 
+
     private void update() {
         playerGraphics.update();
         fighterGraphics.update();
