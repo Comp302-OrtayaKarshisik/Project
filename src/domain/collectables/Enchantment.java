@@ -2,7 +2,7 @@ package domain.collectables;
 
 public class Enchantment {
 
-    private EnchType type;
+    private EnchantmentType type;
     private float remainingTime;
 
     // x y daha iyi
@@ -11,7 +11,7 @@ public class Enchantment {
     private int[][] location = new int[2][1];
 
     //All ench can determine their own random creation loc
-    public Enchantment(EnchType type) {}
+    public Enchantment(EnchantmentType type) {}
 
     public int getxCord() {
         return xCord;
@@ -37,11 +37,11 @@ public class Enchantment {
         this.location = location;
     }
 
-    public EnchType getType() {
+    public EnchantmentType getType() {
         return type;
     }
 
-    public void setType(EnchType type) {
+    public void setType(EnchantmentType type) {
         this.type = type;
     }
 
