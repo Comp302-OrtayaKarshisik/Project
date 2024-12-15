@@ -1,7 +1,7 @@
 package domain.level;
 
 import domain.agent.Player;
-import domain.collectables.EnchType;
+import domain.collectables.EnchantmentType;
 import domain.collectables.Enchantment;
 
 import java.security.Key;
@@ -25,7 +25,7 @@ public class Hall {
 
     public Hall() {}
     public void update (Player player, HashMap<String,String > p) {}
-    public EnchType type(int [][] xy) {return null;}
+    public EnchantmentType type(int [][] xy) {return null;}
     public void increaseTime() {}
     public String typeOfCollectable() {return null;}
     public void higlightRune() {}
