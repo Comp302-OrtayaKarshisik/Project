@@ -1,21 +1,36 @@
 package domain.agent;
 
 import domain.collectables.Enchantment;
+import domain.collectables.EnchantmentType;
 
 import java.util.HashMap;
 
 public class Bag {
 
-    private HashMap<String,Integer> enchCounter = new HashMap<>();
+    private HashMap<EnchantmentType,Integer> enchantmentCounter;
 
-    public void removeEnchantment(Enchantment ench) {}
-    public void addEnchantment(Enchantment ench) {}
-
-    public HashMap<String, Integer> getEnchCounter() {
-        return enchCounter;
+    public Bag() {
+        this.enchantmentCounter = new HashMap<>();
+        enchantmentCounter.put(EnchantmentType.Reveal, 0);
+        enchantmentCounter.put(EnchantmentType.Luring, 0);
+        enchantmentCounter.put(EnchantmentType.Cloak, 0);
     }
 
-    public void setEnchCounter(HashMap<String, Integer> enchCounter) {
-        this.enchCounter = enchCounter;
+    public boolean containsEnchantment(Enchantment enchantment) {
+        return enchantmentCounter.get(enchantment.getType()) != 0;
+    }
+
+    public void removeEnchantment(Enchantment enchantment) {
+        enchantmentCounter.put(enchantment.getType(), enchantmentCounter.get(enchantment.getType())-1);
+    }
+    public void addEnchantment(Enchantment enchantment) {
+        enchantmentCounter.put(enchantment.getType(), enchantmentCounter.get(enchantment.getType())+1);
+    }
+
+    public HashMap<EnchantmentType, Integer> getEnchantmentCounter() {
+        return enchantmentCounter;
+    }
+    public void setEnchantmentCounter(HashMap<EnchantmentType, Integer> enchantmentCounter) {
+        this.enchantmentCounter = enchantmentCounter;
     }
 }

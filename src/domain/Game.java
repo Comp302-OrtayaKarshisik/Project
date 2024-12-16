@@ -1,11 +1,15 @@
 package domain;
 
 
+import controllers.KeyHandler;
+import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
 import domain.entities.RegularObject;
+import domain.level.CollusionChecker;
 import domain.level.Hall;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Timer;
 
@@ -17,7 +21,15 @@ public class Game {
     private Timer timer;
     private List<Monster> monsters;
     private Hall[] halls;
-    
+    private KeyHandler keyHandler; // this field is for now
+    private CollusionChecker collusionChecker;
+    private List<Agent> agents;
+
+
+
+    private Hall currentHall;
+    public final static SecureRandom random = new SecureRandom();
+
     
     public static Game getInstance() {
 		if (instance == null) {
@@ -65,7 +77,30 @@ public class Game {
     public void setPlayer(Player player) {
         this.player = player;
     }
-    
+    public Hall getCurrentHall() {
+        return currentHall;
+    }
+    public void setCurrentHall(Hall currentHall) {
+        this.currentHall = currentHall;
+    }
+    public KeyHandler getKeyHandler() {
+        return keyHandler;
+    }
+    public void setKeyHandler(KeyHandler keyHandler) {
+        this.keyHandler = keyHandler;
+    }
+    public CollusionChecker getCollusionChecker() {
+        return collusionChecker;
+    }
+    public void setCollusionChecker(CollusionChecker collusionChecker) {
+        this.collusionChecker = collusionChecker;
+    }
+    public List<Agent> getAgents() {
+        return agents;
+    }
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
 /*
 	
 	public void placeObject(Coordinate c, ObjectType t) {

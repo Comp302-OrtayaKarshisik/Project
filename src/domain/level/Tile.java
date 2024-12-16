@@ -13,18 +13,18 @@ public class Tile {
 	private String name;
 	private Coordinate coord;
 
-	
-	
 	public Tile(String name, Coordinate coord) {
 		
 		this.name = name;
 		this.coord = coord;
 		
 	}
-	
-	
-	
-	
-	
 
+	public boolean isCollisable (){
+		return collision;
+	}
+
+	public void setCollision(boolean collision) {
+		this.collision = collision;
+	}
 }

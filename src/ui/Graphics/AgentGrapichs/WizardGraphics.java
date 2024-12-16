@@ -1,5 +1,6 @@
 package ui.Graphics.AgentGrapichs;
 
+import domain.agent.monster.Wizard;
 import ui.Graphics.EntityGraphics;
 
 import javax.imageio.ImageIO;
@@ -7,18 +8,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.security.SecureRandom;
+import java.util.LinkedList;
 
 public class WizardGraphics extends EntityGraphics {
 
     protected int size;
     protected BufferedImage img;
-    public static SecureRandom random = new SecureRandom();
+    private LinkedList<Wizard> wizards;
 
     public WizardGraphics(int size) {
         this.size = size;
-        xCord = random.nextInt(0,700);
-        yCord = random.nextInt(0,700);
+        wizards = new LinkedList<>();
         getDefaultImages();
     }
 
@@ -32,6 +32,15 @@ public class WizardGraphics extends EntityGraphics {
     }
 
     public void draw(Graphics g) {
-        g.drawImage(img, xCord, yCord, size, size,null);
+        for (Wizard w: wizards) {
+            g.drawImage(img, w.getLocation().getX()*64, (15 - w.getLocation().getY())*64, size, size,null);
+        }
+    }
+
+    public LinkedList<Wizard> getWizards() {
+        return wizards;
+    }
+    public void setWizards(LinkedList<Wizard> wizards) {
+        this.wizards = wizards;
     }
 }
