@@ -9,10 +9,7 @@ import domain.util.Coordinate;
 import domain.Textures;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 
@@ -30,6 +27,8 @@ public class BuildModePage extends Page implements ActionListener {
     private JButton exitButton;
     
     private JButton contButton;
+
+    private JButton deleteButton;
     
     private JButton[] buttons;
     
@@ -56,7 +55,9 @@ public class BuildModePage extends Page implements ActionListener {
     	
     	exitButton = new JButton("Exit");
         contButton = new JButton("Continue");
-    	
+    	deleteButton = new JButton("Delete");
+
+
         this.setLayout(new BorderLayout(0, 0));
         
         ImageIcon hallIcon = new ImageIcon("src/assets/hall.png");
@@ -104,7 +105,10 @@ public class BuildModePage extends Page implements ActionListener {
         buttonPanel.setLayout(new GridLayout(0, 1));
         buttonPanel.add(contButton);
         buttonPanel.add(exitButton);
-        
+        buttonPanel.add(deleteButton);
+
+
+
         // Info text area
         
         infoTextArea = new JTextArea(5, 20);
@@ -142,6 +146,7 @@ public class BuildModePage extends Page implements ActionListener {
         btnNewButton_1.addActionListener(this);
         exitButton.addActionListener(this);
         contButton.addActionListener(this);
+        deleteButton.addActionListener(this);
       }
     
 
@@ -171,6 +176,10 @@ public class BuildModePage extends Page implements ActionListener {
             System.out.println("Column selected.");
             buildingModeHandler.setSelectedObject(ObjectType.COLUMN);
         }
+        else if (e.getSource() == deleteButton) {
+            System.out.println("Trashcan selected.");
+            buildingModeHandler.setSelectedObject(null); // Set no object as selected to enable removal
+        }
 
     }
     
@@ -178,9 +187,8 @@ public class BuildModePage extends Page implements ActionListener {
     
     
  }
-    
-	class HallPanel extends JPanel implements MouseListener {
 
+class HallPanel extends JPanel implements MouseListener {
 
 	public final int tileSize = 48;
 	public final int maxScreenCol = 16;
@@ -191,6 +199,9 @@ public class BuildModePage extends Page implements ActionListener {
 
     private final  BuildingModeHandler buildingModeHandler;
 
+    //the coordinates of the tiles that the mouse is hovered on (these coordinates will be highlighted for ease of use, in build mode.)
+    private int hoveredRow = -1;
+    private int hoveredCol = -1;
 
 	public HallPanel(BuildingModeHandler buildingModeHandler) {
         this.buildingModeHandler = buildingModeHandler;
@@ -199,6 +210,39 @@ public class BuildModePage extends Page implements ActionListener {
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
 		addMouseListener(this);
+
+        //highlighting hovered tiles.
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                int newHoveredCol = x / tileSize;
+                int newHoveredRow = y / tileSize;
+
+                //only highlight when the mouse is within hall borders.
+                if (x >= 0 && x < screenWidth && y >= 0 && y < screenHeight &&
+                        newHoveredRow >= 0 && newHoveredRow < maxScreenRow &&
+                        newHoveredCol >= 0 && newHoveredCol < maxScreenCol) {
+
+                    //don't need to repaint when the mouse is on the same tile.
+                    if (newHoveredRow != hoveredRow || newHoveredCol != hoveredCol) {
+                        hoveredRow = newHoveredRow;
+                        hoveredCol = newHoveredCol;
+                        repaint(); //repaint for highlighting
+                    }
+                }
+                else{
+                    // If outside hall bounds, reset highlight and repaint
+                    if (hoveredRow != -1 || hoveredCol != -1) {
+                        hoveredRow = -1;
+                        hoveredCol = -1;
+                        repaint();
+                    }
+                }
+            }
+        });
 	}	
 	
 	
@@ -220,6 +264,13 @@ public class BuildModePage extends Page implements ActionListener {
         if(currentHall != null) {
             drawPlacedObjects(g,currentHall);
         }
+        if (hoveredRow >= 0 && hoveredCol >= 0 && hoveredRow < maxScreenRow && hoveredCol < maxScreenCol) {
+            Color prevColor = g.getColor();
+            g.setColor(new Color(255, 255, 255, 64)); //transparent white (highlight color.)
+            g.fillRect(hoveredCol * tileSize, hoveredRow * tileSize, tileSize, tileSize);
+            g.setColor(prevColor); //back to original color.
+        }
+
     }
 
     private void drawPlacedObjects(Graphics g, GameHall hall) {
@@ -239,19 +290,24 @@ public class BuildModePage extends Page implements ActionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int col = e.getX() / tileSize;
+        int col = e.getX() / tileSize;
         int row = e.getY() / tileSize;
-        System.out.println ("Clicked at" + col + ", " + row);
 
-        boolean placed = buildingModeHandler.placeObjectAt(row,col);
-        if(placed) {
-            repaint();
+        // If no object is selected, the trashcan mode is active (getSelectedObject == null)
+        if (buildingModeHandler.getSelectedObject() == null) {
+            boolean removed = buildingModeHandler.getCurrentHall().removeObject(row, col);
+            if (removed) {
+                repaint();
+            }
+        } else {
+            boolean placed = buildingModeHandler.placeObjectAt(row, col);
+            if (placed) {
+                repaint();
+            }
         }
-
-		
-		
 	}
-	@Override
+
+    @Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
@@ -269,8 +325,7 @@ public class BuildModePage extends Page implements ActionListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-	
-	}
+    }
 }
 	
     	
