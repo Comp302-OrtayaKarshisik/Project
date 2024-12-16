@@ -150,9 +150,8 @@ public class BuildModePage extends Page implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	
     	if(e.getSource()==exitButton){
-    		//çalışmıyor niye?
-    		//this.setVisible(false);
-    		//mm.setVisible(true);
+            System.out.println("Exit button clicked.");
+            PageManager.getInstance().showMainMenuPage();
         }
     	else if(e.getSource()==contButton){
             System.out.println("Thank you next.");
@@ -263,7 +262,19 @@ public class BuildModePage extends Page implements ActionListener {
         System.out.println ("Clicked at" + col + ", " + row);
 
         if(SwingUtilities.isRightMouseButton(e)) {
-            buildingModeHandler.removeObject(row, col);
+            if(buildingModeHandler.isObjectPresent(row,col)) {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem removeItem = new JMenuItem("Remove Object");
+                removeItem.addActionListener(e1 -> {
+                    boolean removed = buildingModeHandler.removeObjectAt(row, col);
+                    if (removed) {
+                        System.out.println("Object removed.");
+                        repaint();
+                    }
+                });
+                menu.add(removeItem);
+                menu.show(e.getComponent(), e.getX(), e.getY());  // Show the menu at the mouse position
+            }
             repaint();
             return;
         }

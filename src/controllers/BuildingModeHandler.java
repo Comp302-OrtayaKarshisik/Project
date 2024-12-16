@@ -65,8 +65,15 @@ public class BuildingModeHandler {
 		return currentGameHall;
 	}
 
-	public void removeObject(int row, int column) {
-		gameHalls[currentGameHall].deleteObject(row, column);
+	public boolean removeObjectAt(int row, int col){
+		GameHall currentHall = gameHalls[currentGameHall];
+		return currentHall.removeObject(row, col);
+	}
+
+
+	public boolean isObjectPresent (int row, int col) {
+		GameHall currentHall = getCurrentHall();
+		return currentHall.isObjectPresent(row,col);
 	}
 
 	/*
