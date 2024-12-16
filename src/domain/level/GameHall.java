@@ -17,6 +17,10 @@ public class GameHall {
         return false;
     }
 
+    public void deleteObject(int row, int col) {
+        grid[row][col] = null;
+    }
+
     private boolean isValid(int row, int col) {
         return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length;
     }

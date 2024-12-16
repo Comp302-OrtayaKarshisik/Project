@@ -65,7 +65,9 @@ public class BuildingModeHandler {
 		return currentGameHall;
 	}
 
-
+	public void removeObject(int row, int column) {
+		gameHalls[currentGameHall].deleteObject(row, column);
+	}
 
 	/*
 	
@@ -73,10 +75,7 @@ public class BuildingModeHandler {
 		
 		
 	}
-	
-	public void removeObject(Coordinate mouseCoordinates, ObjectType type) {
-		
-	}
+
 	
 	public boolean validatePlacement(Coordinate coord) {
 		
