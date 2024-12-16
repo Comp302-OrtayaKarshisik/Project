@@ -7,6 +7,7 @@ import domain.level.GameHall;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import domain.Textures;
+import ui.Graphics.TileSetImageGetter;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -149,9 +150,8 @@ public class BuildModePage extends Page implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	
     	if(e.getSource()==exitButton){
-    		//çalışmıyor niye?
-    		//this.setVisible(false);
-    		//mm.setVisible(true);
+            System.out.println("Exit button clicked.");
+            PageManager.getInstance().showMainMenuPage();
         }
     	else if(e.getSource()==contButton){
             System.out.println("Thank you next.");
@@ -203,14 +203,32 @@ public class BuildModePage extends Page implements ActionListener {
 	
 	
 	public void drawEmptyHall(Graphics g) {
-        BufferedImage floorSprite = Textures.getSprite("floor_plain");
-        for (int row = 0; row < maxScreenRow; row++){
-            for (int col = 0; col < maxScreenCol; col++){
-                g.drawImage(floorSprite,col*tileSize,row*tileSize,tileSize,tileSize,null);
-            }
-        }
-		
+        BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
+        g.drawImage(floor,0, 0,maxScreenRow*tileSize, maxScreenCol*tileSize, null);
+        // Draw walls
+        BufferedImage horizontalWall = TileSetImageGetter.getInstance().getImage(0, 0);
+        BufferedImage verticalWall = Textures.getSprite("verticalWall");
+        drawHorizontalWalls(g, horizontalWall);
+        drawVerticalWalls(g, verticalWall);
 	}
+
+    public void drawHorizontalWalls(Graphics g, BufferedImage horizontalWall) {
+        int start = 20;
+        for (int row = 0; row < maxScreenRow-1; row++){
+            g.drawImage(horizontalWall,row*tileSize + start,10,tileSize,tileSize,null);
+            g.drawImage(horizontalWall,row*tileSize + start,700,tileSize,tileSize,null);
+        }
+    }
+
+    public void drawVerticalWalls(Graphics g, BufferedImage verticalWall) {
+        int start = 29;
+        for (int row = 0; row < (764/88)-1; row++){
+            g.drawImage(verticalWall,21,row*88 + start, 7,88,null);
+            g.drawImage(verticalWall,734,row*88 + start, 7,88,null);
+        }
+        g.drawImage(verticalWall,21,6*88+74 + start, 7,88,null);
+        g.drawImage(verticalWall,734,6*88+74 + start, 7,88,null);
+    }
 
 	@Override
     protected void paintComponent(Graphics g) {
@@ -239,9 +257,27 @@ public class BuildModePage extends Page implements ActionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int col = e.getX() / tileSize;
+        int col = e.getX() / tileSize;
         int row = e.getY() / tileSize;
         System.out.println ("Clicked at" + col + ", " + row);
+
+        if(SwingUtilities.isRightMouseButton(e)) {
+            if(buildingModeHandler.isObjectPresent(row,col)) {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem removeItem = new JMenuItem("Remove Object");
+                removeItem.addActionListener(e1 -> {
+                    boolean removed = buildingModeHandler.removeObjectAt(row, col);
+                    if (removed) {
+                        System.out.println("Object removed.");
+                        repaint();
+                    }
+                });
+                menu.add(removeItem);
+                menu.show(e.getComponent(), e.getX(), e.getY());  // Show the menu at the mouse position
+            }
+            repaint();
+            return;
+        }
 
         boolean placed = buildingModeHandler.placeObjectAt(row,col);
         if(placed) {

@@ -5,6 +5,7 @@ import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import ui.BuildModePage;
 import domain.*;
+import ui.PageManager;
 
 public class BuildingModeHandler {
 	
@@ -53,6 +54,9 @@ public class BuildingModeHandler {
 			System.out.println("Last hall.");
 			return true;
 		}
+		if(currentGameHall == gameHallCount -1) {
+			PageManager.getInstance().showPlayModePage(gameHalls);
+		}
 		currentGameHall += 1;
 		return false;
 	}
@@ -61,7 +65,16 @@ public class BuildingModeHandler {
 		return currentGameHall;
 	}
 
+	public boolean removeObjectAt(int row, int col){
+		GameHall currentHall = gameHalls[currentGameHall];
+		return currentHall.removeObject(row, col);
+	}
 
+
+	public boolean isObjectPresent (int row, int col) {
+		GameHall currentHall = getCurrentHall();
+		return currentHall.isObjectPresent(row,col);
+	}
 
 	/*
 	
@@ -69,10 +82,7 @@ public class BuildingModeHandler {
 		
 		
 	}
-	
-	public void removeObject(Coordinate mouseCoordinates, ObjectType type) {
-		
-	}
+
 	
 	public boolean validatePlacement(Coordinate coord) {
 		

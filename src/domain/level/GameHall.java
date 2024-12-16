@@ -17,6 +17,18 @@ public class GameHall {
         return false;
     }
 
+    public boolean isObjectPresent (int row, int col){
+        return grid[row][col]!=null;
+    }
+
+    public boolean removeObject (int row, int col){
+        if(isValid(row,col) && grid[row][col] != null){
+            grid[row][col] = null;
+            return true;
+        }
+        return false;
+    }
+
     private boolean isValid(int row, int col) {
         return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length;
     }
