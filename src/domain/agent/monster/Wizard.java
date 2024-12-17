@@ -10,4 +10,9 @@ public class Wizard extends Monster{
         // This method just randomly changes the location of the rune without any constraints
         runeLocation.setLocation(Game.random.nextInt(16),Game.random.nextInt(16));
     }
+
+    @Override
+    public void move() {
+
+    }
 }

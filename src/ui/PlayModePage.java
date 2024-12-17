@@ -22,7 +22,7 @@ public class PlayModePage extends Page {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 
-        this.gamePanel = new GamePanel(gameHalls);
+        this.gamePanel = new GamePanel();
 
         window.add(gamePanel);
         window.pack();
