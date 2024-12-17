@@ -11,13 +11,13 @@ import domain.Textures;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 
 public class BuildModePage extends Page implements ActionListener {
-	
-	
-	private BuildingModeHandler buildingModeHandler; 
-		
+
+	private BuildingModeHandler buildingModeHandler;
+
     private HallPanel hallPanel;
     
     private JPanel objectChooserPanel;
@@ -33,13 +33,13 @@ public class BuildModePage extends Page implements ActionListener {
     private JButton[] buttons;
     
     private int pageNum;
-        
+
+
+
     private JLabel titleLabel = new JLabel("BUILD MODE");
-    
     private JTextArea infoTextArea;
-    
-    private JButton btnNewButton_1;
-    private JButton btnNewButton_2;
+    //private JButton btnNewButton_1;
+    //private JButton btnNewButton_2;
 
     public BuildModePage() {
     	super();
@@ -56,7 +56,6 @@ public class BuildModePage extends Page implements ActionListener {
     	exitButton = new JButton("Exit");
         contButton = new JButton("Continue");
     	deleteButton = new JButton("Delete");
-
 
         this.setLayout(new BorderLayout(0, 0));
         
@@ -75,34 +74,23 @@ public class BuildModePage extends Page implements ActionListener {
         this.objectChooserPanel.setLayout(new BoxLayout(objectChooserPanel, BoxLayout.Y_AXIS));
         this.objectChooserPanel.setBackground(Color.GRAY);
         this.add(objectChooserPanel, BorderLayout.EAST);
-        
-        
-        
+
         this.objectChooserPanel.add(titleLabel);
         titleLabel.setAlignmentY(Component.TOP_ALIGNMENT);
-        
-        btnNewButton_1 = new JButton();
-        btnNewButton_1.setBackground(Color.GRAY);
-        btnNewButton_1.setIcon(new ImageIcon("src/assets/chest_closed.png"));
-        btnNewButton_1.setAlignmentY(Component.TOP_ALIGNMENT);
-        btnNewButton_1.setForeground(Color.LIGHT_GRAY);
-        btnNewButton_1.setContentAreaFilled(false); // Remove background color
-        btnNewButton_1.setBorderPainted(false);    // Remove the border
-        
-        objectChooserPanel.add(btnNewButton_1);
-        
-        
-        btnNewButton_2 = new JButton();
-        btnNewButton_2.setBackground(Color.LIGHT_GRAY);
-        btnNewButton_2.setIcon(new ImageIcon("src/assets/column.png"));
-        btnNewButton_2.setForeground(Color.GRAY);
-        btnNewButton_2.setContentAreaFilled(false); // Remove background color
-        btnNewButton_2.setBorderPainted(false);    // Remove the border
-        objectChooserPanel.add(btnNewButton_2);
-        
+
         buttonPanel = new JPanel();
         this.objectChooserPanel.add(buttonPanel);
         buttonPanel.setLayout(new GridLayout(0, 1));
+
+        //dynamically create object buttons
+        createObjectButtons("src/assets/build_mode_assets");
+
+        deleteButton.setIcon(new ImageIcon("src/assets/delete.png"));
+        deleteButton.setBackground(Color.LIGHT_GRAY);
+        deleteButton.setForeground(Color.GRAY);
+        deleteButton.setContentAreaFilled(false); // Remove background color
+        deleteButton.setBorderPainted(false);    // Remove the border
+
         buttonPanel.add(contButton);
         buttonPanel.add(exitButton);
         buttonPanel.add(deleteButton);
@@ -110,7 +98,6 @@ public class BuildModePage extends Page implements ActionListener {
 
 
         // Info text area
-        
         infoTextArea = new JTextArea(5, 20);
         infoTextArea.setBackground(Color.GRAY);
         infoTextArea.setEditable(false);
@@ -121,7 +108,46 @@ public class BuildModePage extends Page implements ActionListener {
         infoTextArea.append("Hall 1\n");
 
         initializeChoiceListeners();
-        
+
+
+    }
+
+    private void createObjectButtons(String folderPath){
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+
+        for (File file : files)
+        {
+            String fileName = file.getName();
+            String baseName = fileName.substring(0, fileName.lastIndexOf("."));
+            String enumName = baseName.toUpperCase(); // Assuming ObjectType names match file names in uppercase
+
+            ObjectType objectType = null;
+            try {
+                objectType = ObjectType.valueOf(enumName);
+            } catch (IllegalArgumentException ex) {
+                // If there's no matching enum, you may want to skip or log a warning
+                System.err.println("No matching ObjectType for file: " + fileName);
+                continue;
+            }
+
+            JButton objButton = new JButton();
+            objButton.setBackground(Color.LIGHT_GRAY);
+            objButton.setAlignmentY(Component.TOP_ALIGNMENT);
+            objButton.setIcon(new ImageIcon(file.getAbsolutePath()));
+            objButton.setContentAreaFilled(false); // Remove background color
+            objButton.setBorderPainted(false);    // Remove the border
+
+            // Set the action command to the enum name so we know which object was selected
+            objButton.setActionCommand(enumName);
+            // Add the same action listener to all object buttons
+            objButton.addActionListener(this);
+
+            objectChooserPanel.add(objButton);
+        }
+
+
+
     }
     
     private void drawObjectImage() {
@@ -142,8 +168,6 @@ public class BuildModePage extends Page implements ActionListener {
     
     
     private void initializeChoiceListeners(){
-        btnNewButton_2.addActionListener(this);
-        btnNewButton_1.addActionListener(this);
         exitButton.addActionListener(this);
         contButton.addActionListener(this);
         deleteButton.addActionListener(this);
@@ -162,27 +186,39 @@ public class BuildModePage extends Page implements ActionListener {
             System.out.println("Thank you next.");
             boolean isLastHall = buildingModeHandler.goNextHall();
             if(isLastHall) {
-                contButton.setText("Start Game");
+                if (buildingModeHandler.areAllHallsComplete()) {
+                    //transition to play mode here.
+                    System.out.println("All halls complete, going to play mode.");
+                }
+                else {
+                    contButton.setText("Start Game");
+                }
             }
             int currentHall = buildingModeHandler.getCurrentGameHall() + 1;
             infoTextArea.setText("Hall " +currentHall);
             hallPanel.repaint();
         }
-        else if (e.getSource() == btnNewButton_1) {
-            System.out.println("Chest selected.");
-            buildingModeHandler.setSelectedObject(ObjectType.CHEST_CLOSED);
-        }
-        else if (e.getSource() == btnNewButton_2) {
-            System.out.println("Column selected.");
-            buildingModeHandler.setSelectedObject(ObjectType.COLUMN);
-        }
         else if (e.getSource() == deleteButton) {
             System.out.println("Trashcan selected.");
             buildingModeHandler.setSelectedObject(null); // Set no object as selected to enable removal
         }
+        else
+        {
+            String command = e.getActionCommand();
+            if (command != null) {
+                try {
+                    ObjectType selectedObject = ObjectType.valueOf(command);
+                    buildingModeHandler.setSelectedObject(selectedObject);
+                    System.out.println(selectedObject + " selected.");
+                } catch (IllegalArgumentException ex) {
+                    // If for some reason we fail here, just ignore
+                    System.err.println("Unknown object type selected: " + command);
+                }
+        }
 
     }
-    
+
+
     
     
     
@@ -190,26 +226,26 @@ public class BuildModePage extends Page implements ActionListener {
 
 class HallPanel extends JPanel implements MouseListener {
 
-	public final int tileSize = 48;
-	public final int maxScreenCol = 16;
-	public final int maxScreenRow = 16;
-	
-	final int screenWidth = tileSize * maxScreenCol;
-	final int screenHeight = tileSize * maxScreenRow;
+    public final int tileSize = 48;
+    public final int maxScreenCol = 16;
+    public final int maxScreenRow = 16;
 
-    private final  BuildingModeHandler buildingModeHandler;
+    final int screenWidth = tileSize * maxScreenCol;
+    final int screenHeight = tileSize * maxScreenRow;
+
+    private final BuildingModeHandler buildingModeHandler;
 
     //the coordinates of the tiles that the mouse is hovered on (these coordinates will be highlighted for ease of use, in build mode.)
     private int hoveredRow = -1;
     private int hoveredCol = -1;
 
-	public HallPanel(BuildingModeHandler buildingModeHandler) {
+    public HallPanel(BuildingModeHandler buildingModeHandler) {
         this.buildingModeHandler = buildingModeHandler;
-		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		this.setBackground(Color.BLACK);
-		this.setDoubleBuffered(true);
-		this.setFocusable(true);
-		addMouseListener(this);
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setBackground(Color.BLACK);
+        this.setDoubleBuffered(true);
+        this.setFocusable(true);
+        addMouseListener(this);
 
         //highlighting hovered tiles.
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -232,8 +268,7 @@ class HallPanel extends JPanel implements MouseListener {
                         hoveredCol = newHoveredCol;
                         repaint(); //repaint for highlighting
                     }
-                }
-                else{
+                } else {
                     // If outside hall bounds, reset highlight and repaint
                     if (hoveredRow != -1 || hoveredCol != -1) {
                         hoveredRow = -1;
@@ -243,26 +278,26 @@ class HallPanel extends JPanel implements MouseListener {
                 }
             }
         });
-	}	
-	
-	
-	public void drawEmptyHall(Graphics g) {
+    }
+
+
+    public void drawEmptyHall(Graphics g) {
         BufferedImage floorSprite = Textures.getSprite("floor_plain");
-        for (int row = 0; row < maxScreenRow; row++){
-            for (int col = 0; col < maxScreenCol; col++){
-                g.drawImage(floorSprite,col*tileSize,row*tileSize,tileSize,tileSize,null);
+        for (int row = 0; row < maxScreenRow; row++) {
+            for (int col = 0; col < maxScreenCol; col++) {
+                g.drawImage(floorSprite, col * tileSize, row * tileSize, tileSize, tileSize, null);
             }
         }
-		
-	}
 
-	@Override
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Ensures the panel is properly rendered
         drawEmptyHall(g);
         GameHall currentHall = buildingModeHandler.getCurrentHall();
-        if(currentHall != null) {
-            drawPlacedObjects(g,currentHall);
+        if (currentHall != null) {
+            drawPlacedObjects(g, currentHall);
         }
         if (hoveredRow >= 0 && hoveredCol >= 0 && hoveredRow < maxScreenRow && hoveredCol < maxScreenCol) {
             Color prevColor = g.getColor();
@@ -276,20 +311,19 @@ class HallPanel extends JPanel implements MouseListener {
     private void drawPlacedObjects(Graphics g, GameHall hall) {
         System.out.println("Drawing objects");
         ObjectType[][] grid = hall.getGrid();
-        for(int row = 0; row < grid.length;row++) {
-            for(int col = 0; col < grid[row].length; col++) {
-                if(grid[row][col] != null) {
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                if (grid[row][col] != null) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
-                    g.drawImage(objectSprite, col*tileSize,row*tileSize,tileSize,tileSize,null);
+                    g.drawImage(objectSprite, col * tileSize, row * tileSize, tileSize, tileSize, null);
                 }
             }
         }
     }
 
 
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
+    @Override
+    public void mouseClicked(MouseEvent e) {
         int col = e.getX() / tileSize;
         int row = e.getY() / tileSize;
 
@@ -300,32 +334,40 @@ class HallPanel extends JPanel implements MouseListener {
                 repaint();
             }
         } else {
+            System.out.println("Placing object at " + row + ", " + col);
             boolean placed = buildingModeHandler.placeObjectAt(row, col);
             if (placed) {
                 repaint();
             }
         }
-	}
+    }
 
     @Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+    public void mousePressed(MouseEvent e) {
+        // TODO Auto-generated method stub
+
     }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        hoveredRow = -1;
+        hoveredCol = -1;
+        repaint(); // ensure the highlight is cleared
+    }
+}
+
 }
 	
     	
