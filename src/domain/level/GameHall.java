@@ -31,6 +31,11 @@ public class GameHall {
         return false;
     }
 
+    public boolean isObjectPresent (int row, int col){
+        return grid[row][col]!=null;
+    }
+
+
     public boolean isPlacementComplete()
     {
         return placedObjectCount >= minObjectLimit;

@@ -4,12 +4,16 @@ import controllers.KeyHandler;
 
 import javax.swing.*;
 
+import domain.Textures;
+import domain.level.GameHall;
+import domain.objects.ObjectType;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +26,9 @@ import java.util.concurrent.Executors;
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
 public class GamePanel extends JPanel {
-
+    private final int tileSize = 48;
+    // to render the gameHalls
+    private GameHall[] gameHalls;
     // Screen settings each ca
     private final int  baseTileSize = 64; // Objects will be 64x64
     private int scalingFactor = 1; // Going to be an input for different resolutions etc
@@ -56,6 +62,10 @@ public class GamePanel extends JPanel {
         wizardGraphics = new WizardGraphics(baseTileSize);
     }
 
+    public GamePanel(GameHall[] gameHalls) {
+        this();
+        this.gameHalls = gameHalls;
+    }
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
         this(scalingFactor,horizontalSquares,verticalSquares);
         this.FPS = FPS;
@@ -84,6 +94,7 @@ public class GamePanel extends JPanel {
         executor.execute(ur);
     }
 
+
     private void update() {
         playerGraphics.update();
         fighterGraphics.update();
@@ -98,7 +109,22 @@ public class GamePanel extends JPanel {
         fighterGraphics.draw(g2);
         archerGraphics.draw(g2);
         wizardGraphics.draw(g2);
+        this.paintGrid(g, 0);
         g2.dispose();
+    }
+
+    // will be refactored later
+    public void paintGrid(Graphics g, int currentHall) {
+        GameHall hall = gameHalls[currentHall];
+        ObjectType[][] grid = hall.getGrid();
+        for(int row = 0; row < grid.length;row++) {
+            for(int col = 0; col < grid[row].length; col++) {
+                if(grid[row][col] != null) {
+                    BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
+                    g.drawImage(objectSprite, col*tileSize,row*tileSize,tileSize,tileSize,null);
+                }
+            }
+        }
     }
 
     private class UpdateAndRender implements Runnable {
