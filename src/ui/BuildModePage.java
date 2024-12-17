@@ -232,7 +232,11 @@ public class BuildModePage extends Page implements ActionListener {
             for(int col = 0; col < grid[row].length; col++) {
                 if(grid[row][col] != null) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
-                    g.drawImage(objectSprite, row*tileSize,col*tileSize,tileSize,tileSize,null);
+                    int w = objectSprite.getWidth();
+                    int h = objectSprite.getHeight();
+                    int offsetX = (tileSize - w) / 2;
+                    int offsetY = (tileSize - h) / 2;
+                    g. drawImage(objectSprite, row*tileSize+offsetX, col*tileSize+offsetY, w, h, null);
                 }
             }
         }

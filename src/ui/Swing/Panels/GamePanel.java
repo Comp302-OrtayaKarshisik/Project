@@ -161,7 +161,11 @@ public class GamePanel extends JPanel {
                 Tile gridObject = grid[row][col];
                 if(gridObject != null && gridObject.getName() == "COLUMN") {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].getName().toLowerCase());
-                    g.drawImage(objectSprite, row*baseTileSize,(verticalSize-col-1)*baseTileSize,baseTileSize,baseTileSize,null);
+                    int w = objectSprite.getWidth();
+                    int h = objectSprite.getHeight();
+                    int offsetX = (baseTileSize - w) / 2;
+                    int offsetY = (baseTileSize - h) / 2;
+                    g.drawImage(objectSprite, row*baseTileSize+offsetX,(verticalSize-col-1)*baseTileSize+offsetY, w, h,null);
                 }
             }
         }
