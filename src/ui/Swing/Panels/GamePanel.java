@@ -15,8 +15,10 @@ import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
+import ui.Graphics.TileSetImageGetter;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +34,7 @@ import java.util.concurrent.Executors;
 public class GamePanel extends JPanel {
 
     // Screen settings each ca
-    private final int  baseTileSize = 64; // Objects will be 64x64
+    private final int  baseTileSize = 48; // Objects will be 64x64
     private int scalingFactor = 1; // Going to be an input for different resolutions etc
 
     private int horizontalSquares = 16; // how many squares in the x direction
@@ -60,19 +62,20 @@ public class GamePanel extends JPanel {
         this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
-        //game = Game.getInstance();
-        //game.setPlayer(new Player(game));
-        //game.setKeyHandler(keyHandler);
+        game = Game.getInstance();
+        game.setPlayer(new Player(game));
+        this.playerGraphics = new PlayerGraphics(48, game.getPlayer());
+        game.setKeyHandler(keyHandler);
 
 
-        //LinkedList<Agent> a = new LinkedList<>();
+        LinkedList<Agent> a = new LinkedList<>();
         //a.add(w);
         //a.add(w1);
-        //a.add(game.getPlayer());
+        a.add(game.getPlayer());
 
-        //game.setAgents(a);
-        //game.setCollusionChecker(new CollusionChecker(game));
-        //game.setCurrentHall(new Hall("s",0));
+        game.setAgents(a);
+        game.setCollusionChecker(new CollusionChecker(game));
+        game.setCurrentHall(new Hall("s",0));
 
         //playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
         //wizardGraphics = new WizardGraphics(baseTileSize);
@@ -116,10 +119,22 @@ public class GamePanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        // draw empty hall
+        this.initEmptyHall(g);
+
         Graphics2D g2 = (Graphics2D) g;
         playerGraphics.draw(g2);
         //wizardGraphics.draw(g2);
         g2.dispose();
+    }
+
+    // for drawing empty hall
+    public void initEmptyHall(Graphics g) {
+        BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
+        g.drawImage(floor,0, 0,48*16, 48*16, null);
+
+        this.setBorder(BorderFactory.createLineBorder(new Color(40, 20, 30), 3));
     }
 
     private class UpdateAndRender implements Runnable {

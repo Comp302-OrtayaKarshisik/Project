@@ -45,6 +45,6 @@ public class PlayerGraphics extends EntityGraphics {
         } else if (player.getDirection() == Direction.RIGHT) {
             currentImg = rightPic;
         }
-        g.drawImage(currentImg, player.getLocation().getX() * 64, (15 - player.getLocation().getY()) * 64, size, size,null);
+        g.drawImage(currentImg, player.getLocation().getX() * size, (15 - player.getLocation().getY()) * size, size, size,null);
     }
 }

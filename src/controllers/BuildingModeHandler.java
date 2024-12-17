@@ -23,7 +23,6 @@ public class BuildingModeHandler {
 	public BuildingModeHandler() {
 		
 		this.game = Game.getInstance();
-		Textures.createSprites();
 		for(int i = 0; i < gameHalls.length; i++){
 			gameHalls[i] = new GameHall(16,16);
 		}

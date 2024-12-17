@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 public class HallPanelHolder extends JPanel {
     public final int tileSize = 48;
     public final int tileNumber = 16;
+    private JPanel externalPanel;
 
     public HallPanelHolder(JPanel externalPanel) {
         this.setPreferredSize(new Dimension(850, 850));
@@ -25,8 +26,12 @@ public class HallPanelHolder extends JPanel {
         externalPanel.setLocation(39, 41);
         externalPanel.setSize(externalPanel.getPreferredSize());
 
+        externalPanel.setFocusable(true);
+        externalPanel.requestFocusInWindow();
+
         this.add(externalPanel);
 
+        this.externalPanel = externalPanel;
         // draw walls
     }
 
@@ -65,9 +70,17 @@ public class HallPanelHolder extends JPanel {
             g.drawImage(verticalWall,31,row*88 + start, 6,88,null);
             g.drawImage(verticalWall,807,row*88 + start, 6,88,null);
         }
-        int offset = start + 17;
+        int offset = start + 20;
         g.drawImage(verticalWall,31,7*88+70 + offset, 6,88,null);
         g.drawImage(verticalWall,807,7*88+70 + offset, 6,88,null);
+    }
+
+    public JPanel getExternalPanel() {
+        return externalPanel;
+    }
+
+    public GamePanel getGamePanel() {
+        return (GamePanel) this.externalPanel;
     }
 
 }

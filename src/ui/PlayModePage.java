@@ -2,12 +2,13 @@ package ui;
 
 import domain.level.GameHall;
 import ui.Swing.Panels.GamePanel;
+import ui.Swing.Panels.HallPanelHolder;
 
 import javax.swing.*;
 
 public class PlayModePage extends Page {
 
-    private GamePanel gamePanel;
+    private HallPanelHolder panelHolder;
     private GameHall[] gameHalls;
 
     public PlayModePage(GameHall gameHalls[]) {
@@ -22,13 +23,15 @@ public class PlayModePage extends Page {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 
-        this.gamePanel = new GamePanel();
+        this.panelHolder = new HallPanelHolder(new GamePanel());
 
-        window.add(gamePanel);
+        window.add(panelHolder);
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        gamePanel.startGame();
+        SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
+
+        panelHolder.getGamePanel().startGame();
     }
 }
