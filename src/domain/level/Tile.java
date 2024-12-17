@@ -9,7 +9,7 @@ public class Tile {
 	private BufferedImage image;
 	private boolean collision;
 	private boolean collectible;
-	
+
 	private String name;
 	private Coordinate coord;
 
@@ -18,6 +18,15 @@ public class Tile {
 		this.name = name;
 		this.coord = coord;
 		
+	}
+
+	public Tile(String name, Coordinate coord, boolean collision){
+		this(name, coord);
+		this.collision = collision;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public boolean isCollisable (){

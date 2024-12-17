@@ -1,9 +1,6 @@
 package controllers;
-import domain.level.GameHall;
-import domain.level.Hall;
+import domain.level.GridDesign;
 import domain.objects.ObjectType;
-import domain.util.Coordinate;
-import ui.BuildModePage;
 import domain.*;
 import ui.PageManager;
 
@@ -13,7 +10,7 @@ public class BuildingModeHandler {
 
 	private int gameHallCount = 5;
 
-	private GameHall[] gameHalls = new GameHall[gameHallCount];
+	private GridDesign[] gridDesigns = new GridDesign[gameHallCount];
 
 
 	private int currentGameHall = 0;
@@ -23,14 +20,14 @@ public class BuildingModeHandler {
 	public BuildingModeHandler() {
 		
 		this.game = Game.getInstance();
-		for(int i = 0; i < gameHalls.length; i++){
-			gameHalls[i] = new GameHall(16,16);
+		for(int i = 0; i < gridDesigns.length; i++){
+			gridDesigns[i] = new GridDesign(16,16);
 		}
 
 	}
 
-	public GameHall getCurrentHall(){
-		return gameHalls[currentGameHall];
+	public GridDesign getCurrentHall(){
+		return gridDesigns[currentGameHall];
 	}
 
 	public void setSelectedObject(ObjectType object) {
@@ -42,7 +39,7 @@ public class BuildingModeHandler {
 
 	public  boolean placeObjectAt(int row, int col) {
 		if(selectedObject == null) return false;
-		GameHall currentHall = gameHalls[currentGameHall];
+		GridDesign currentHall = gridDesigns[currentGameHall];
         return currentHall.placeObject(row,col,selectedObject);
 	}
 
@@ -54,7 +51,7 @@ public class BuildingModeHandler {
 			return true;
 		}
 		if(currentGameHall == gameHallCount -1) {
-			PageManager.getInstance().showPlayModePage(gameHalls);
+			PageManager.getInstance().showPlayModePage(gridDesigns);
 		}
 		currentGameHall += 1;
 		return false;
@@ -65,13 +62,13 @@ public class BuildingModeHandler {
 	}
 
 	public boolean removeObjectAt(int row, int col){
-		GameHall currentHall = gameHalls[currentGameHall];
+		GridDesign currentHall = gridDesigns[currentGameHall];
 		return currentHall.removeObject(row, col);
 	}
 
 
 	public boolean isObjectPresent (int row, int col) {
-		GameHall currentHall = getCurrentHall();
+		GridDesign currentHall = getCurrentHall();
 		return currentHall.isObjectPresent(row,col);
 	}
 

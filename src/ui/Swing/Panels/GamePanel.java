@@ -5,16 +5,14 @@ import controllers.KeyHandler;
 import javax.swing.*;
 
 import domain.Game;
+import domain.Textures;
 import domain.agent.Agent;
 import domain.agent.Player;
-import domain.agent.monster.Archer;
-import domain.agent.monster.Wizard;
 import domain.level.CollusionChecker;
+import domain.level.GridDesign;
 import domain.level.Hall;
-import ui.Graphics.AgentGrapichs.ArcherGraphics;
-import ui.Graphics.AgentGrapichs.FighterGraphics;
+import domain.level.Tile;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
-import ui.Graphics.AgentGrapichs.WizardGraphics;
 import ui.Graphics.TileSetImageGetter;
 
 import java.awt.*;
@@ -32,6 +30,10 @@ import java.util.concurrent.Executors;
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
 public class GamePanel extends JPanel {
+
+    // to incorporate grid designs from build mode
+    private int currentHall = 0;
+    private GridDesign[] gridDesigns;
 
     // Screen settings each ca
     private final int  baseTileSize = 48; // Objects will be 64x64
@@ -77,10 +79,18 @@ public class GamePanel extends JPanel {
         game.setCollusionChecker(new CollusionChecker(game));
         game.setCurrentHall(new Hall("s",0));
 
+        // Will be changed when passing to the next hall is implemented
+
         //playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
         //wizardGraphics = new WizardGraphics(baseTileSize);
         //wizardGraphics.wizards.add(w);
         //wizardGraphics.wizards.add(w1);
+    }
+
+    public GamePanel(GridDesign[] gridDesigns) {
+        this();
+        this.gridDesigns = gridDesigns;
+        this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
     }
 
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
@@ -104,6 +114,7 @@ public class GamePanel extends JPanel {
         //wizardGraphics = new WizardGraphics(baseTileSize);
     }
 
+
     public void startGame () {
         UpdateAndRender ur = new UpdateAndRender();
         //Executor runs the method instead of threads
@@ -123,6 +134,9 @@ public class GamePanel extends JPanel {
         // draw empty hall
         this.initEmptyHall(g);
 
+        //draw objects from build mode
+        drawObjects(g);
+
         Graphics2D g2 = (Graphics2D) g;
         playerGraphics.draw(g2);
         //wizardGraphics.draw(g2);
@@ -135,6 +149,22 @@ public class GamePanel extends JPanel {
         g.drawImage(floor,0, 0,48*16, 48*16, null);
 
         this.setBorder(BorderFactory.createLineBorder(new Color(40, 20, 30), 3));
+    }
+
+    // for drawing hall object from build mode
+    public void drawObjects(Graphics g) {
+        Tile[][] grid = game.getCurrentHall().getGrid();
+        for(int row = 0; row < grid.length;row++) {
+            // grid size needs to change
+            int verticalSize = 16;
+            for(int col = 0; col < verticalSize; col++) {
+                Tile gridObject = grid[row][col];
+                if(gridObject != null && gridObject.getName() == "COLUMN") {
+                    BufferedImage objectSprite = Textures.getSprite(grid[row][col].getName().toLowerCase());
+                    g.drawImage(objectSprite, row*baseTileSize,(verticalSize-col-1)*baseTileSize,baseTileSize,baseTileSize,null);
+                }
+            }
+        }
     }
 
     private class UpdateAndRender implements Runnable {

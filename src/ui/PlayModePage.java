@@ -1,6 +1,6 @@
 package ui;
 
-import domain.level.GameHall;
+import domain.level.GridDesign;
 import ui.Swing.Panels.GamePanel;
 import ui.Swing.Panels.HallPanelHolder;
 
@@ -9,11 +9,11 @@ import javax.swing.*;
 public class PlayModePage extends Page {
 
     private HallPanelHolder panelHolder;
-    private GameHall[] gameHalls;
+    private GridDesign[] gridDesigns;
 
-    public PlayModePage(GameHall gameHalls[]) {
+    public PlayModePage(GridDesign gridDesigns[]) {
         super();
-        this.gameHalls = gameHalls;
+        this.gridDesigns = gridDesigns;
         initUI();
     }
 
@@ -23,7 +23,7 @@ public class PlayModePage extends Page {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 
-        this.panelHolder = new HallPanelHolder(new GamePanel());
+        this.panelHolder = new HallPanelHolder(new GamePanel(gridDesigns));
 
         window.add(panelHolder);
         window.pack();

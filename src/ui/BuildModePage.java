@@ -3,7 +3,7 @@ package ui;
 import javax.swing.*;
 
 import controllers.BuildingModeHandler;
-import domain.level.GameHall;
+import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import domain.Textures;
@@ -219,20 +219,20 @@ public class BuildModePage extends Page implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Ensures the panel is properly rendered
         drawEmptyHall(g);
-        GameHall currentHall = buildingModeHandler.getCurrentHall();
+        GridDesign currentHall = buildingModeHandler.getCurrentHall();
         if(currentHall != null) {
             drawPlacedObjects(g,currentHall);
         }
     }
 
-    private void drawPlacedObjects(Graphics g, GameHall hall) {
+    private void drawPlacedObjects(Graphics g, GridDesign hall) {
         System.out.println("Drawing objects");
         ObjectType[][] grid = hall.getGrid();
         for(int row = 0; row < grid.length;row++) {
             for(int col = 0; col < grid[row].length; col++) {
                 if(grid[row][col] != null) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
-                    g.drawImage(objectSprite, col*tileSize,row*tileSize,tileSize,tileSize,null);
+                    g.drawImage(objectSprite, row*tileSize,col*tileSize,tileSize,tileSize,null);
                 }
             }
         }
@@ -242,8 +242,8 @@ public class BuildModePage extends Page implements ActionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-        int col = e.getX() / tileSize;
-        int row = e.getY() / tileSize;
+        int row = e.getX() / tileSize;
+        int col = e.getY() / tileSize;
         System.out.println ("Clicked at" + col + ", " + row);
 
         if(SwingUtilities.isRightMouseButton(e)) {

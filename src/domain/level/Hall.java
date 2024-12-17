@@ -1,11 +1,14 @@
 package domain.level;
 
 import domain.Game;
+import domain.Textures;
 import domain.agent.Player;
 import domain.collectables.EnchantmentType;
 import domain.collectables.Enchantment;
+import domain.objects.ObjectType;
 import domain.util.Coordinate;
 
+import java.awt.image.BufferedImage;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.*;
@@ -80,6 +83,21 @@ public class Hall {
 
     public Coordinate getRuneLocation() {
         return runeLocation;
+    }
+
+    // Transfer grid  design from build mode to Hall
+    public void transferGridDesign(GridDesign gridDesign) {
+        ObjectType[][] gridCreated = gridDesign.getGrid();
+        for(int row = 0; row < gridCreated.length;row++) {
+            int verticalSize = gridCreated[row].length;
+            for(int col = 0; col < verticalSize; col++) {
+                ObjectType newTile = gridCreated[row][col];
+                if(newTile != null) {
+                    this.grid[row][verticalSize-col-1] =
+                            new Tile(newTile.toString(), new Coordinate(row, verticalSize-col-1), true);
+                }
+            }
+        }
     }
 
     public Tile[][] getGrid() {

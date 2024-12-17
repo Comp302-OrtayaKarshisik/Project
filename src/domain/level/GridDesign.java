@@ -2,10 +2,10 @@ package domain.level;
 
 import domain.objects.ObjectType;
 
-public class GameHall {
+public class GridDesign {
     private ObjectType[][]  grid;
 
-    public GameHall(int rows, int cols) {
+    public GridDesign(int rows, int cols) {
         grid = new ObjectType[rows][cols];
     }
 
