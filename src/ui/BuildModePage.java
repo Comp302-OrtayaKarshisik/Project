@@ -64,12 +64,16 @@ public class BuildModePage extends Page implements ActionListener {
         this.setLayout(new BorderLayout(0, 0));
         
         ImageIcon hallIcon = new ImageIcon("src/assets/hall.png");
-        
+
         //hall panel
         this.hallPanel = new HallPanel(this.buildingModeHandler);
-        this.hallPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+        //this.hallPanel.setBorder(BorderFactory.createLineBorder(new Color(40, 20, 30), 3));
         this.hallPanel.setBackground(Color.LIGHT_GRAY);
-        this.add(hallPanel, BorderLayout.CENTER);
+
+        //hall panel Holder
+        this.hallPanelHolder = new HallPanelHolder(hallPanel);
+        this.add(hallPanelHolder, BorderLayout.CENTER);
+
 
         
         //Object chooser panel
@@ -266,39 +270,9 @@ class HallPanel extends JPanel implements MouseListener {
     }
 
 
-
-	public void drawEmptyHall(Graphics g) {
-        BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
-        g.drawImage(floor,0, 0,maxScreenRow*tileSize, maxScreenCol*tileSize, null);
-        // Draw walls
-        BufferedImage horizontalWall = TileSetImageGetter.getInstance().getImage(0, 0);
-        BufferedImage verticalWall = Textures.getSprite("verticalWall");
-        drawHorizontalWalls(g, horizontalWall);
-        drawVerticalWalls(g, verticalWall);
-	}
-
-    public void drawHorizontalWalls(Graphics g, BufferedImage horizontalWall) {
-        int start = 20;
-        for (int row = 0; row < maxScreenRow-1; row++){
-            g.drawImage(horizontalWall,row*tileSize + start,10,tileSize,tileSize,null);
-            g.drawImage(horizontalWall,row*tileSize + start,700,tileSize,tileSize,null);
-        }
-    }
-
-    public void drawVerticalWalls(Graphics g, BufferedImage verticalWall) {
-        int start = 29;
-        for (int row = 0; row < (764/88)-1; row++){
-            g.drawImage(verticalWall,21,row*88 + start, 7,88,null);
-            g.drawImage(verticalWall,734,row*88 + start, 7,88,null);
-        }
-        g.drawImage(verticalWall,21,6*88+74 + start, 7,88,null);
-        g.drawImage(verticalWall,734,6*88+74 + start, 7,88,null);
-    }
-
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Ensures the panel is properly rendered
-        drawEmptyHall(g);
         GridDesign currentHall = buildingModeHandler.getCurrentHall();
         if(currentHall != null) {
             drawPlacedObjects(g,currentHall);

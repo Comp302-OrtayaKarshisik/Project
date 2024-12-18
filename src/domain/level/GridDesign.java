@@ -37,7 +37,9 @@ public class GridDesign {
 
     public boolean isPlacementComplete()
     {
-        return placedObjectCount >= minObjectLimit;
+        //returns true for now for testing purposes
+        return true;
+        //return placedObjectCount >= minObjectLimit;
     }
 
     private boolean isValid(int row, int col) {

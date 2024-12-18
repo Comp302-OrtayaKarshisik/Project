@@ -85,6 +85,7 @@ public class Hall {
 
     // Transfer grid  design from build mode to Hall
     public void transferGridDesign(GridDesign gridDesign) {
+        if(gridDesign==null) return;
         ObjectType[][] gridCreated = gridDesign.getGrid();
         for(int row = 0; row < gridCreated.length;row++) {
             int verticalSize = gridCreated[row].length;
