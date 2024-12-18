@@ -23,9 +23,19 @@ public class Textures {
 	sprites = new HashMap<String, BufferedImage>();
 	
 	File folder = new File("src/assets");
+	File folder2 = new File("src/assets/build_mode_assets");
 	
 	for (File file : folder.listFiles()) {
 		
+		try {
+			sprites.put(file.getName().replaceAll(".png", ""), ImageIO.read(file));
+		} catch (IOException e) {
+			System.err.println("[Utils][Textures]: Exception reading "+file.getName());
+		}
+	}
+
+	for (File file : folder2.listFiles()) {
+
 		try {
 			sprites.put(file.getName().replaceAll(".png", ""), ImageIO.read(file));
 		} catch (IOException e) {

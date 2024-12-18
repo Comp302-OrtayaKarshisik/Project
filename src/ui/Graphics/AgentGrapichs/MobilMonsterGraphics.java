@@ -1,69 +1,48 @@
 package ui.Graphics.AgentGrapichs;
 
+import domain.agent.monster.Monster;
+import domain.util.Direction;
 import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.security.SecureRandom;
+import java.util.LinkedList;
 
-public class MobilMonsterGraphics extends EntityGraphics {
+public abstract class MobilMonsterGraphics extends EntityGraphics {
+
 
     protected  BufferedImage rightPic, leftPic;
-    protected char direction = ' ';
-    protected int speed = 16;
     protected int size;
-    protected int horizontalBound;
-    protected int verticalBound;
     protected BufferedImage currentImg;
-    public static SecureRandom random = new SecureRandom();
-    private int delta = 0; // Holds # frames since last move
+    private final LinkedList<Monster> monsters;
 
-    public MobilMonsterGraphics(int size, int speed, int horizontalBound, int verticalBound) {
+    public MobilMonsterGraphics(int size) {
         this.size = size;
-        this.speed = 32;
-        this.horizontalBound = horizontalBound;
-        this.verticalBound = verticalBound;
-        xCord = random.nextInt(50,700);
-        yCord = random.nextInt(50,700);
+        this.monsters = new LinkedList<>();
     }
 
+    // For now the graphics methods actually makes the monsters move
+    // Normally there should be a Game update method which should handel these things
     public void update() {
         //This update only lets one key movement to be recorded at the same time
         //For diagonal movements switch else ifs to just ifs
-        int dir = random.nextInt(4);
-
-        if (delta == 4) {
-            if (dir == 0) {
-                yCord += speed;
-                if (yCord >= verticalBound)
-                    yCord = verticalBound;
-            } else if (dir == 1) {
-                yCord -= speed;
-                if (yCord <= 0)
-                    yCord = 0;
-            } else if (dir == 2) {
-                xCord -= speed;
-                direction = 'L';
-                if (xCord <= 0)
-                    xCord = 0;
-            } else {
-                xCord += speed;
-                direction = 'R';
-                if (xCord >= horizontalBound)
-                    xCord = horizontalBound;
-            }
-            delta = 0;
-        }
-        delta++;
+       for (Monster monster: monsters) {
+           monster.move();
+       }
     }
 
     public void draw(Graphics g) {
-        if (direction == 'L') {
-            currentImg = leftPic;
-        } else if (direction == 'R') {
-            currentImg = rightPic;
+        for (Monster monster: monsters) {
+            if (monster.getDirection() == Direction.LEFT) {
+                currentImg = leftPic;
+            } else if (monster.getDirection() == Direction.RIGHT) {
+                currentImg = rightPic;
+            }
+            g.drawImage(currentImg, monster.getLocation().getX()*48,(15 - monster.getLocation().getY())*48 , size, size,null);
         }
-        g.drawImage(currentImg, xCord, yCord, size, size,null);
     }
 
+    public LinkedList<Monster> getMonsters() {
+        return monsters;
+    }
 }

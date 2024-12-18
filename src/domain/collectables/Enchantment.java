@@ -1,55 +1,34 @@
 package domain.collectables;
 
+import domain.Game;
+import domain.util.Coordinate;
+
 public class Enchantment {
 
-    private EnchantmentType type;
-    private float remainingTime;
+    private final EnchantmentType type;
+    private int remainingTime;
+    private final Coordinate location;
 
-    // x y daha iyi
-    private int xCord = 0;
-    private int yCord = 0;
-    private int[][] location = new int[2][1];
 
-    //All ench can determine their own random creation loc
-    public Enchantment(EnchantmentType type) {}
-
-    public int getxCord() {
-        return xCord;
+    public Enchantment(EnchantmentType type) {
+        this.type = type;
+        this.remainingTime = 12;
+        this.location = new Coordinate(Game.random.nextInt(64),Game.random.nextInt(64));
     }
 
-    public void setxCord(int xCord) {
-        this.xCord = xCord;
+    public void decreaseRemainingTime() {
+        remainingTime--;
     }
 
-    public int getyCord() {
-        return yCord;
-    }
-
-    public void setyCord(int yCord) {
-        this.yCord = yCord;
-    }
-
-    public int[][] getLocation() {
-        return location;
-    }
-
-    public void setLocation(int[][] location) {
-        this.location = location;
-    }
-
+    public Coordinate getLocation() {return location;}
     public EnchantmentType getType() {
         return type;
-    }
-
-    public void setType(EnchantmentType type) {
-        this.type = type;
     }
 
     public float getRemainingTime() {
         return remainingTime;
     }
-
-    public void setRemainingTime(float remainingTime) {
+    public void setRemainingTime(int remainingTime) {
         this.remainingTime = remainingTime;
     }
 }
