@@ -1,29 +1,44 @@
 package domain.level;
 
+import domain.Game;
+import domain.Textures;
 import domain.agent.Player;
 import domain.collectables.EnchantmentType;
 import domain.collectables.Enchantment;
+import domain.objects.ObjectType;
+import domain.util.Coordinate;
 
+import java.awt.image.BufferedImage;
 import java.security.Key;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
+import java.security.SecureRandom;
+import java.util.*;
 
 public class Hall {
 
-    private Timer timer = new Timer();
-    private String type;
-    private int[][] rune;
-    //Still belive that x and y is better then loc rn
-    private int runeX;
-    private int runeY;
+    private Timer timer; // this timer is responsible for creating enchantments
+    private final String type;
+    private final Coordinate runeLocation;
+    private List<Enchantment> enchantments;
+    private final int objectCapacity;
 
-    private int width;
-    private int height;
-    private List<Enchantment> enchs;
-    private int objectCapacity;
 
-    public Hall() {}
+
+    private Tile[][] grid;
+
+    public Hall(String type, int objectCapacity) {
+        timer = new Timer();
+        this.type = type;
+        this.runeLocation = new Coordinate(Game.random.nextInt(64),Game.random.nextInt(64));
+        this.enchantments = new LinkedList<>();
+        this.objectCapacity = objectCapacity;
+        this.grid = new Tile[64][64];
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j <16; j++) {
+                grid[i][j] = new Tile("aa",new Coordinate(i,j));
+            }
+        }
+    }
+
     public void update (Player player, HashMap<String,String > p) {}
     public EnchantmentType type(int [][] xy) {return null;}
     public void increaseTime() {}
@@ -35,78 +50,63 @@ public class Hall {
     public int checkTimer() {return 0;}
     public void createEnchantment() {}
     public void fillHall(Object obj, int[][] loc) {}
-    public boolean adjacentToRune(Player player) {return true;}
+
+    public boolean isPlayerAdjacentToRune(Player player) {
+        return (player.getLocation().getX() == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
+                ((player.getLocation().getX() + 1) == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
+                ((player.getLocation().getX() - 1) == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
+                (player.getLocation().getX()  == runeLocation.getX() && (player.getLocation().getY() + 1 == runeLocation.getY())) ||
+                (player.getLocation().getX()  == runeLocation.getX() && (player.getLocation().getY() - 1  == runeLocation.getY()));
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
+    public List<Enchantment> getEnchantments() {
+        return enchantments;
+    }
+    public void setEnchantments(List<Enchantment> enchantments) {
+        this.enchantments = enchantments;
+    }
 
     public int getObjectCapacity() {
         return objectCapacity;
-    }
-
-    public void setObjectCapacity(int objectCapacity) {
-        this.objectCapacity = objectCapacity;
-    }
-
-    public List<Enchantment> getEnchs() {
-        return enchs;
-    }
-
-    public void setEnchs(List<Enchantment> enchs) {
-        this.enchs = enchs;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getRuneY() {
-        return runeY;
-    }
-
-    public void setRuneY(int runeY) {
-        this.runeY = runeY;
-    }
-
-    public int getRuneX() {
-        return runeX;
-    }
-
-    public void setRuneX(int runeX) {
-        this.runeX = runeX;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public Coordinate getRuneLocation() {
+        return runeLocation;
     }
 
-    public int[][] getRune() {
-        return rune;
+    // Transfer grid  design from build mode to Hall
+    public void transferGridDesign(GridDesign gridDesign) {
+        ObjectType[][] gridCreated = gridDesign.getGrid();
+        for(int row = 0; row < gridCreated.length;row++) {
+            int verticalSize = gridCreated[row].length;
+            for(int col = 0; col < verticalSize; col++) {
+                ObjectType newTile = gridCreated[row][col];
+                if(newTile != null) {
+                    this.grid[row][verticalSize-col-1] =
+                            new Tile(newTile.toString(), new Coordinate(row, verticalSize-col-1), true);
+                }
+            }
+        }
     }
 
-    public void setRune(int[][] rune) {
-        this.rune = rune;
+    public Tile[][] getGrid() {
+        return grid;
     }
 
-    public Timer getTimer() {
-        return timer;
+    public void setGrid(Tile[][] grid) {
+        this.grid = grid;
     }
 
-    public void setTimer(Timer timer) {
-        this.timer = timer;
-    }
 
 }

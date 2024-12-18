@@ -1,8 +1,6 @@
 package ui;
 
-import domain.level.GameHall;
-
-import java.util.Stack;
+import domain.level.GridDesign;
 
 import javax.swing.JFrame;
 
@@ -40,7 +38,7 @@ public class PageManager {
 	
     public void showBuildingModePage() { showPage(new BuildModePage()); }
 
-	public void showPlayModePage(GameHall[] gameHalls) { showPage(new PlayModePage(gameHalls)); }
+	public void showPlayModePage(GridDesign[] gridDesigns) { showPage(new PlayModePage(gridDesigns)); }
 
     public void showFrame() {
         mainFrame.setVisible(true);

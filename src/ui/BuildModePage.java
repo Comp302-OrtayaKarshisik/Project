@@ -3,21 +3,28 @@ package ui;
 import javax.swing.*;
 
 import controllers.BuildingModeHandler;
-import domain.level.GameHall;
+import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import domain.Textures;
 import ui.Graphics.TileSetImageGetter;
+import ui.Swing.Panels.HallPanelHolder;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 
 public class BuildModePage extends Page implements ActionListener {
+	
+	
+	private BuildingModeHandler buildingModeHandler; 
 
-	private BuildingModeHandler buildingModeHandler;
+    private HallPanelHolder hallPanelHolder;
 
     private HallPanel hallPanel;
     
@@ -28,15 +35,11 @@ public class BuildModePage extends Page implements ActionListener {
     private JButton exitButton;
     
     private JButton contButton;
-
-    private JButton deleteButton;
-
+    
     private JButton[] buttons;
     
     private int pageNum;
-
-
-
+        
     private JLabel titleLabel = new JLabel("BUILD MODE");
     
     private JTextArea infoTextArea;
@@ -57,8 +60,7 @@ public class BuildModePage extends Page implements ActionListener {
     	
     	exitButton = new JButton("Exit");
         contButton = new JButton("Continue");
-    	deleteButton = new JButton("Delete");
-
+    	
         this.setLayout(new BorderLayout(0, 0));
         
         ImageIcon hallIcon = new ImageIcon("src/assets/hall.png");
@@ -76,7 +78,9 @@ public class BuildModePage extends Page implements ActionListener {
         this.objectChooserPanel.setLayout(new BoxLayout(objectChooserPanel, BoxLayout.Y_AXIS));
         this.objectChooserPanel.setBackground(Color.GRAY);
         this.add(objectChooserPanel, BorderLayout.EAST);
-
+        
+        
+        
         this.objectChooserPanel.add(titleLabel);
         titleLabel.setAlignmentY(Component.TOP_ALIGNMENT);
 
@@ -87,18 +91,9 @@ public class BuildModePage extends Page implements ActionListener {
         //dynamically create object buttons
         createObjectButtons("src/assets/build_mode_assets");
 
-        deleteButton.setIcon(new ImageIcon("src/assets/delete.png"));
-        deleteButton.setBackground(Color.LIGHT_GRAY);
-        deleteButton.setForeground(Color.GRAY);
-        deleteButton.setContentAreaFilled(false); // Remove background color
-        deleteButton.setBorderPainted(false);    // Remove the border
-
         buttonPanel.add(contButton);
         buttonPanel.add(exitButton);
-        buttonPanel.add(deleteButton);
-
-
-
+        
         // Info text area
         
         infoTextArea = new JTextArea(5, 20);
@@ -173,7 +168,6 @@ public class BuildModePage extends Page implements ActionListener {
     private void initializeChoiceListeners(){
         exitButton.addActionListener(this);
         contButton.addActionListener(this);
-        deleteButton.addActionListener(this);
       }
     
 
@@ -188,21 +182,11 @@ public class BuildModePage extends Page implements ActionListener {
             System.out.println("Thank you next.");
             boolean isLastHall = buildingModeHandler.goNextHall();
             if(isLastHall) {
-                if (buildingModeHandler.areAllHallsComplete()) {
-                    //transition to play mode here.
-                    System.out.println("All halls complete, going to play mode.");
-                }
-                else {
-                    contButton.setText("Start Game");
-                }
+                contButton.setText("Start Game");
             }
             int currentHall = buildingModeHandler.getCurrentGameHall() + 1;
             infoTextArea.setText("Hall " +currentHall);
             hallPanel.repaint();
-        }
-        else if (e.getSource() == deleteButton) {
-            System.out.println("Trashcan selected.");
-            buildingModeHandler.setSelectedObject(null); // Set no object as selected to enable removal
         }
         else
         {
@@ -219,8 +203,7 @@ public class BuildModePage extends Page implements ActionListener {
         }
 
     }
-
-
+    
     
     
     
@@ -235,7 +218,7 @@ class HallPanel extends JPanel implements MouseListener {
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
 
-    private final BuildingModeHandler buildingModeHandler;
+    private final  BuildingModeHandler buildingModeHandler;
 
     //the coordinates of the tiles that the mouse is hovered on (these coordinates will be highlighted for ease of use, in build mode.)
     private int hoveredRow = -1;
@@ -312,14 +295,13 @@ class HallPanel extends JPanel implements MouseListener {
         g.drawImage(verticalWall,734,6*88+74 + start, 7,88,null);
     }
 
-
-    @Override
+	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Ensures the panel is properly rendered
         drawEmptyHall(g);
-        GameHall currentHall = buildingModeHandler.getCurrentHall();
-        if (currentHall != null) {
-            drawPlacedObjects(g, currentHall);
+        GridDesign currentHall = buildingModeHandler.getCurrentHall();
+        if(currentHall != null) {
+            drawPlacedObjects(g,currentHall);
         }
         if (hoveredRow >= 0 && hoveredCol >= 0 && hoveredRow < maxScreenRow && hoveredCol < maxScreenCol) {
             Color prevColor = g.getColor();
@@ -330,14 +312,18 @@ class HallPanel extends JPanel implements MouseListener {
 
     }
 
-    private void drawPlacedObjects(Graphics g, GameHall hall) {
+    private void drawPlacedObjects(Graphics g, GridDesign hall) {
         System.out.println("Drawing objects");
         ObjectType[][] grid = hall.getGrid();
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] != null) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
-                    g.drawImage(objectSprite, col * tileSize, row * tileSize, tileSize, tileSize, null);
+                    int w = objectSprite.getWidth();
+                    int h = objectSprite.getHeight();
+                    int offsetX = (tileSize - w) / 2;
+                    int offsetY = (tileSize - h) / 2;
+                    g. drawImage(objectSprite, col*tileSize+offsetX, row*tileSize+offsetY, w, h, null);
                 }
             }
         }

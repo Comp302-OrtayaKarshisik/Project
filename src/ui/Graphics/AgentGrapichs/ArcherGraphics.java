@@ -1,13 +1,16 @@
 package ui.Graphics.AgentGrapichs;
 
+import controllers.KeyHandler;
+import domain.agent.monster.Archer;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
 public class ArcherGraphics extends MobilMonsterGraphics {
 
-    public ArcherGraphics(int size, int speed, int horizontalBound, int verticalBound) {
-        super(size,speed,horizontalBound,verticalBound);
+    public ArcherGraphics(int size) {
+        super(size);
         getDefaultImages();
     }
 

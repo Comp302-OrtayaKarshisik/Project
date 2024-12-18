@@ -2,13 +2,12 @@ package domain.level;
 
 import domain.objects.ObjectType;
 
-public class GameHall {
+public class GridDesign {
     private ObjectType[][]  grid;
     private int minObjectLimit; //min num of objects needed to be placed in the hall during build mode.
     private int placedObjectCount = 0;
 
-
-    public GameHall(int rows, int cols, int minObjectLimit) {
+    public GridDesign(int rows, int cols, int minObjectLimit) {
         grid = new ObjectType[rows][cols];
         this.minObjectLimit = minObjectLimit;
     }

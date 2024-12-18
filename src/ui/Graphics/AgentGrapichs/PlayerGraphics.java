@@ -1,8 +1,8 @@
 package ui.Graphics.AgentGrapichs;
 
-import controllers.KeyHandler;
+import domain.agent.Player;
+import domain.util.Direction;
 import ui.Graphics.EntityGraphics;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,21 +11,14 @@ import java.io.IOException;
 
 public class PlayerGraphics extends EntityGraphics {
 
-    private final KeyHandler keyHandler;
     private BufferedImage rightPic, leftPic;
-    private char direction = ' ';
-    private int speed = 16;
     private final int size;
-    private final int horizontalBound;
-    private final int verticalBound;
     private BufferedImage currentImg;
+    private final Player player;
 
-    public PlayerGraphics(int size, int speed, KeyHandler keyHandler, int horizontalBound, int verticalBound) {
+    public PlayerGraphics(int size, Player player) {
         this.size = size;
-        this.speed = speed;
-        this.keyHandler = keyHandler;
-        this.horizontalBound = horizontalBound;
-        this.verticalBound = verticalBound;
+        this.player = player;
         getDefaultImages();
     }
 
@@ -43,37 +36,15 @@ public class PlayerGraphics extends EntityGraphics {
     public void update() {
         //This update only lets one key movement to be recorded at the same time
         //For diagonal movements switch else ifs to just ifs
-        if (keyHandler.goDown)  {
-            yCord += speed;
-            if (yCord  >= verticalBound)
-                yCord =  verticalBound;
-        }
-        else if (keyHandler.goUp)  {
-            yCord -= speed;
-            if (yCord <= 0)
-                yCord = 0;
-        }
-        else if (keyHandler.goLeft)  {
-            xCord -= speed;
-            direction = 'L';
-            if (xCord <= 0)
-                xCord = 0;
-        }
-        else if (keyHandler.goRight)  {
-            xCord += speed;
-            direction = 'R';
-            if (xCord >= horizontalBound)
-                xCord = horizontalBound;
-        }
+        player.move();
     }
 
     public void draw(Graphics g) {
-        if (direction == 'L') {
+        if (player.getDirection() == Direction.LEFT) {
             currentImg = leftPic;
-        } else if (direction == 'R') {
+        } else if (player.getDirection() == Direction.RIGHT) {
             currentImg = rightPic;
         }
-        g.drawImage(currentImg, xCord, yCord, size, size,null);
-
+        g.drawImage(currentImg, player.getLocation().getX() * size, (15 - player.getLocation().getY()) * size, size, size,null);
     }
 }

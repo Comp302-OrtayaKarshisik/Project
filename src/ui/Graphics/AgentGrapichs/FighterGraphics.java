@@ -1,13 +1,16 @@
 package ui.Graphics.AgentGrapichs;
 
+import controllers.KeyHandler;
+import domain.agent.monster.Fighter;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
 public class FighterGraphics extends MobilMonsterGraphics {
 
-    public FighterGraphics(int size, int speed, int horizontalBound, int verticalBound) {
-        super(size,speed,horizontalBound,verticalBound);
+    public FighterGraphics(int size, KeyHandler keyHandler, Fighter fighter) {
+        super(size);
         getDefaultImages();
     }
 
