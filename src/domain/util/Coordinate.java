@@ -30,6 +30,13 @@ public class Coordinate {
         return false;
     }
 
+    public static double euclideanDistance(Coordinate c1, Coordinate c2) {
+        return Math.sqrt(Math.pow(c1.x - c2.x,2) + Math.pow(c1.y - c2.y,2));
+    }
+    public static int manhattanDistance (Coordinate c1, Coordinate c2) {
+        return Math.abs(c1.x - c2.x) + Math.abs(c1.y - c2.y);
+    }
+
     public int getX() {return x;}
     public void setX(int x) {this.x = x;}
 

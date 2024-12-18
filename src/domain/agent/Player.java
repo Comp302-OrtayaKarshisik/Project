@@ -16,18 +16,15 @@ public class Player extends Agent {
     private final Bag bag;
     private boolean hasRune;
     private boolean invisible;
-    private final Timer timer;
-    private Game game; // This methods is for now;
+    private final Timer timer; // This methods is for now;
 
-
-    public Player(Game game) {
-        this.health = 3;
-        this.bag = new Bag();
-        this.hasRune = false;
-        this.invisible = false;
-        super.setLocation(new Coordinate(0,0));
-        this.timer = new Timer();
-        this.game = game;
+    public Player() {
+        health = 3;
+        bag = new Bag();
+        hasRune = false;
+        invisible = false;
+        setLocation(new Coordinate(0,0));
+        timer = new Timer();
         setDirection(Direction.STOP);
     }
 
@@ -38,14 +35,13 @@ public class Player extends Agent {
     public void useEnchantment(Enchantment enchantment) {
         if (bag.containsEnchantment(enchantment)) {
             bag.removeEnchantment(enchantment);
-
             if (enchantment.getType() == EnchantmentType.Cloak)
                 gainInvisibility();
         }
     }
 
     public void collectEnchantment(Enchantment Enchantment) {
-        this.bag.addEnchantment(Enchantment);
+        bag.addEnchantment(Enchantment);
     }
 
     public void move () {
@@ -61,13 +57,10 @@ public class Player extends Agent {
         else
             setDirection(Direction.STOP);
 
+        if (game.getCollusionChecker().isInBoundary(this) &&
+                !game.getCollusionChecker().checkTileCollusions(this) &&
+                !game.getCollusionChecker().checkAgentCollusions(this)) {
 
-
-        if (!game.getCollusionChecker().checkBoundary(this) &&
-                !game.getCollusionChecker().checkTile(this) &&
-                !game.getCollusionChecker().checkAgents(this, game.getAgents())) {
-            System.out.print("Direction inside thep layer");
-            System.out.println(getDirection());
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
                 case DOWN -> getLocation().setY(getLocation().getY() - 1);

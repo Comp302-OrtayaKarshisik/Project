@@ -1,7 +1,6 @@
 package domain.agent.monster;
 
 import domain.Game;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -10,12 +9,14 @@ import java.util.TimerTask;
 // every 8 seconds
 public class MonsterFactory {
 
-    private List<Monster> monsters;
     private final Timer timer;
+    private final Game game;
 
-    public MonsterFactory(){
-        monsters = new LinkedList<>();
+    public MonsterFactory(Game game){
+        //Adds a reference to the monster list in the game
+
         timer = new Timer();
+        this.game = game;
         timer.scheduleAtFixedRate(
                 new TimerTask()
                 {
@@ -25,26 +26,28 @@ public class MonsterFactory {
 
                         switch (monster) {
                             case 0:
-                                monsters.add(new Archer(Game.getInstance()));
+                                Archer a = new Archer();
+                                game.getMonsters().add(a);
+                                game.getAgents().add(a);
+                                game.setLastAddedMonster(a);
                                 break;
                             case 1:
-                                monsters.add(new Fighter());
+                                Fighter f = new Fighter();
+                                game.getMonsters().add(f);
+                                game.getAgents().add(f);
+                                game.setLastAddedMonster(f);
                                 break;
                             case 2:
-                                monsters.add(new Wizard());
+                                Wizard w = new Wizard();
+                                game.getMonsters().add(w);
+                                game.getAgents().add(w);
+                                game.setLastAddedMonster(w);
                                 break;
                         }
                     }
                 },
                 0,      // run first occurrence immediately
                 8000);        // repeat with period of 8
-    }
-
-    public List<Monster> getMonsters() {
-        return monsters;
-    }
-    public void setMonsters(List<Monster> monsters) {
-        this.monsters = monsters;
     }
 
     public Timer getTimer() {

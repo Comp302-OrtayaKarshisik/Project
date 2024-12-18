@@ -1,5 +1,7 @@
 package ui.Graphics.AgentGrapichs;
 
+import domain.Game;
+import domain.agent.monster.Monster;
 import domain.agent.monster.Wizard;
 import ui.Graphics.EntityGraphics;
 
@@ -12,14 +14,22 @@ import java.util.LinkedList;
 
 public class WizardGraphics extends EntityGraphics {
 
+    private static WizardGraphics instance;
     protected int size;
     protected BufferedImage img;
     private LinkedList<Wizard> wizards;
 
-    public WizardGraphics(int size) {
+    private WizardGraphics(int size) {
         this.size = size;
         wizards = new LinkedList<>();
         getDefaultImages();
+    }
+
+    public static WizardGraphics getInstance(int size) {
+        if (instance == null) {
+            instance = new WizardGraphics(size);
+        }
+        return instance;
     }
 
     protected void getDefaultImages()   {
@@ -33,13 +43,14 @@ public class WizardGraphics extends EntityGraphics {
 
     public void draw(Graphics g) {
         for (Wizard w: wizards) {
-            g.drawImage(img, w.getLocation().getX()*64, (15 - w.getLocation().getY())*64, size, size,null);
+            g.drawImage(img, w.getLocation().getX()*48, (15 - w.getLocation().getY())*48, size, size,null);
         }
     }
 
     public LinkedList<Wizard> getWizards() {
         return wizards;
     }
+
     public void setWizards(LinkedList<Wizard> wizards) {
         this.wizards = wizards;
     }

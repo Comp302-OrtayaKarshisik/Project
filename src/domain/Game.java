@@ -5,31 +5,47 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
+import domain.agent.monster.MonsterFactory;
 import domain.entities.RegularObject;
 import domain.level.CollusionChecker;
 import domain.level.Hall;
 
 import java.security.SecureRandom;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 
 public class Game {
 
+    public final static SecureRandom random = new SecureRandom();
 	private static Game instance;
 	private RegularObject[] objects;
-    private Player player;
+    private final Player player;
     private Timer timer;
     private List<Monster> monsters;
     private Hall[] halls;
+
     private KeyHandler keyHandler; // this field is for now
-    private CollusionChecker collusionChecker;
-    private List<Agent> agents;
-
-
-
+    private CollusionChecker collusionChecker; // collusion checker of the game
+    private List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
+    private Monster lastAddedMonster; // Holds the last added monster, to add it easily to the graphics
     private Hall currentHall;
-    public final static SecureRandom random = new SecureRandom();
 
+
+    private Game() {
+        player = new Player();
+        timer = new Timer(); // no idea what will this do;
+        //this.halls = halls;
+        monsters = new LinkedList<>();
+        //keyHandler = new KeyHandler();
+        agents = new LinkedList<>();
+        lastAddedMonster = null;
+        halls = new Hall[4];
+        currentHall = halls[0];
+        collusionChecker = CollusionChecker.getInstance(this);
+        Agent.setGame(this);
+        MonsterFactory mf = new MonsterFactory(this);
+    }
     
     public static Game getInstance() {
 		if (instance == null) {
@@ -38,7 +54,18 @@ public class Game {
 		return instance;
 	}
 
-    public void spawnMonster() {}
+    // No need for this method, game delegates its responsibility to
+    // Monster factory.
+    private void spawnMonster() {}
+
+    // A method which will be used for the time passage of the game.
+    public void update(){
+        player.move();
+        for (Monster m : monsters) {
+            m.move();
+        }
+    }
+
     public void removeEnch() {}
     public void spawnEnch() {}
     public void endGame() {}
@@ -74,9 +101,6 @@ public class Game {
     public Player getPlayer() {
         return player;
     }
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
     public Hall getCurrentHall() {
         return currentHall;
     }
@@ -101,7 +125,14 @@ public class Game {
     public void setAgents(List<Agent> agents) {
         this.agents = agents;
     }
-/*
+    public Monster getLastAddedMonster() {
+        return lastAddedMonster;
+    }
+    public void setLastAddedMonster(Monster lastAddedMonster) {
+        this.lastAddedMonster = lastAddedMonster;
+    }
+
+    /*
 	
 	public void placeObject(Coordinate c, ObjectType t) {
 		

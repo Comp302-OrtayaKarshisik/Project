@@ -6,18 +6,20 @@ import javax.swing.*;
 
 import domain.Game;
 import domain.Textures;
-import domain.agent.Agent;
-import domain.agent.Player;
-import domain.level.CollusionChecker;
+
+import domain.agent.monster.Fighter;
+import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
+import ui.Graphics.AgentGrapichs.ArcherGraphics;
+import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
+import ui.Graphics.AgentGrapichs.WizardGraphics;
 import ui.Graphics.TileSetImageGetter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,11 +51,10 @@ public class GamePanel extends JPanel {
 
     KeyHandler keyHandler = new KeyHandler();
 
-    private PlayerGraphics playerGraphics;
-    //private FighterGraphics fighterGraphics;
-    //private ArcherGraphics archerGraphics;
-    //private WizardGraphics wizardGraphics;
-    //private WizardGraphics wizardGraphics1;
+    private final PlayerGraphics playerGraphics;
+    private final FighterGraphics fighterGraphics;
+    private final ArcherGraphics archerGraphics;
+    private final WizardGraphics wizardGraphics;
     private Game game;
 
 
@@ -65,26 +66,13 @@ public class GamePanel extends JPanel {
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
         game = Game.getInstance();
-        game.setPlayer(new Player(game));
-        this.playerGraphics = new PlayerGraphics(48, game.getPlayer());
-        game.setKeyHandler(keyHandler);
+        playerGraphics = PlayerGraphics.getInstance(48, game.getPlayer());
+        fighterGraphics =  FighterGraphics.getInstance(48);
+        archerGraphics = ArcherGraphics.getInstance(48);
+        wizardGraphics = WizardGraphics.getInstance(48);
 
-
-        LinkedList<Agent> a = new LinkedList<>();
-        //a.add(w);
-        //a.add(w1);
-        a.add(game.getPlayer());
-
-        game.setAgents(a);
-        game.setCollusionChecker(new CollusionChecker(game));
         game.setCurrentHall(new Hall("s",0));
-
-        // Will be changed when passing to the next hall is implemented
-
-        //playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
-        //wizardGraphics = new WizardGraphics(baseTileSize);
-        //wizardGraphics.wizards.add(w);
-        //wizardGraphics.wizards.add(w1);
+        game.setKeyHandler(keyHandler);
     }
 
     public GamePanel(GridDesign[] gridDesigns) {
@@ -93,11 +81,13 @@ public class GamePanel extends JPanel {
         this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
     }
 
+    /***
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
         this(scalingFactor,horizontalSquares,verticalSquares);
         this.FPS = FPS;
-    }
+    } ***/
 
+    /***
     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
         this.scalingFactor = scalingFactor;
         this.horizontalSquares = horizontalSquares;
@@ -112,7 +102,7 @@ public class GamePanel extends JPanel {
         //ighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         //archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         //wizardGraphics = new WizardGraphics(baseTileSize);
-    }
+    } ***/
 
 
     public void startGame () {
@@ -122,9 +112,24 @@ public class GamePanel extends JPanel {
         executor.execute(ur);
     }
 
-    private void update() {
-        playerGraphics.update();
 
+    // In this method we will update for the new graphics etc
+    private void update() {
+
+        if (game.getLastAddedMonster() != null) {
+            System.out.print(game.getLastAddedMonster().getClass().getSimpleName());
+            if (game.getLastAddedMonster() instanceof Wizard)
+                wizardGraphics.getWizards().add((Wizard) game.getLastAddedMonster());
+            else if (game.getLastAddedMonster() instanceof Fighter)
+                fighterGraphics.getMonsters().add(game.getLastAddedMonster());
+            else
+                archerGraphics.getMonsters().add(game.getLastAddedMonster());
+
+            game.setLastAddedMonster(null);
+        }
+
+        game.update(); // Time passed through the game
+        System.out.print(game.getPlayer().getHealth());
         // update also the other graphics in this place
     }
 
@@ -139,7 +144,9 @@ public class GamePanel extends JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
         playerGraphics.draw(g2);
-        //wizardGraphics.draw(g2);
+        fighterGraphics.draw(g2);
+        archerGraphics.draw(g2);
+        wizardGraphics.draw(g2);
         g2.dispose();
     }
 
@@ -190,6 +197,7 @@ public class GamePanel extends JPanel {
 
 
                 if (diff >= 1) {
+
                     update();
                     repaint();
                     diff--;

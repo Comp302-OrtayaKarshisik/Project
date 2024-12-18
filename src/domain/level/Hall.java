@@ -21,8 +21,6 @@ public class Hall {
     private List<Enchantment> enchantments;
     private final int objectCapacity;
 
-
-
     private Tile[][] grid;
 
     public Hall(String type, int objectCapacity) {

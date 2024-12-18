@@ -13,3 +13,5 @@ public abstract class Monster extends Agent {
 
     public abstract void move();
 }
+
+

@@ -1,27 +1,28 @@
 package domain.agent.monster;
 
 import domain.Game;
-import domain.agent.Player;
+import domain.util.Coordinate;
 import domain.util.Direction;
 
 public class Archer extends Monster {
 
-    private Game game;
-
     private int frame = 0;
 
-    public Archer(Game game) {
+    public Archer() {
         super();
-        this.game =game;
     }
 
+    // move method of the archer
     public void move() {
-
-        if (frame != 10) {
+        //Move after each 0.33 seconds
+        if (frame != 20) {
             frame++;
             return;
         }
+
         frame = 0;
+
+        shootArrow();
 
         int dir = Game.random.nextInt(4);
 
@@ -35,9 +36,9 @@ public class Archer extends Monster {
             setDirection(Direction.LEFT);
 
 
-        if (!game.getCollusionChecker().checkBoundary(this) &&
-                !game.getCollusionChecker().checkTile(this) &&
-                !game.getCollusionChecker().checkAgents(this, game.getAgents())) {
+        if (game.getCollusionChecker().isInBoundary(this) &&
+                !game.getCollusionChecker().checkTileCollusions(this) &&
+                !game.getCollusionChecker().checkAgentCollusions(this)) {
 
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
@@ -48,17 +49,9 @@ public class Archer extends Monster {
         }
     }
 
-    public void shootArrow(Player player) {
-
+    private void shootArrow() {
+        if (Coordinate.euclideanDistance(this.getLocation(),game.getPlayer().getLocation()) <= 4)
+            game.getPlayer().reduceHealth();
     }
 
-
-
-    private boolean checkPlayerAdj(Player player) {
-        return (player.getLocation().getX() == this.getLocation().getX() && player.getLocation().getY() == this.getLocation().getY()) ||
-                ((player.getLocation().getX() + 4) == this.getLocation().getX() && player.getLocation().getY() == this.getLocation().getY()) ||
-                ((player.getLocation().getX() - 4) == this.getLocation().getX() && player.getLocation().getY() == this.getLocation().getY()) ||
-                (player.getLocation().getX()  == this.getLocation().getX() && (player.getLocation().getY() + 1 == this.getLocation().getY())) ||
-                (player.getLocation().getX()  == this.getLocation().getX() && (player.getLocation().getY() - 1  == this.getLocation().getY()));
-    }
 }
