@@ -4,8 +4,6 @@ import domain.Game;
 import domain.agent.Agent;
 import domain.util.Coordinate;
 
-import java.util.List;
-
 public class CollusionChecker {
     // Again collusion checker may not need the game
     // Field.
@@ -40,9 +38,7 @@ public class CollusionChecker {
     public boolean checkTileCollusions (Agent agent) {
         Tile tile;
         return switch (agent.getDirection()) {
-            case STOP -> {
-                yield false;
-            }
+            case STOP -> false;
             case UP -> {
                 tile = game.getCurrentHall().getGrid()[agent.getLocation().getX()][agent.getLocation().getY() + 1];
                 yield tile.isCollisable();

@@ -24,6 +24,8 @@ public class Fighter extends Monster  {
         }
         frame = 0;
 
+        hitPlayer();
+
         // Fighter already reached the lure location
         if (this.getLocation().equals(lureLoc))
             lured = false;
@@ -79,11 +81,11 @@ public class Fighter extends Monster  {
         }
     }
 
-    public void hitPlayer(Player player) {
+    public void hitPlayer() {
         // If it is adjacent to player hit it
         // Ordering of these methods and other will matter.
-        if (checkPlayerAdj(player))
-            player.reduceHealth();
+        if (checkPlayerAdj(game.getPlayer()))
+            game.getPlayer().reduceHealth();
     }
 
     public void lureUsed(Coordinate lureLoc) {

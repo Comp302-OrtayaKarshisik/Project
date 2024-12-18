@@ -129,7 +129,7 @@ public class GamePanel extends JPanel {
         }
 
         game.update(); // Time passed through the game
-
+        System.out.print(game.getPlayer().getHealth());
         // update also the other graphics in this place
     }
 

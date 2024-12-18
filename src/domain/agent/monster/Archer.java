@@ -1,8 +1,6 @@
 package domain.agent.monster;
 
 import domain.Game;
-import domain.agent.Player;
-import domain.level.CollusionChecker;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
@@ -14,14 +12,17 @@ public class Archer extends Monster {
         super();
     }
 
+    // move method of the archer
     public void move() {
-
         //Move after each 0.33 seconds
         if (frame != 20) {
             frame++;
             return;
         }
+
         frame = 0;
+
+        shootArrow();
 
         int dir = Game.random.nextInt(4);
 
@@ -48,8 +49,9 @@ public class Archer extends Monster {
         }
     }
 
-    public void shootArrow() {
+    private void shootArrow() {
         if (Coordinate.euclideanDistance(this.getLocation(),game.getPlayer().getLocation()) <= 4)
             game.getPlayer().reduceHealth();
     }
+
 }
