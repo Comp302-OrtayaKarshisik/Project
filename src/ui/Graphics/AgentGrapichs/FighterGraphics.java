@@ -1,7 +1,10 @@
 package ui.Graphics.AgentGrapichs;
 
 import controllers.KeyHandler;
+import domain.Game;
+import domain.agent.monster.Archer;
 import domain.agent.monster.Fighter;
+import domain.agent.monster.Monster;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -9,9 +12,18 @@ import java.io.IOException;
 
 public class FighterGraphics extends MobilMonsterGraphics {
 
-    public FighterGraphics(int size, KeyHandler keyHandler, Fighter fighter) {
+    private static FighterGraphics instance;
+
+    private FighterGraphics(int size) {
         super(size);
         getDefaultImages();
+    }
+
+    public static FighterGraphics getInstance(int size) {
+        if (instance == null) {
+            instance = new FighterGraphics(size);
+        }
+        return instance;
     }
 
     protected void getDefaultImages()   {
@@ -24,4 +36,5 @@ public class FighterGraphics extends MobilMonsterGraphics {
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-public class MobilMonsterGraphics extends EntityGraphics {
+public abstract class MobilMonsterGraphics extends EntityGraphics {
 
 
     protected  BufferedImage rightPic, leftPic;
@@ -18,9 +18,11 @@ public class MobilMonsterGraphics extends EntityGraphics {
 
     public MobilMonsterGraphics(int size) {
         this.size = size;
-        monsters = new LinkedList<>();
+        this.monsters = new LinkedList<>();
     }
 
+    // For now the graphics methods actually makes the monsters move
+    // Normally there should be a Game update method which should handel these things
     public void update() {
         //This update only lets one key movement to be recorded at the same time
         //For diagonal movements switch else ifs to just ifs
@@ -36,7 +38,7 @@ public class MobilMonsterGraphics extends EntityGraphics {
             } else if (monster.getDirection() == Direction.RIGHT) {
                 currentImg = rightPic;
             }
-            g.drawImage(currentImg, monster.getLocation().getX()*64,(15 - monster.getLocation().getY())*64 , size, size,null);
+            g.drawImage(currentImg, monster.getLocation().getX()*48,(15 - monster.getLocation().getY())*48 , size, size,null);
         }
     }
 

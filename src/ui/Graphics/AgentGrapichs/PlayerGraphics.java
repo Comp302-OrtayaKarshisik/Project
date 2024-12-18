@@ -11,15 +11,23 @@ import java.io.IOException;
 
 public class PlayerGraphics extends EntityGraphics {
 
+    private static PlayerGraphics instance;
     private BufferedImage rightPic, leftPic;
     private final int size;
     private BufferedImage currentImg;
     private final Player player;
 
-    public PlayerGraphics(int size, Player player) {
+    private PlayerGraphics(int size, Player player) {
         this.size = size;
         this.player = player;
         getDefaultImages();
+    }
+
+    public static PlayerGraphics getInstance(int size, Player player) {
+        if (instance == null) {
+            instance = new PlayerGraphics(size,player);
+        }
+        return instance;
     }
 
     private void getDefaultImages()   {

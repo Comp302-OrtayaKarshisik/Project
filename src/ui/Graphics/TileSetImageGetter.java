@@ -17,9 +17,8 @@ public class TileSetImageGetter {
         try {
             // Load the tileset image
             this.tileset = ImageIO.read(new File("src/assets/dungeonTileset.png"));
-
-
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
