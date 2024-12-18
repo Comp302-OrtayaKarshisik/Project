@@ -18,13 +18,14 @@ public class Fighter extends Monster  {
     }
 
     public void move() {
+
+        hitPlayer();
+
         if (frame != 20) {
             frame++;
             return;
         }
         frame = 0;
-
-        hitPlayer();
 
         // Fighter already reached the lure location
         if (this.getLocation().equals(lureLoc))
@@ -34,18 +35,7 @@ public class Fighter extends Monster  {
             //not lured, in this section for now
             // monsters moves completly random
             // without any collusion check
-            int dir = Game.random.nextInt(4);
-
-            if (dir == 0)
-                setDirection(Direction.UP);
-            else if (dir == 1)
-                setDirection(Direction.DOWN);
-            else if (dir == 2)
-                setDirection(Direction.RIGHT);
-            else
-                setDirection(Direction.LEFT);
-
-
+            setDirection(Direction.values()[Game.random.nextInt(4)]);
             if (game.getCollusionChecker().isInBoundary(this) &&
                     !game.getCollusionChecker().checkTileCollusions(this) &&
                     !game.getCollusionChecker().checkAgentCollusions(this)) {

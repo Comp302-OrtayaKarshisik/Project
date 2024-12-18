@@ -14,6 +14,9 @@ public class Archer extends Monster {
 
     // move method of the archer
     public void move() {
+
+        shootArrow();
+
         //Move after each 0.33 seconds
         if (frame != 20) {
             frame++;
@@ -22,19 +25,7 @@ public class Archer extends Monster {
 
         frame = 0;
 
-        shootArrow();
-
-        int dir = Game.random.nextInt(4);
-
-        if (dir == 0)
-            setDirection(Direction.UP);
-        else if (dir == 1)
-            setDirection(Direction.DOWN);
-        else if (dir == 2)
-            setDirection(Direction.RIGHT);
-        else
-            setDirection(Direction.LEFT);
-
+        setDirection(Direction.values()[Game.random.nextInt(4)]);
 
         if (game.getCollusionChecker().isInBoundary(this) &&
                 !game.getCollusionChecker().checkTileCollusions(this) &&
