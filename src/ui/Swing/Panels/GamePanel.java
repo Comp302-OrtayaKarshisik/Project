@@ -37,6 +37,9 @@ public class GamePanel extends JPanel {
     // to incorporate grid designs from build mode
     private int currentHall = 0;
     private GridDesign[] gridDesigns;
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
 
     // to display hero's lives
     private PlayModePage playModePage;
@@ -53,7 +56,7 @@ public class GamePanel extends JPanel {
 
     private int FPS = 60; // frames per second classic, can change but the default is 60
 
-    KeyHandler keyHandler = new KeyHandler();
+    KeyHandler keyHandler = new KeyHandler(this);
 
     private final PlayerGraphics playerGraphics;
     private final FighterGraphics fighterGraphics;
@@ -74,7 +77,7 @@ public class GamePanel extends JPanel {
         fighterGraphics =  FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
-
+        gameState = playState;
         game.setCurrentHall(new Hall("s",0));
         game.setKeyHandler(keyHandler);
     }
@@ -124,7 +127,7 @@ public class GamePanel extends JPanel {
 
     // In this method we will update for the new graphics etc
     private void update() {
-
+    if(gameState == playState) {
         if (game.getLastAddedMonster() != null) {
             System.out.print(game.getLastAddedMonster().getClass().getSimpleName());
             if (game.getLastAddedMonster() instanceof Wizard)
@@ -140,24 +143,29 @@ public class GamePanel extends JPanel {
         game.update(); // Time passed through the game
         // update also the other graphics in this place
     }
+    }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        // draw empty hall
-        this.initEmptyHall(g);
-
-        // to display hero's lives
-        playModePage.displayLives(game.getPlayer().getHealth());
-
-        //draw objects from build mode
-        drawObjects(g);
-
         Graphics2D g2 = (Graphics2D) g;
-        playerGraphics.draw(g2);
-        fighterGraphics.draw(g2);
-        archerGraphics.draw(g2);
-        wizardGraphics.draw(g2);
+
+        if (gameState == playState) {
+            // draw empty hall
+            this.initEmptyHall(g);
+
+            // to display hero's lives
+            playModePage.displayLives(game.getPlayer().getHealth());
+
+            //draw objects from build mode
+            drawObjects(g);
+
+            playerGraphics.draw(g2);
+            fighterGraphics.draw(g2);
+            archerGraphics.draw(g2);
+            wizardGraphics.draw(g2);
+        }else if(gameState == pauseState){
+            drawPauseScreen(g2);
+        }
         g2.dispose();
     }
 
@@ -165,7 +173,28 @@ public class GamePanel extends JPanel {
     public void initEmptyHall(Graphics g) {
         this.setOpaque(false);
     }
+    //Pause screen
+    private void drawPauseScreen(Graphics2D g2) {
+        // background
+        g2.setColor(new Color(101, 67, 33));
+        g2.fillRect(0, 0, width, height);
 
+        // pause text
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Gongster", Font.BOLD, 80));
+        String pauseText = "Game Paused";
+        int textWidth = g2.getFontMetrics().stringWidth(pauseText);
+        g2.drawString(pauseText, (width - textWidth) / 2, height / 3);
+
+        g2.setFont(new Font("Gongster", Font.BOLD, 50));
+        String resumeText = "Press ESC to Resume";
+        textWidth = g2.getFontMetrics().stringWidth(resumeText);
+        g2.drawString(resumeText, (width - textWidth) / 2, height / 2);
+
+        String helpText = "Press H for Help";
+        textWidth = g2.getFontMetrics().stringWidth(helpText);
+        g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
+    }
     // for drawing hall object from build mode
     public void drawObjects(Graphics g) {
         Tile[][] grid = game.getCurrentHall().getGrid();
