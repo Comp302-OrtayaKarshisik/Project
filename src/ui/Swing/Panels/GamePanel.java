@@ -17,6 +17,7 @@ import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
 import ui.Graphics.TileSetImageGetter;
+import ui.PlayModePage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,6 +37,9 @@ public class GamePanel extends JPanel {
     // to incorporate grid designs from build mode
     private int currentHall = 0;
     private GridDesign[] gridDesigns;
+
+    // to display hero's lives
+    private PlayModePage playModePage;
 
     // Screen settings each ca
     private final int  baseTileSize = 48; // Objects will be 64x64
@@ -75,10 +79,15 @@ public class GamePanel extends JPanel {
         game.setKeyHandler(keyHandler);
     }
 
-    public GamePanel(GridDesign[] gridDesigns) {
+    public GamePanel(GridDesign[] gridDesigns, PlayModePage playModePage) {
         this();
         this.gridDesigns = gridDesigns;
-        this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
+        this.playModePage = playModePage;
+
+        if(gridDesigns != null) {
+            this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
+        }
+
     }
 
     /***
@@ -129,7 +138,6 @@ public class GamePanel extends JPanel {
         }
 
         game.update(); // Time passed through the game
-        System.out.print(game.getPlayer().getHealth());
         // update also the other graphics in this place
     }
 
@@ -138,6 +146,9 @@ public class GamePanel extends JPanel {
 
         // draw empty hall
         this.initEmptyHall(g);
+
+        // to display hero's lives
+        playModePage.displayLives(game.getPlayer().getHealth());
 
         //draw objects from build mode
         drawObjects(g);
@@ -152,10 +163,7 @@ public class GamePanel extends JPanel {
 
     // for drawing empty hall
     public void initEmptyHall(Graphics g) {
-        BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
-        g.drawImage(floor,0, 0,48*16, 48*16, null);
-
-        this.setBorder(BorderFactory.createLineBorder(new Color(40, 20, 30), 3));
+        this.setOpaque(false);
     }
 
     // for drawing hall object from build mode
@@ -166,7 +174,7 @@ public class GamePanel extends JPanel {
             int verticalSize = 16;
             for(int col = 0; col < verticalSize; col++) {
                 Tile gridObject = grid[row][col];
-                if(gridObject != null && gridObject.getName() == "COLUMN") {
+                if(gridObject != null && (gridObject.getName() == "COLUMN" || gridObject.getName() == "CHEST_FULL" || gridObject.getName() == "CHEST_FULL_GOLD" || gridObject.getName() == "CHEST_CLOSED")) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].getName().toLowerCase());
                     int w = objectSprite.getWidth();
                     int h = objectSprite.getHeight();

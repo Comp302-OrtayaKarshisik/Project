@@ -28,6 +28,7 @@ public class HallPanelHolder extends JPanel {
 
         externalPanel.setFocusable(true);
         externalPanel.requestFocusInWindow();
+        externalPanel.setOpaque(false);
 
         this.add(externalPanel);
 
@@ -49,8 +50,11 @@ public class HallPanelHolder extends JPanel {
         BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
         g.drawImage(floor,0, 0,850, 850, null);
 
+        BufferedImage door = Textures.getSprite("door");
+
         drawHorizontalWalls(g, horizontalWall);
         drawVerticalWalls(g, verticalWall);
+        drawDoor(g, door);
     }
 
     public void drawHorizontalWalls(Graphics g, BufferedImage horizontalWall) {
@@ -73,6 +77,10 @@ public class HallPanelHolder extends JPanel {
         int offset = start + 20;
         g.drawImage(verticalWall,31,7*88+70 + offset, 6,88,null);
         g.drawImage(verticalWall,807,7*88+70 + offset, 6,88,null);
+    }
+
+    public void drawDoor(Graphics g, BufferedImage door){
+        g.drawImage(door, 470,789, tileSize+50, tileSize, null);
     }
 
     public JPanel getExternalPanel() {

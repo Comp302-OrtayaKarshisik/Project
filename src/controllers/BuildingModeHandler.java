@@ -1,6 +1,8 @@
 package controllers;
 import domain.level.GridDesign;
 import domain.objects.ObjectType;
+import domain.util.Coordinate;
+import ui.BuildModePage;
 import domain.*;
 import ui.PageManager;
 
@@ -20,8 +22,9 @@ public class BuildingModeHandler {
 	public BuildingModeHandler() {
 		
 		this.game = Game.getInstance();
+		Textures.createSprites();
 		for(int i = 0; i < gridDesigns.length; i++){
-			gridDesigns[i] = new GridDesign(16,16);
+			gridDesigns[i] = new GridDesign(16,16,10);
 		}
 
 	}
@@ -45,6 +48,12 @@ public class BuildingModeHandler {
 
 	// Goes to next hall and returns if that hall is last or not.
 	public boolean goNextHall() {
+		GridDesign currentHall = gridDesigns[currentGameHall];
+		if(!currentHall.isPlacementComplete())
+		{
+			System.out.println("You need to place at least " + (currentHall.getMinObjectLimit() - currentHall.getPlacedObjectCount()) + " more objects.");
+			return false;
+		}
 		if(currentGameHall == gameHallCount - 2){
 			currentGameHall += 1;
 			System.out.println("Last hall.");
@@ -65,6 +74,16 @@ public class BuildingModeHandler {
 		GridDesign currentHall = gridDesigns[currentGameHall];
 		return currentHall.removeObject(row, col);
 	}
+
+	public boolean areAllHallsComplete() {
+		for(GridDesign hall : gridDesigns){
+			if(!hall.isPlacementComplete()){
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 
 	public boolean isObjectPresent (int row, int col) {
