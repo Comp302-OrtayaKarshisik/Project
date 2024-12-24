@@ -57,9 +57,9 @@ public class Player extends Agent {
         else
             setDirection(Direction.STOP);
 
-        if (game.getCollusionChecker().isInBoundary(this) &&
-                !game.getCollusionChecker().checkTileCollusions(this) &&
-                !game.getCollusionChecker().checkAgentCollusions(this)) {
+        if (game.getCollisionChecker().isInBoundary(this) &&
+                !game.getCollisionChecker().checkTileCollisions(this) &&
+                !game.getCollisionChecker().checkAgentCollisions(this)) {
 
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);

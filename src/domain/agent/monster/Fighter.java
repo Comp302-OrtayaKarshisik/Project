@@ -2,7 +2,7 @@ package domain.agent.monster;
 
 import domain.Game;
 import domain.agent.Player;
-import domain.level.CollusionChecker;
+import domain.level.CollisionChecker;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
@@ -46,9 +46,9 @@ public class Fighter extends Monster  {
                 setDirection(Direction.LEFT);
 
 
-            if (game.getCollusionChecker().isInBoundary(this) &&
-                    !game.getCollusionChecker().checkTileCollusions(this) &&
-                    !game.getCollusionChecker().checkAgentCollusions(this)) {
+            if (game.getCollisionChecker().isInBoundary(this) &&
+                    !game.getCollisionChecker().checkTileCollisions(this) &&
+                    !game.getCollisionChecker().checkAgentCollisions(this)) {
 
                 switch (getDirection()) {
                     case UP -> getLocation().setY(getLocation().getY() + 1);
@@ -65,9 +65,9 @@ public class Fighter extends Monster  {
             for (Direction direction : Direction.values()) {
                 setDirection(direction);
 
-                if (game.getCollusionChecker().isInBoundary(this) &&
-                        !game.getCollusionChecker().checkTileCollusions(this) &&
-                        !game.getCollusionChecker().checkAgentCollusions(this)) {
+                if (game.getCollisionChecker().isInBoundary(this) &&
+                        !game.getCollisionChecker().checkTileCollisions(this) &&
+                        !game.getCollisionChecker().checkAgentCollisions(this)) {
 
                     switch (getDirection()) {
                         case UP -> getLocation().setY(getLocation().getY() + 1);
