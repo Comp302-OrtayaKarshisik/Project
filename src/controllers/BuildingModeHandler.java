@@ -10,7 +10,7 @@ public class BuildingModeHandler {
 	
 	private Game game;
 
-	private int gameHallCount = 5;
+	private int gameHallCount = 4;
 
 	private GridDesign[] gridDesigns = new GridDesign[gameHallCount];
 
