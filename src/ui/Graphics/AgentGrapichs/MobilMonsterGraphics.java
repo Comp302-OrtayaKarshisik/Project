@@ -1,20 +1,21 @@
 package ui.Graphics.AgentGrapichs;
 
 import domain.agent.monster.Monster;
+import domain.factories.MonsterFactory;
 import domain.util.Direction;
+import listeners.FactoryListener;
 import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-public abstract class MobilMonsterGraphics extends EntityGraphics {
-
+public abstract class MobilMonsterGraphics extends EntityGraphics implements FactoryListener {
 
     protected  BufferedImage rightPic, leftPic;
     protected int size;
     protected BufferedImage currentImg;
-    private final LinkedList<Monster> monsters;
+    protected final LinkedList<Monster> monsters;
 
     public MobilMonsterGraphics(int size) {
         this.size = size;
@@ -42,7 +43,7 @@ public abstract class MobilMonsterGraphics extends EntityGraphics {
         }
     }
 
-    public LinkedList<Monster> getMonsters() {
-        return monsters;
+    public void subscribe(MonsterFactory mf) {
+        mf.addListener(this);
     }
 }

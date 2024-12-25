@@ -7,12 +7,15 @@ import javax.swing.*;
 import domain.Game;
 import domain.Textures;
 
+import listeners.GameListener;
+
 import domain.agent.monster.Fighter;
 import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
 import domain.util.Coordinate;
+import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
@@ -35,22 +38,19 @@ import java.util.concurrent.Executors;
 
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
-public class GamePanel extends JPanel implements MouseListener {
+public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     // to incorporate grid designs from build mode
     private int currentHall = 0;
     private GridDesign[] gridDesigns;
-    public int gameState;
-    public final int playState = 1;
-    public final int pauseState = 2;
 
     // to display hero's lives
     private PlayModePage playModePage;
 
     // Screen settings each ca
-    private final int  baseTileSize = 48; // Objects will be 64x64
+    private final int baseTileSize = 48; // Objects will be 64x64
     //private double scale = 1.4;
-    
+
     private int scalingFactor = 1; // Going to be an input for different resolutions etc
 
     private int horizontalSquares = 16; // how many squares in the x direction
@@ -61,14 +61,13 @@ public class GamePanel extends JPanel implements MouseListener {
 
     private int FPS = 60; // frames per second classic, can change but the default is 60
 
-    KeyHandler keyHandler = new KeyHandler(this);
+    KeyHandler keyHandler = new KeyHandler();
 
     private final PlayerGraphics playerGraphics;
     private final FighterGraphics fighterGraphics;
     private final ArcherGraphics archerGraphics;
     private final WizardGraphics wizardGraphics;
     private Game game;
-
 
 
     public GamePanel() {
@@ -80,12 +79,13 @@ public class GamePanel extends JPanel implements MouseListener {
         addMouseListener(this);
         game = Game.getInstance();
         playerGraphics = PlayerGraphics.getInstance(48, game.getPlayer());
-        fighterGraphics =  FighterGraphics.getInstance(48);
+        fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
-        gameState = playState;
-        game.setCurrentHall(new Hall("s",0));
+
+        game.setCurrentHall(new Hall("s", 0));
         game.setKeyHandler(keyHandler);
+        subscribe(game);
     }
 
     public GamePanel(GridDesign[] gridDesigns, PlayModePage playModePage) {
@@ -93,85 +93,52 @@ public class GamePanel extends JPanel implements MouseListener {
         this.gridDesigns = gridDesigns;
         this.playModePage = playModePage;
 
-        if(gridDesigns != null) {
+        if (gridDesigns != null) {
             this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
         }
 
     }
 
     /***
-    public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
-        this(scalingFactor,horizontalSquares,verticalSquares);
-        this.FPS = FPS;
-    } ***/
+     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
+     this(scalingFactor,horizontalSquares,verticalSquares);
+     this.FPS = FPS;
+     } ***/
 
     /***
-    public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
-        this.scalingFactor = scalingFactor;
-        this.horizontalSquares = horizontalSquares;
-        this.verticalSquares = verticalSquares;
+     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
+     this.scalingFactor = scalingFactor;
+     this.horizontalSquares = horizontalSquares;
+     this.verticalSquares = verticalSquares;
 
-        this.setPreferredSize(new Dimension(width, height));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
-        this.addKeyListener(keyHandler); // Key listener to handle key presses
-        this.setFocusable(true); // All eyes on me
-        playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
-        //ighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
-        //archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
-        //wizardGraphics = new WizardGraphics(baseTileSize);
-    } ***/
-
-
-    public void startGame () {
-        UpdateAndRender ur = new UpdateAndRender();
-        //Executor runs the method instead of threads
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(ur);
-    }
-
-
-    // In this method we will update for the new graphics etc
-    private void update() {
-    if(gameState == playState) {
-        if (game.getLastAddedMonster() != null) {
-            System.out.print(game.getLastAddedMonster().getClass().getSimpleName());
-            if (game.getLastAddedMonster() instanceof Wizard)
-                wizardGraphics.getWizards().add((Wizard) game.getLastAddedMonster());
-            else if (game.getLastAddedMonster() instanceof Fighter)
-                fighterGraphics.getMonsters().add(game.getLastAddedMonster());
-            else
-                archerGraphics.getMonsters().add(game.getLastAddedMonster());
-
-            game.setLastAddedMonster(null);
-        }
-
-        game.update(); // Time passed through the game
-        // update also the other graphics in this place
-    }
-    }
+     this.setPreferredSize(new Dimension(width, height));
+     this.setBackground(Color.BLACK);
+     this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
+     this.addKeyListener(keyHandler); // Key listener to handle key presses
+     this.setFocusable(true); // All eyes on me
+     playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
+     //ighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+     //archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+     //wizardGraphics = new WizardGraphics(baseTileSize);
+     } ***/
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        // draw empty hall
+        this.initEmptyHall(g);
+
+        // to display hero's lives
+        playModePage.displayLives(game.getPlayer().getHealth());
+
+        //draw objects from build mode
+        drawObjects(g);
+
         Graphics2D g2 = (Graphics2D) g;
-
-        if (gameState == playState) {
-            // draw empty hall
-            this.initEmptyHall(g);
-
-            // to display hero's lives
-            playModePage.displayLives(game.getPlayer().getHealth());
-
-            //draw objects from build mode
-            drawObjects(g);
-
-            playerGraphics.draw(g2);
-            fighterGraphics.draw(g2);
-            archerGraphics.draw(g2);
-            wizardGraphics.draw(g2);
-        }else if(gameState == pauseState){
-            drawPauseScreen(g2);
-        }
+        playerGraphics.draw(g2);
+        fighterGraphics.draw(g2);
+        archerGraphics.draw(g2);
+        wizardGraphics.draw(g2);
         g2.dispose();
     }
 
@@ -179,6 +146,7 @@ public class GamePanel extends JPanel implements MouseListener {
     public void initEmptyHall(Graphics g) {
         this.setOpaque(false);
     }
+
     //Pause screen
     private void drawPauseScreen(Graphics2D g2) {
         // background
@@ -201,24 +169,25 @@ public class GamePanel extends JPanel implements MouseListener {
         textWidth = g2.getFontMetrics().stringWidth(helpText);
         g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
     }
+
     // for drawing hall object from build mode
     private void drawObjects(Graphics g) {
         Tile[][] grid = game.getCurrentHall().getGrid();
-        for(int row = 0; row < grid.length;row++) {
+        for (int row = 0; row < grid.length; row++) {
             // grid size needs to change
             int verticalSize = 16;
-            for(int col = 0; col < verticalSize; col++) {
+            for (int col = 0; col < verticalSize; col++) {
                 Tile gridObject = grid[row][col];
-                if(gridObject != null && (gridObject.getName() == "COLUMN" || gridObject.getName() == "CHEST_FULL" || gridObject.getName() == "CHEST_FULL_GOLD" || gridObject.getName() == "CHEST_CLOSED")) {
+                if (gridObject != null && (gridObject.getName() == "COLUMN" || gridObject.getName() == "CHEST_FULL" || gridObject.getName() == "CHEST_FULL_GOLD" || gridObject.getName() == "CHEST_CLOSED")) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].getName().toLowerCase());
                     int w = objectSprite.getWidth();
                     int h = objectSprite.getHeight();
                     //int scaledWidth = (int) (w * scale);
                     //int scaledHeight = (int) (h * scale);
-                    
+
                     int offsetX = (baseTileSize - w) / 2;
                     int offsetY = (baseTileSize - h) / 2;
-                    g.drawImage(objectSprite, row*baseTileSize+offsetX,(verticalSize-col-1)*baseTileSize+offsetY, w, h,null);
+                    g.drawImage(objectSprite, row * baseTileSize + offsetX, (verticalSize - col - 1) * baseTileSize + offsetY, w, h, null);
                 }
             }
         }
@@ -233,7 +202,7 @@ public class GamePanel extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
         int col = e.getX() / baseTileSize;
         int row = 15 - e.getY() / baseTileSize;
-        System.out.println ("Clicked at" + col + ", " + row);
+        System.out.println("Clicked at" + col + ", " + row);
         Coordinate chosenC = new Coordinate(col, row);
         if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), chosenC) <= 1) {
             game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
@@ -241,43 +210,27 @@ public class GamePanel extends JPanel implements MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     @Override
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
+    @Override
+    public void onGameEvent(Game game) {
+        repaint();
+    }
 
-    private class UpdateAndRender implements Runnable {
-        @Override
-        public void run() {
-            double currentTime;
-            double frameInterval = (double) 1000000000 /FPS; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
-            double diff = 0; // represents the time passed between two consecutive frames
-            double lastTime = System.nanoTime();
-
-            //To break the loop, assign a boolen which becomes false
-            //When ESC is pressed or when game is over
-            //Handle in update method.
-            //To restart the game just set boolen true and reexecuce
-            while (true) {
-                currentTime = System.nanoTime();
-                diff += (currentTime - lastTime)/frameInterval;
-                lastTime = System.nanoTime();
-
-
-                if (diff >= 1) {
-
-                    update();
-                    repaint();
-                    diff--;
-                }
-            }
-        }
+    private void subscribe(Game game) {
+        game.addListener(this);
     }
 }

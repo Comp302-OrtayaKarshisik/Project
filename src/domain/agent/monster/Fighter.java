@@ -8,23 +8,31 @@ import domain.util.Direction;
 
 public class Fighter extends Monster  {
 
+
+    private static final int MOVE_FRAME_LIMIT = 20;
+    private static final int ATTACK_FRAME_LIMIT = 60;
+    private int moveFrame;
+    private int attackFrame;
+
     private boolean lured;
     private Coordinate lureLoc;
-    private int frame = 0;
 
     public Fighter() {
         super();
         this.lured = false;
+        moveFrame = 0;
+        attackFrame = ATTACK_FRAME_LIMIT;
     }
 
     public void move() {
-        if (frame != 20) {
-            frame++;
-            return;
-        }
-        frame = 0;
 
         hitPlayer();
+
+        if (moveFrame != MOVE_FRAME_LIMIT) {
+            moveFrame++;
+            return;
+        }
+        moveFrame = 0;
 
         // Fighter already reached the lure location
         if (this.getLocation().equals(lureLoc))
@@ -34,29 +42,20 @@ public class Fighter extends Monster  {
             //not lured, in this section for now
             // monsters moves completly random
             // without any collusion check
-            int dir = Game.random.nextInt(4);
+            Direction prev = getDirection();
+            setDirection(Direction.values()[Game.random.nextInt(4)]);
 
-            if (dir == 0)
-                setDirection(Direction.UP);
-            else if (dir == 1)
-                setDirection(Direction.DOWN);
-            else if (dir == 2)
-                setDirection(Direction.RIGHT);
-            else
-                setDirection(Direction.LEFT);
-
-
-            if (game.getCollisionChecker().isInBoundary(this) &&
-                    !game.getCollisionChecker().checkTileCollisions(this) &&
-                    !game.getCollisionChecker().checkAgentCollisions(this)) {
-
+            if (Game.getInstance().getCollisionChecker().validMove(this)) {
                 switch (getDirection()) {
                     case UP -> getLocation().setY(getLocation().getY() + 1);
                     case DOWN -> getLocation().setY(getLocation().getY() - 1);
                     case RIGHT -> getLocation().setX(getLocation().getX() + 1);
                     case LEFT -> getLocation().setX(getLocation().getX() - 1);
                 }
+            } else {
+                setDirection(prev);
             }
+
         } else {
             // really primitive way to find the action,
             // wont work if the monster stuck between
@@ -65,10 +64,7 @@ public class Fighter extends Monster  {
             for (Direction direction : Direction.values()) {
                 setDirection(direction);
 
-                if (game.getCollisionChecker().isInBoundary(this) &&
-                        !game.getCollisionChecker().checkTileCollisions(this) &&
-                        !game.getCollisionChecker().checkAgentCollisions(this)) {
-
+                if (Game.getInstance().getCollisionChecker().validMove(this)) {
                     switch (getDirection()) {
                         case UP -> getLocation().setY(getLocation().getY() + 1);
                         case DOWN -> getLocation().setY(getLocation().getY() - 1);
@@ -84,8 +80,12 @@ public class Fighter extends Monster  {
     public void hitPlayer() {
         // If it is adjacent to player hit it
         // Ordering of these methods and other will matter.
-        if (checkPlayerAdj(game.getPlayer()))
-            game.getPlayer().reduceHealth();
+        if (checkPlayerAdj(Game.getInstance().getPlayer()) &&
+                !Game.getInstance().getPlayer().isInvisible() && attackFrame >= ATTACK_FRAME_LIMIT) {
+            Game.getInstance().getPlayer().reduceHealth();
+            attackFrame = 0;
+        }
+        attackFrame++;
     }
 
     public void lureUsed(Coordinate lureLoc) {
@@ -94,16 +94,16 @@ public class Fighter extends Monster  {
     }
 
     private boolean checkPlayerAdj(Player player) {
-        return (player.getLocation().getX() == this.getLocation().getX() && player.getLocation().getY() == this.getLocation().getY()) ||
-                ((player.getLocation().getX() + 1) == this.getLocation().getX() && player.getLocation().getY() == this.getLocation().getY()) ||
-                ((player.getLocation().getX() - 1) == this.getLocation().getX() && player.getLocation().getY() == this.getLocation().getY()) ||
-                (player.getLocation().getX()  == this.getLocation().getX() && (player.getLocation().getY() + 1 == this.getLocation().getY())) ||
-                (player.getLocation().getX()  == this.getLocation().getX() && (player.getLocation().getY() - 1  == this.getLocation().getY()));
+        int dx = Math.abs(player.getLocation().getX() - this.getLocation().getX());
+        int dy = Math.abs(player.getLocation().getY() - this.getLocation().getY());
+
+        return (dy == 0  && dx == 1) || (dy == 1 && dx == 0);
     }
 
     public boolean isLured() {
         return lured;
     }
+
     public void setLured(boolean lured) {
         this.lured = lured;
     }
@@ -111,6 +111,7 @@ public class Fighter extends Monster  {
     public Coordinate getLureLoc() {
         return lureLoc;
     }
+
     public void setLureLoc(Coordinate lureLoc) {
         this.lureLoc = lureLoc;
     }

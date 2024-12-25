@@ -6,54 +6,53 @@ import domain.util.Direction;
 
 public class Archer extends Monster {
 
-    private int frame = 0;
+    private static final int ATTACK_RANGE = 4;
+    private static final int MOVE_FRAME_LIMIT = 20;
+    private static final int ATTACK_FRAME_LIMIT = 60;
+    private int moveFrame;
+    private int attackFrame;
 
     public Archer() {
         super();
+        moveFrame = 0;
+        attackFrame = ATTACK_FRAME_LIMIT;
     }
 
     // move method of the archer
     public void move() {
+
+        shootArrow();
+
         //Move after each 0.33 seconds
-        if (frame != 20) {
-            frame++;
+        if (moveFrame != MOVE_FRAME_LIMIT) {
+            moveFrame++;
             return;
         }
 
-        frame = 0;
-        
-        shootArrow(); // ARCHERIN SANİYEDE 1 ARROW ATMASI LAZIM. ONU AYARLAMAK GEREK.
+        moveFrame = 0;
 
-        int dir = Game.random.nextInt(4);
+        Direction prev = getDirection();
+        setDirection(Direction.values()[Game.random.nextInt(4)]);
 
-        if (dir == 0)
-            setDirection(Direction.UP);
-        else if (dir == 1)
-            setDirection(Direction.DOWN);
-        else if (dir == 2)
-            setDirection(Direction.RIGHT);
-        else
-            setDirection(Direction.LEFT);
-
-
-        if (game.getCollisionChecker().isInBoundary(this) &&
-                !game.getCollisionChecker().checkTileCollisions(this) &&
-                !game.getCollisionChecker().checkAgentCollisions(this)) {
-
+        if (Game.getInstance().getCollisionChecker().validMove(this)) {
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
                 case DOWN -> getLocation().setY(getLocation().getY() - 1);
                 case RIGHT -> getLocation().setX(getLocation().getX() + 1);
                 case LEFT -> getLocation().setX(getLocation().getX() - 1);
             }
+        } else {
+            setDirection(prev);
         }
     }
 
     private void shootArrow() {
-        if (Coordinate.euclideanDistance(this.getLocation(),game.getPlayer().getLocation()) <= 4)
-            game.getPlayer().reduceHealth();
-        
-        
+        if (Coordinate.euclideanDistance(this.getLocation(), Game.getInstance().getPlayer().getLocation()) <= ATTACK_RANGE &&
+                !Game.getInstance().getPlayer().isInvisible() && attackFrame >= ATTACK_FRAME_LIMIT) {
+            Game.getInstance().getPlayer().reduceHealth();
+            attackFrame = 0;
+        }
+        attackFrame++;
     }
 
 }

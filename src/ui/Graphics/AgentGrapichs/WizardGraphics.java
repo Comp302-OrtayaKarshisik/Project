@@ -1,10 +1,10 @@
 package ui.Graphics.AgentGrapichs;
 
-import domain.Game;
 import domain.agent.monster.Monster;
 import domain.agent.monster.Wizard;
+import domain.factories.MonsterFactory;
+import listeners.FactoryListener;
 import ui.Graphics.EntityGraphics;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,17 +12,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class WizardGraphics extends EntityGraphics {
+public class WizardGraphics extends EntityGraphics implements FactoryListener {
 
     private static WizardGraphics instance;
     protected int size;
     protected BufferedImage img;
-    private LinkedList<Wizard> wizards;
+    private final LinkedList<Wizard> wizards;
 
     private WizardGraphics(int size) {
         this.size = size;
         wizards = new LinkedList<>();
         getDefaultImages();
+        this.subscribe(MonsterFactory.getInstance());
     }
 
     public static WizardGraphics getInstance(int size) {
@@ -47,11 +48,12 @@ public class WizardGraphics extends EntityGraphics {
         }
     }
 
-    public LinkedList<Wizard> getWizards() {
-        return wizards;
+    public void onCreationEvent(Monster monster) {
+        if (monster instanceof Wizard)
+            wizards.add((Wizard) monster);
     }
 
-    public void setWizards(LinkedList<Wizard> wizards) {
-        this.wizards = wizards;
+    public void subscribe(MonsterFactory mf) {
+        mf.addListener(this);
     }
 }

@@ -8,13 +8,11 @@ import java.awt.event.KeyListener;
 
 // One change could be the latter pressed button will get the lead
 public class KeyHandler implements KeyListener {
-    GamePanel gp;
 
     // These are public for now, later we can change them to private or protected
     public boolean goUp, goDown, goLeft, goRight, revealUsed, lureUsed, protectionUsed, options;
     public String runeThrowDirection; // U,D,L,R representing up,down,left,right
-    public KeyHandler(GamePanel gamePanel) {
-        this.gp = gamePanel;
+    public KeyHandler() {
     }
 
     @Override
@@ -30,13 +28,6 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_RIGHT) goRight = true;
         if (key == KeyEvent.VK_ESCAPE) options = true;
         // pause/resume using ESC
-        if (key == KeyEvent.VK_ESCAPE) {
-            if (gp.gameState == gp.playState) {
-                gp.gameState = gp.pauseState;
-            } else if (gp.gameState == gp.pauseState) {
-                gp.gameState = gp.playState;
-            }
-        }
     }
 
     @Override
