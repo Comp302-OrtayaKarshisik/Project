@@ -196,7 +196,7 @@ public class GamePanel extends JPanel {
         g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
     }
     // for drawing hall object from build mode
-    public void drawObjects(Graphics g) {
+    private void drawObjects(Graphics g) {
         Tile[][] grid = game.getCurrentHall().getGrid();
         for(int row = 0; row < grid.length;row++) {
             // grid size needs to change
@@ -213,6 +213,11 @@ public class GamePanel extends JPanel {
                 }
             }
         }
+    }
+
+    // for drawing the rune
+    private void drawRune(Graphics g) {
+        BufferedImage runeSprite = Textures.getSprite("rune");
     }
 
     private class UpdateAndRender implements Runnable {

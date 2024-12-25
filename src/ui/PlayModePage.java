@@ -63,6 +63,8 @@ public class PlayModePage extends Page {
 
         this.addPauseResumeButton();
 
+        this.displayRune();
+
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
 
         panelHolder.getGamePanel().startGame();
@@ -77,13 +79,13 @@ public class PlayModePage extends Page {
         Image image2 = exitImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         ImageIcon resizedExitImage = new ImageIcon(image2);
 
-        JLabel label1 = new JLabel(resizedPauseImage);
-        label1.setBounds(40, 150, 32, 32);
-        this.buttonPanel.add(label1);
+        JLabel pauseBtn = new JLabel(resizedPauseImage);
+        pauseBtn.setBounds(40, 150, 32, 32);
+        this.buttonPanel.add(pauseBtn);
 
-        JLabel label2= new JLabel(resizedExitImage);
-        label2.setBounds(85, 150, 32, 32);
-        this.buttonPanel.add(label2);
+        JLabel exitBtn = new JLabel(resizedExitImage);
+        exitBtn.setBounds(85, 150, 32, 32);
+        this.buttonPanel.add(exitBtn);
     }
 
     public void displayLives(int lives) {
@@ -97,10 +99,27 @@ public class PlayModePage extends Page {
             this.buttonPanel.add(imageLabel);
         }
 
-        addPauseResumeButton();
+        this.addPauseResumeButton();
+        this.displayRune();
 
         this.buttonPanel.revalidate();
         this.buttonPanel.repaint();
     }
 
+    public void displayRune() {
+        // Rune Image
+        ImageIcon runeImage = new ImageIcon("src/assets/rune.png");
+        Image image1 = runeImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        ImageIcon resizedRuneImage = new ImageIcon(image1);
+        JLabel runeLabel = new JLabel(resizedRuneImage);
+        runeLabel.setBounds(85, 480, 32, 32);
+        this.buttonPanel.add(runeLabel);
+
+        // Rune Collected Text
+        JLabel textLabel = new JLabel("Rune Collected!!");
+        textLabel.setBounds(25, 430, 200, 20);
+        textLabel.setFont(new Font("Serif", Font.BOLD, 22));
+        textLabel.setForeground(new Color(40, 20, 20));
+        this.buttonPanel.add(textLabel);
+    }
 }

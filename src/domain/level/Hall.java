@@ -17,16 +17,17 @@ public class Hall {
 
     private Timer timer; // this timer is responsible for creating enchantments
     private final String type;
-    private final Coordinate runeLocation;
+    private Coordinate runeLocation;
     private List<Enchantment> enchantments;
     private final int objectCapacity;
+    private ArrayList<Coordinate> runeLocations;
 
     private Tile[][] grid;
 
     public Hall(String type, int objectCapacity) {
         timer = new Timer();
         this.type = type;
-        this.runeLocation = new Coordinate(Game.random.nextInt(64),Game.random.nextInt(64));
+        this.runeLocations = new ArrayList<Coordinate>();
         this.enchantments = new LinkedList<>();
         this.objectCapacity = objectCapacity;
         this.grid = new Tile[64][64];
@@ -92,11 +93,22 @@ public class Hall {
             for(int col = 0; col < verticalSize; col++) {
                 ObjectType newTile = gridCreated[row][col];
                 if(newTile != null) {
+                    Coordinate objCoordinate = new Coordinate(row, verticalSize-col-1);
                     this.grid[row][verticalSize-col-1] =
-                            new Tile(newTile.toString(), new Coordinate(row, verticalSize-col-1), true);
+                            new Tile(newTile.toString(), objCoordinate, newTile == ObjectType.COLUMN);
+                    if(newTile != ObjectType.COLUMN) {
+                        runeLocations.add(objCoordinate);
+                    }
                 }
             }
         }
+
+        this.setNewRuneLocation();
+    }
+
+    public void setNewRuneLocation() {
+        int randomRuneLoc = Game.random.nextInt(runeLocations.size());
+        this.runeLocation = runeLocations.get(randomRuneLoc);
     }
 
     public Tile[][] getGrid() {
