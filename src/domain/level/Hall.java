@@ -39,18 +39,19 @@ public class Hall {
         }
     }
 
-    public void update (Player player, HashMap<String,String > p) {}
     public EnchantmentType type(int [][] xy) {return null;}
     public void increaseTime() {}
     public String typeOfCollectable() {return null;}
     public void higlightRune() {}
     public void removeHiglight() {}
     public void throwLure(Key key) {}
-    public boolean isValidMove(int[][] loc) {return true;}
-    public int checkTimer() {return 0;}
-    public void createEnchantment() {}
-    public void fillHall(Object obj, int[][] loc) {}
 
+    public int checkTimer() {return 0;}
+    // An ench factory will do this
+    public void createEnchantment() {}
+
+
+    public void fillHall(Object obj, int[][] loc) {}
     private boolean isRuneLocation(Coordinate c1) {
         return c1.equals(this.runeLocation);
     }

@@ -29,7 +29,7 @@ public class Game {
     private Timer timer;
     private List<Monster> monsters;
     private Hall[] halls;
-    private boolean paused;
+    private volatile boolean paused;
     private KeyHandler keyHandler; // this field is for now
     private CollisionChecker collisionChecker; // collusion checker of the game
     private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
@@ -78,24 +78,23 @@ public class Game {
         executor.execute(up);
     }
 
-    public void togglePause() {
+    public synchronized void togglePause() {
         paused = !paused;
 
-        if (paused) {
+        if (paused)
             pauseGame();
-        } else {
+        else
             resumeGame();
-        }
 
         pubishGameEvent(); // Notify listeners
     }
+
     public boolean isPaused() {
         return paused;
     }
 
     // maybe exac service is better
     public void pauseGame() {
-
        MonsterFactory.getInstance().pauseCreation();
     }
 
@@ -161,6 +160,7 @@ public class Game {
     public void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
+
     public CollisionChecker getCollisionChecker() {
         return collisionChecker;
     }
@@ -190,7 +190,7 @@ public class Game {
                     if (diff >= 1) {
                         update();
                         pubishGameEvent();
-                        diff--;
+                        diff = 0;
                     }
                 }
             }
