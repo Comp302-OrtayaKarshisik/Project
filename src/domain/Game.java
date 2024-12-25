@@ -6,6 +6,7 @@ import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
 import domain.entities.RegularObject;
+import domain.factories.MonsterFactory;
 import domain.level.CollisionChecker;
 import domain.level.Hall;
 import listeners.GameListener;
@@ -19,6 +20,7 @@ import java.util.concurrent.Executors;
 
 public class Game {
 
+    private ExecutorService executor;
     private final List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
 	private static Game instance;
@@ -27,6 +29,7 @@ public class Game {
     private Timer timer;
     private List<Monster> monsters;
     private Hall[] halls;
+    private boolean paused;
 
     private KeyHandler keyHandler; // this field is for now
     private CollisionChecker collisionChecker; // collusion checker of the game
@@ -35,6 +38,7 @@ public class Game {
 
 
     private Game() {
+        executor =  Executors.newSingleThreadExecutor();
         player = new Player();
         timer = new Timer(); // no idea what will this do;
         //this.halls = halls;
@@ -43,7 +47,7 @@ public class Game {
         //keyHandler = new KeyHandler();
         agents = new LinkedList<>();
         agents.add(player);
-
+        paused = false;
         halls = new Hall[4];
         currentHall = halls[0];
         collisionChecker = CollisionChecker.getInstance(this);
@@ -72,23 +76,28 @@ public class Game {
     public void startGame () {
         Update up = new Update();
         //Executor runs the method instead of threads
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(up);
+    }
+
+    public void pauseGame() {
+       paused = true;
+       MonsterFactory.getInstance().pauseCreation();
+    }
+
+    public void resumeGame() {
+        paused = false;
+        MonsterFactory.getInstance().resumeCreation();
     }
 
 
     public void removeEnch() {}
     public void spawnEnch() {}
     public void endGame() {}
-    public void pauseGame() {}
-    public void resumeGame() {}
     public void handleCollectable() {}
     public void openHall() {}
     public void createVictoryScreen() {}
     public boolean isTimeExpired () {return false;}
     public boolean isPlayerDead() {return true;}
-    public void handlePause() {}
-    public void handleResume() {}
     public Object getObject() {return null;}
 
     public void addListener(GameListener gl) {
@@ -142,9 +151,6 @@ public class Game {
         return collisionChecker;
     }
 
-    public void setCollusionChecker(CollisionChecker collusionChecker) {
-        this.collisionChecker = collusionChecker;
-    }
     public List<Agent> getAgents() {
         return agents;
     }
@@ -162,20 +168,24 @@ public class Game {
             //Handle in update method.
             //To restart the game just set boolen true and reexecuce
             while (true) {
-                currentTime = System.nanoTime();
-                diff += (currentTime - lastTime)/frameInterval;
-                lastTime = System.nanoTime();
+                if (!paused) {
+                    currentTime = System.nanoTime();
+                    diff += (currentTime - lastTime)/frameInterval;
+                    lastTime = System.nanoTime();
 
 
-                if (diff >= 1) {
+                    if (diff >= 1) {
 
-                    update();
-                    pubishGameEvent();
-                    diff--;
+                        update();
+                        pubishGameEvent();
+                        diff--;
+                    }
                 }
             }
         }
     }
+
+}
 
     /*
 
@@ -197,4 +207,4 @@ public class Game {
 
 	*/
 
-}
+
