@@ -15,6 +15,7 @@ public class HallPanelHolder extends JPanel {
     public final int tileSize = 48;
     public final int tileNumber = 16;
     private JPanel externalPanel;
+    private boolean isDoorOpen = false;
 
     public HallPanelHolder(JPanel externalPanel) {
         this.setPreferredSize(new Dimension(850, 850));
@@ -50,18 +51,27 @@ public class HallPanelHolder extends JPanel {
         BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
         g.drawImage(floor,0, 0,850, 850, null);
 
-        BufferedImage door = Textures.getSprite("door");
 
         drawHorizontalWalls(g, horizontalWall);
         drawVerticalWalls(g, verticalWall);
-        drawDoor(g, door);
+
+        if(isDoorOpen) {
+            BufferedImage doorOpen = Textures.getSprite("dooropen");
+            this.drawDoorOpen(g, doorOpen);
+        } else {
+            BufferedImage door = Textures.getSprite("door");
+            this.drawDoor(g, door);
+        }
+
     }
 
     public void drawHorizontalWalls(Graphics g, BufferedImage horizontalWall) {
         int start = 30;
         for (int row = 0; row < tileNumber; row++){
             g.drawImage(horizontalWall,row*tileSize + start,-5,tileSize,tileSize,null);
-            g.drawImage(horizontalWall,row*tileSize + start,789,tileSize,tileSize,null);
+            if(row != 9){
+                g.drawImage(horizontalWall,row*tileSize + start,789,tileSize,tileSize,null);
+            }
         }
         int offset = start + 15;
         g.drawImage(horizontalWall,(tileNumber -1)*tileSize + offset,-5,tileSize,tileSize,null);
@@ -70,17 +80,26 @@ public class HallPanelHolder extends JPanel {
 
     public void drawVerticalWalls(Graphics g, BufferedImage verticalWall) {
         int start = 15;
-        for (int row = 0; row < (764/88); row++){
-            g.drawImage(verticalWall,31,row*88 + start, 6,88,null);
-            g.drawImage(verticalWall,807,row*88 + start, 6,88,null);
+        for (int col = 0; col < (764/88); col++){
+            g.drawImage(verticalWall,31,col*88 + start, 6,88,null);
+            g.drawImage(verticalWall,807,col*88 + start, 6,88,null);
         }
         int offset = start + 20;
         g.drawImage(verticalWall,31,7*88+70 + offset, 6,88,null);
         g.drawImage(verticalWall,807,7*88+70 + offset, 6,88,null);
     }
 
-    public void drawDoor(Graphics g, BufferedImage door){
-        g.drawImage(door, 470,789, tileSize+50, tileSize, null);
+    private void drawDoor(Graphics g, BufferedImage door){
+        g.drawImage(door, 462,789, tileSize+50, tileSize, null);
+    }
+
+    private void drawDoorOpen(Graphics g, BufferedImage doorOpen) {
+        g.drawImage(doorOpen, 462,789, tileSize, tileSize, null);
+    }
+
+    public void setDoorOpen() {
+        isDoorOpen = true;
+        this.repaint();
     }
 
     public JPanel getExternalPanel() {

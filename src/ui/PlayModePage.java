@@ -1,7 +1,9 @@
 package ui;
 
+import domain.Game;
 import domain.agent.Player;
 import domain.level.GridDesign;
+import listeners.GameListener;
 import listeners.PlayerListener;
 import ui.Swing.Panels.GamePanel;
 import ui.Swing.Panels.HallPanelHolder;
@@ -10,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class PlayModePage extends Page implements PlayerListener {
+public class PlayModePage extends Page implements PlayerListener, GameListener {
 
     private HallPanelHolder panelHolder;
 
@@ -22,7 +24,13 @@ public class PlayModePage extends Page implements PlayerListener {
 
     private ImageIcon resizedHeartImage;
 
+    private JLabel pauseResumeBtn;
+
+    private ImageIcon pauseResumeIcon;
+
     private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
+
+    private boolean isPaused = false;
 
     public PlayModePage(GridDesign gridDesigns[]) {
         super();
@@ -70,6 +78,8 @@ public class PlayModePage extends Page implements PlayerListener {
 
         this.displayLives(3);
 
+        this.subscribe(Game.getInstance());
+
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
 
         panelHolder.getGamePanel().startGame();
@@ -80,17 +90,39 @@ public class PlayModePage extends Page implements PlayerListener {
         Image image1 = pauseImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         ImageIcon resizedPauseImage = new ImageIcon(image1);
 
-        ImageIcon exitImage = new ImageIcon("src/assets/exit.png");
-        Image image2 = exitImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        ImageIcon resizedExitImage = new ImageIcon(image2);
+        ImageIcon resumeImage = new ImageIcon("src/assets/resume.png");
+        Image image2 = resumeImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        pauseResumeIcon = new ImageIcon(image2);
 
-        JLabel pauseBtn = new JLabel(resizedPauseImage);
-        pauseBtn.setBounds(40, 150, 32, 32);
-        this.buttonPanel.add(pauseBtn);
+        ImageIcon exitImage = new ImageIcon("src/assets/exit.png");
+        Image image3 = exitImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        ImageIcon resizedExitImage = new ImageIcon(image3);
+
+
+        this.pauseResumeBtn = new JLabel(resizedPauseImage);
+        this.pauseResumeBtn.setBounds(40, 150, 32, 32);
+
+        pauseResumeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                Game.getInstance().togglePause();
+            }
+        });
+
+        this.buttonPanel.add(pauseResumeBtn);
 
         JLabel exitBtn = new JLabel(resizedExitImage);
         exitBtn.setBounds(85, 150, 32, 32);
         this.buttonPanel.add(exitBtn);
+    }
+
+    private void togglePauseImage() {
+        ImageIcon temp = (ImageIcon) this.pauseResumeBtn.getIcon();
+        pauseResumeBtn.setIcon(pauseResumeIcon);
+        pauseResumeIcon = temp;
+
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
     }
 
     public void displayLives(int lives) {
@@ -144,6 +176,10 @@ public class PlayModePage extends Page implements PlayerListener {
         p.addListener(this);
     }
 
+    private void subscribe(Game game) {
+        game.addListener(this);
+    }
+
     @Override
     public void onHealthEvent(int num) {
         displayLives(num);
@@ -151,6 +187,15 @@ public class PlayModePage extends Page implements PlayerListener {
 
     @Override
     public void onRuneEvent() {
+        this.panelHolder.setDoorOpen();
         displayRune();
+    }
+
+    @Override
+    public void onGameEvent(Game game) {
+        if(game.isPaused() != isPaused) {
+            isPaused = !isPaused;
+            this.togglePauseImage();
+        }
     }
 }

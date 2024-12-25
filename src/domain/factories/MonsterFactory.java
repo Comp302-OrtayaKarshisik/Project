@@ -19,12 +19,14 @@ import java.util.concurrent.TimeUnit;
 // every 8 seconds
 public class MonsterFactory {
 
-    private final ScheduledExecutorService schedule;
+    private ScheduledExecutorService schedule;
     private final List<FactoryListener> listeners;
     private static MonsterFactory instance;
     private MonsterCreationTask currentTask;
     private long stopTime;
     private long lastCreation;
+    private long passedTime;
+
 
     public static MonsterFactory getInstance() {
         if (instance == null) {
@@ -43,13 +45,18 @@ public class MonsterFactory {
 
     public void pauseCreation() {
         currentTask.cancel();
+        schedule.close();
         stopTime = System.currentTimeMillis();
+        passedTime = stopTime - lastCreation;
     }
 
     public void resumeCreation () {
-        long dt = 8000 - ((stopTime - lastCreation));
+        long dt = 8000 - passedTime;
+        lastCreation = System.currentTimeMillis() - passedTime;
         System.out.println(dt);
         currentTask = new MonsterCreationTask();
+
+        schedule = Executors.newSingleThreadScheduledExecutor();
         schedule.scheduleAtFixedRate(currentTask, dt > 0? dt: 50 , 8000, TimeUnit.MILLISECONDS);
     }
 

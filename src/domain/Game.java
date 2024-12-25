@@ -23,8 +23,8 @@ public class Game {
     private ExecutorService executor;
     private final List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
-	private static Game instance;
-	private RegularObject[] objects;
+    private static Game instance;
+    private RegularObject[] objects;
     private final Player player;
     private Timer timer;
     private List<Monster> monsters;
@@ -51,13 +51,13 @@ public class Game {
         currentHall = halls[0];
         collisionChecker = CollisionChecker.getInstance(this);
     }
-    
+
     public static Game getInstance() {
-		if (instance == null) {
-			instance = new Game();
-		}
-		return instance;
-	}
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
+    }
 
     // A method which will be used for the time passage of the game.
     public void update(){
@@ -95,7 +95,7 @@ public class Game {
 
     // maybe exac service is better
     public void pauseGame() {
-       MonsterFactory.getInstance().pauseCreation();
+        MonsterFactory.getInstance().pauseCreation();
     }
 
     public void resumeGame() {
@@ -164,7 +164,7 @@ public class Game {
     public CollisionChecker getCollisionChecker() {
         return collisionChecker;
     }
-    
+
     public List<Agent> getAgents() {
         return agents;
     }
@@ -194,7 +194,7 @@ public class Game {
                     }
                 }
             }
-        }     
+        }
     }
 }
 
@@ -217,5 +217,3 @@ public class Game {
 	}
 
 	*/
-
-

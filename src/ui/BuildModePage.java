@@ -290,10 +290,19 @@ class HallPanel extends JPanel implements MouseListener {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] != null) {
-                    BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
-                    int w = objectSprite.getWidth();
-                    int h = objectSprite.getHeight();
-                    
+
+                    String objName = grid[row][col].toString().toLowerCase();
+                    BufferedImage objectSprite = Textures.getSprite(objName);
+
+                    int h = 32;
+                    int w = 32;
+
+                    // different size for column
+                    if(objName.equals("column")) {
+                        h = 56;
+                        w = 28;
+                    }
+
                     //int scaledWidth = (int) (w * scale);
                     //int scaledHeight = (int) (h * scale);
                     

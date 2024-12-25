@@ -30,7 +30,7 @@ public class Textures {
 		try {
 			sprites.put(file.getName().replaceAll(".png", ""), ImageIO.read(file));
 		} catch (IOException e) {
-			System.err.println("[Utils][Textures]: Exception reading "+file.getName());
+
 		}
 	}
 
