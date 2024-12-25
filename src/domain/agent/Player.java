@@ -1,8 +1,11 @@
 package domain.agent;
 
 import domain.Game;
+import domain.agent.monster.Fighter;
+import domain.agent.monster.Monster;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
+import domain.level.Hall;
 import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
@@ -38,11 +41,26 @@ public class Player extends Agent {
             bag.removeEnchantment(enchantment);
             if (enchantment.getType() == EnchantmentType.Cloak)
                 gainInvisibility();
+            else if (enchantment.getType() == EnchantmentType.Life)
+                increaseHealth();
+            else if (enchantment.getType() == EnchantmentType.Time)
+                Game.getInstance().getCurrentHall().increaseTime();
+            else if (enchantment.getType() == EnchantmentType.Reveal)
+               Game.getInstance().getCurrentHall().higlightRune();
+            else { // sikintili
+                for (Monster m : Game.getInstance().getMonsters()) {
+                    if (m instanceof Fighter) {
+                        ((Fighter) m).lureUsed(new Coordinate(5,5));
+                    }
+                }
+            }
         }
     }
 
     public void collectEnchantment(Enchantment Enchantment) {
         bag.addEnchantment(Enchantment);
+        if (Enchantment.getType() == EnchantmentType.Life && Enchantment.getType() == EnchantmentType.Time)
+            useEnchantment(Enchantment);
     }
 
     public void move () {
@@ -74,8 +92,6 @@ public class Player extends Agent {
         listeners.add(pl);
     }
 
-
-
     public void publishEvent(int num) {
         for (PlayerListener pl : listeners)
             pl.onHealthEvent(num);
@@ -100,7 +116,6 @@ public class Player extends Agent {
             health++;
             publishEvent(health);
         }
-
     }
 
     public void reduceHealth() {
@@ -137,4 +152,5 @@ public class Player extends Agent {
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
     }
+
 }

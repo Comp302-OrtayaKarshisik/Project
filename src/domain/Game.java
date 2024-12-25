@@ -30,7 +30,6 @@ public class Game {
     private List<Monster> monsters;
     private Hall[] halls;
     private boolean paused;
-
     private KeyHandler keyHandler; // this field is for now
     private CollisionChecker collisionChecker; // collusion checker of the game
     private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
@@ -79,6 +78,7 @@ public class Game {
         executor.execute(up);
     }
 
+    // maybe exac service is better
     public void pauseGame() {
        paused = true;
        MonsterFactory.getInstance().pauseCreation();
@@ -150,7 +150,7 @@ public class Game {
     public CollisionChecker getCollisionChecker() {
         return collisionChecker;
     }
-
+    
     public List<Agent> getAgents() {
         return agents;
     }
@@ -173,18 +173,15 @@ public class Game {
                     diff += (currentTime - lastTime)/frameInterval;
                     lastTime = System.nanoTime();
 
-
                     if (diff >= 1) {
-
                         update();
                         pubishGameEvent();
                         diff--;
                     }
                 }
             }
-        }
+        }     
     }
-
 }
 
     /*
