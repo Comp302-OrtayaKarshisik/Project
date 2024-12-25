@@ -9,6 +9,7 @@ public class Archer extends Monster {
     private static final int ATTACK_RANGE = 4;
     private static final int MOVE_FRAME_LIMIT = 20;
     private static final int ATTACK_FRAME_LIMIT = 60;
+
     private int moveFrame;
     private int attackFrame;
 
@@ -24,15 +25,12 @@ public class Archer extends Monster {
         shootArrow();
 
         //Move after each 0.33 seconds
-        if (moveFrame != MOVE_FRAME_LIMIT) {
-            moveFrame++;
-            return;
-        }
+        if (++moveFrame <= MOVE_FRAME_LIMIT) return;
 
         moveFrame = 0;
 
         Direction prev = getDirection();
-        setDirection(Direction.values()[Game.random.nextInt(4)]);
+        setDirection(DIRECTIONS[Game.random.nextInt(4)]);
 
         if (Game.getInstance().getCollisionChecker().validMove(this)) {
             switch (getDirection()) {

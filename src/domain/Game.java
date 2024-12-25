@@ -147,6 +147,7 @@ public class Game {
     public void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
+
     public CollisionChecker getCollisionChecker() {
         return collisionChecker;
     }
