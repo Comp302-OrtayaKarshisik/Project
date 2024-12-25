@@ -78,14 +78,28 @@ public class Game {
         executor.execute(up);
     }
 
+    public void togglePause() {
+        paused = !paused;
+
+        if (paused) {
+            pauseGame();
+        } else {
+            resumeGame();
+        }
+
+        pubishGameEvent(); // Notify listeners
+    }
+    public boolean isPaused() {
+        return paused;
+    }
+
     // maybe exac service is better
     public void pauseGame() {
-       paused = true;
+
        MonsterFactory.getInstance().pauseCreation();
     }
 
     public void resumeGame() {
-        paused = false;
         MonsterFactory.getInstance().resumeCreation();
     }
 
