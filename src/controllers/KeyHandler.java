@@ -1,5 +1,6 @@
 package controllers;
 
+import domain.util.Direction;
 import ui.Swing.Panels.GamePanel;
 
 import java.awt.event.KeyEvent;
@@ -11,7 +12,7 @@ public class KeyHandler implements KeyListener {
 
     // These are public for now, later we can change them to private or protected
     public boolean goUp, goDown, goLeft, goRight, revealUsed, lureUsed, protectionUsed, options;
-    public String runeThrowDirection; // U,D,L,R representing up,down,left,right
+    public Direction runeThrowDirection; // U,D,L,R representing up,down,left,right
     public KeyHandler() {
     }
 
@@ -40,10 +41,10 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_P) protectionUsed = true;
         if (key == KeyEvent.VK_B) lureUsed = true;
 
-        if (key == KeyEvent.VK_W) runeThrowDirection = "U";
-        if (key == KeyEvent.VK_A) runeThrowDirection = "L";
-        if (key == KeyEvent.VK_S) runeThrowDirection = "D";
-        if (key == KeyEvent.VK_D) runeThrowDirection = "R";
+        if (key == KeyEvent.VK_W) runeThrowDirection = Direction.UP;
+        if (key == KeyEvent.VK_A) runeThrowDirection = Direction.LEFT;
+        if (key == KeyEvent.VK_S) runeThrowDirection = Direction.DOWN;
+        if (key == KeyEvent.VK_D) runeThrowDirection = Direction.RIGHT;
     }
     @Override
     public void keyReleased(KeyEvent e) {
