@@ -5,13 +5,13 @@ import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
 import domain.util.Coordinate;
 import domain.util.Direction;
+import listeners.PlayerListener;
 
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class Player extends Agent {
 
+    private final List<PlayerListener> listeners;
     private int health;
     private final Bag bag;
     private boolean hasRune;
@@ -19,6 +19,7 @@ public class Player extends Agent {
     private final Timer timer; // This methods is for now;
 
     public Player() {
+        listeners = new LinkedList<>();
         health = 3;
         bag = new Bag();
         hasRune = false;
@@ -69,6 +70,15 @@ public class Player extends Agent {
 
     }
 
+    public void addListener(PlayerListener pl) {
+        listeners.add(pl);
+    }
+
+    public void publishEvent(int num) {
+        for (PlayerListener pl : listeners)
+            pl.onHealthEvent(num);
+    }
+
     public void gainInvisibility() {
         invisible = true;
         timer.schedule(new TimerTask(){
@@ -84,12 +94,16 @@ public class Player extends Agent {
     }
 
     public void increaseHealth() {
-        if (health < 3)
+        if (health < 3) {
             health++;
+            publishEvent(health);
+        }
+
     }
 
     public void reduceHealth() {
         health--;
+        publishEvent(health);
     }
 
     public int getHealth() {
