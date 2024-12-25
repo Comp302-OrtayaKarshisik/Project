@@ -39,7 +39,6 @@ import java.util.concurrent.Executors;
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
 public class GamePanel extends JPanel implements MouseListener, GameListener {
-
     // to incorporate grid designs from build mode
     private int currentHall = 0;
     private GridDesign[] gridDesigns;
@@ -125,19 +124,19 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        Graphics2D g2 = (Graphics2D) g;
+        if (!game.isPaused()) {
         // draw empty hall
         this.initEmptyHall(g);
-
-
         //draw objects from build mode
         drawObjects(g);
-
-        Graphics2D g2 = (Graphics2D) g;
         playerGraphics.draw(g2);
         fighterGraphics.draw(g2);
         archerGraphics.draw(g2);
         wizardGraphics.draw(g2);
+        } else {
+            drawPauseScreen(g2);
+        }
         g2.dispose();
     }
 

@@ -78,15 +78,31 @@ public class Game {
         executor.execute(up);
     }
 
-    // maybe exac service is better
-    public void pauseResumeGame() {
-       paused = !paused;
-       if(paused) {
-           MonsterFactory.getInstance().pauseCreation();
-           return;
-       }
-       MonsterFactory.getInstance().resumeCreation();
+    public void togglePause() {
+        paused = !paused;
+
+        if (paused) {
+            pauseGame();
+        } else {
+            resumeGame();
+        }
+
+        pubishGameEvent(); // Notify listeners
     }
+    public boolean isPaused() {
+        return paused;
+    }
+
+    // maybe exac service is better
+    public void pauseGame() {
+
+       MonsterFactory.getInstance().pauseCreation();
+    }
+
+    public void resumeGame() {
+        MonsterFactory.getInstance().resumeCreation();
+    }
+
 
     public void removeEnch() {}
     public void spawnEnch() {}
