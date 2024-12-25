@@ -92,6 +92,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         this();
         this.gridDesigns = gridDesigns;
         this.playModePage = playModePage;
+        this.playModePage.subscribe(Game.getInstance().getPlayer());
 
         if (gridDesigns != null) {
             this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);

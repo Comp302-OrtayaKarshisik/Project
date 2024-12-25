@@ -1,13 +1,15 @@
 package ui;
 
+import domain.agent.Player;
 import domain.level.GridDesign;
+import listeners.PlayerListener;
 import ui.Swing.Panels.GamePanel;
 import ui.Swing.Panels.HallPanelHolder;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PlayModePage extends Page {
+public class PlayModePage extends Page implements PlayerListener {
 
     private HallPanelHolder panelHolder;
 
@@ -121,5 +123,14 @@ public class PlayModePage extends Page {
         textLabel.setFont(new Font("Serif", Font.BOLD, 22));
         textLabel.setForeground(new Color(40, 20, 20));
         this.buttonPanel.add(textLabel);
+    }
+
+    public void subscribe (Player p) {
+        p.addListener(this);
+    }
+
+    @Override
+    public void onHealthEvent(int num) {
+        displayLives(num);
     }
 }
