@@ -129,8 +129,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         // draw empty hall
         this.initEmptyHall(g);
 
-        // to display hero's lives
-        playModePage.displayLives(game.getPlayer().getHealth());
 
         //draw objects from build mode
         drawObjects(g);
