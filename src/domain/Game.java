@@ -5,7 +5,7 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
-import domain.agent.monster.MonsterFactory;
+import domain.factories.MonsterFactory;
 import domain.entities.RegularObject;
 import domain.level.CollusionChecker;
 import domain.level.Hall;
@@ -39,11 +39,11 @@ public class Game {
         monsters = new LinkedList<>();
         //keyHandler = new KeyHandler();
         agents = new LinkedList<>();
+        agents.add(player);
         lastAddedMonster = null;
         halls = new Hall[4];
         currentHall = halls[0];
         collusionChecker = CollusionChecker.getInstance(this);
-        Agent.setGame(this);
         MonsterFactory mf = new MonsterFactory(this);
     }
     

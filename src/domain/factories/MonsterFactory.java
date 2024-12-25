@@ -1,7 +1,10 @@
-package domain.agent.monster;
+package domain.factories;
 
 import domain.Game;
-import java.util.List;
+import domain.agent.monster.Archer;
+import domain.agent.monster.Fighter;
+import domain.agent.monster.Wizard;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
