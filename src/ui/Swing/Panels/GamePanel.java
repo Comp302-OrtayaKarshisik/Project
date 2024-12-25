@@ -12,6 +12,7 @@ import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
+import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
@@ -32,7 +33,7 @@ import java.util.concurrent.Executors;
 
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements GameListener {
 
     // to incorporate grid designs from build mode
     private int currentHall = 0;
@@ -77,6 +78,7 @@ public class GamePanel extends JPanel {
 
         game.setCurrentHall(new Hall("s",0));
         game.setKeyHandler(keyHandler);
+        subscribe(game);
     }
 
     public GamePanel(GridDesign[] gridDesigns, PlayModePage playModePage) {
@@ -88,6 +90,10 @@ public class GamePanel extends JPanel {
             this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
         }
 
+    }
+
+    public void startGame() {
+        game.startGame();
     }
 
     /***
@@ -112,21 +118,6 @@ public class GamePanel extends JPanel {
         //archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
         //wizardGraphics = new WizardGraphics(baseTileSize);
     } ***/
-
-
-    public void startGame () {
-        UpdateAndRender ur = new UpdateAndRender();
-        //Executor runs the method instead of threads
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(ur);
-    }
-
-
-    // In this method we will update for the new graphics etc
-    private void update() {
-        game.update(); // Time passed through the game
-        // update also the other graphics in this place
-    }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -173,31 +164,13 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private class UpdateAndRender implements Runnable {
-        @Override
-        public void run() {
-            double currentTime;
-            double frameInterval = (double) 1000000000 /FPS; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
-            double diff = 0; // represents the time passed between two consecutive frames
-            double lastTime = System.nanoTime();
-
-            //To break the loop, assign a boolen which becomes false
-            //When ESC is pressed or when game is over
-            //Handle in update method.
-            //To restart the game just set boolen true and reexecuce
-            while (true) {
-                currentTime = System.nanoTime();
-                diff += (currentTime - lastTime)/frameInterval;
-                lastTime = System.nanoTime();
-
-
-                if (diff >= 1) {
-
-                    update();
-                    repaint();
-                    diff--;
-                }
-            }
-        }
+    @Override
+    public void onGameEvent(Game game) {
+        repaint();
     }
+
+    private void subscribe (Game game) {
+        game.addListener(this);
+    }
+
 }
