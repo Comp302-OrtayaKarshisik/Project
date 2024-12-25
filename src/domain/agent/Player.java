@@ -1,12 +1,10 @@
 package domain.agent;
 
-import domain.Game;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -104,7 +102,7 @@ public class Player extends Agent {
         return bag;
     }
 
-    public boolean isHasRune() {
+    public boolean HasRune() {
         return hasRune;
     }
     public void setHasRune(boolean hasRune) {

@@ -299,7 +299,7 @@ class HallPanel extends JPanel implements MouseListener {
                     
                     int offsetX = (tileSize - w) / 2;
                     int offsetY = (tileSize - h) / 2;
-                    g. drawImage(objectSprite, col*tileSize+offsetX, row*tileSize+offsetY, w, h, null);
+                    g. drawImage(objectSprite, row*tileSize+offsetX, col*tileSize+offsetY, w, h, null);
                 }
             }
         }
@@ -308,9 +308,9 @@ class HallPanel extends JPanel implements MouseListener {
 
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-        int col = e.getX() / tileSize;
-        int row = e.getY() / tileSize;
+	public void mousePressed(MouseEvent e) {
+        int row = e.getX() / tileSize;
+        int col = e.getY() / tileSize;
         System.out.println ("Clicked at" + col + ", " + row);
 
         if(SwingUtilities.isRightMouseButton(e)) {
@@ -338,7 +338,7 @@ class HallPanel extends JPanel implements MouseListener {
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
 
     }

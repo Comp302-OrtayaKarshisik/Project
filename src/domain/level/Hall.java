@@ -8,6 +8,7 @@ import domain.collectables.Enchantment;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 
+import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
 import java.security.Key;
 import java.security.SecureRandom;
@@ -50,12 +51,20 @@ public class Hall {
     public void createEnchantment() {}
     public void fillHall(Object obj, int[][] loc) {}
 
-    public boolean isPlayerAdjacentToRune(Player player) {
-        return (player.getLocation().getX() == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
-                ((player.getLocation().getX() + 1) == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
-                ((player.getLocation().getX() - 1) == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
-                (player.getLocation().getX()  == runeLocation.getX() && (player.getLocation().getY() + 1 == runeLocation.getY())) ||
-                (player.getLocation().getX()  == runeLocation.getX() && (player.getLocation().getY() - 1  == runeLocation.getY()));
+    private boolean isRuneLocation(Coordinate c1) {
+        return c1.equals(this.runeLocation);
+    }
+
+    public void handleChosenBox(Player player, Coordinate c1) {
+        Tile obj = grid[c1.getX()][c1.getY()];
+        if (obj.getName() == "aa" || obj.getName() == "COLUMN") {
+            return;
+        }
+        grid[c1.getX()][c1.getY()] = new Tile("aa",new Coordinate(c1.getX(), c1.getY()));
+        if (isRuneLocation(c1)) {
+            System.out.println("found rune");
+            player.setHasRune(true);
+        }
     }
 
     public Timer getTimer() {
@@ -95,7 +104,7 @@ public class Hall {
                 if(newTile != null) {
                     Coordinate objCoordinate = new Coordinate(row, verticalSize-col-1);
                     this.grid[row][verticalSize-col-1] =
-                            new Tile(newTile.toString(), objCoordinate, newTile == ObjectType.COLUMN);
+                            new Tile(newTile.toString(), objCoordinate, true);
                     if(newTile != ObjectType.COLUMN) {
                         runeLocations.add(objCoordinate);
                     }

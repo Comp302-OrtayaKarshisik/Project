@@ -12,6 +12,7 @@ import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
+import domain.util.Coordinate;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
@@ -20,6 +21,8 @@ import ui.Graphics.TileSetImageGetter;
 import ui.PlayModePage;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +35,7 @@ import java.util.concurrent.Executors;
 
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements MouseListener {
 
     // to incorporate grid designs from build mode
     private int currentHall = 0;
@@ -74,6 +77,7 @@ public class GamePanel extends JPanel {
         this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
+        addMouseListener(this);
         game = Game.getInstance();
         playerGraphics = PlayerGraphics.getInstance(48, game.getPlayer());
         fighterGraphics =  FighterGraphics.getInstance(48);
@@ -224,6 +228,30 @@ public class GamePanel extends JPanel {
     private void drawRune(Graphics g) {
         BufferedImage runeSprite = Textures.getSprite("rune");
     }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        int col = e.getX() / baseTileSize;
+        int row = 15 - e.getY() / baseTileSize;
+        System.out.println ("Clicked at" + col + ", " + row);
+        Coordinate chosenC = new Coordinate(col, row);
+        if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), chosenC) <= 1) {
+            game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
 
     private class UpdateAndRender implements Runnable {
         @Override
