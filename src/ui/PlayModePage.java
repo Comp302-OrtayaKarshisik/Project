@@ -8,6 +8,7 @@ import ui.Swing.Panels.HallPanelHolder;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class PlayModePage extends Page implements PlayerListener {
 
@@ -20,6 +21,8 @@ public class PlayModePage extends Page implements PlayerListener {
     private JPanel buttonPanel;
 
     private ImageIcon resizedHeartImage;
+
+    private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
 
     public PlayModePage(GridDesign gridDesigns[]) {
         super();
@@ -65,8 +68,6 @@ public class PlayModePage extends Page implements PlayerListener {
 
         this.addPauseResumeButton();
 
-        this.displayRune();
-
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
 
         panelHolder.getGamePanel().startGame();
@@ -91,18 +92,17 @@ public class PlayModePage extends Page implements PlayerListener {
     }
 
     public void displayLives(int lives) {
-        this.buttonPanel.removeAll();
 
-        for(int i = 0; i < lives; i++) {
+        for(int i = livesIndicators.size(); i < lives; i++) {
             JLabel imageLabel = new JLabel(resizedHeartImage);
 
             // Resizing Image
             imageLabel.setBounds(40 + i*45, 300, 32, 32);
-            this.buttonPanel.add(imageLabel);
         }
 
+        //this.buttonPanel.add(imageLabel);
+
         this.addPauseResumeButton();
-        this.displayRune();
 
         this.buttonPanel.revalidate();
         this.buttonPanel.repaint();
@@ -132,5 +132,10 @@ public class PlayModePage extends Page implements PlayerListener {
     @Override
     public void onHealthEvent(int num) {
         displayLives(num);
+    }
+
+    @Override
+    public void onRuneEvent() {
+        displayRune();
     }
 }
