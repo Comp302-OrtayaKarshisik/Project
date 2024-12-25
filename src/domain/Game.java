@@ -5,18 +5,21 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
-import domain.agent.monster.MonsterFactory;
 import domain.entities.RegularObject;
 import domain.level.CollusionChecker;
 import domain.level.Hall;
+import listeners.GameListener;
 
 import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Game {
 
+    private final List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
 	private static Game instance;
 	private RegularObject[] objects;
@@ -27,8 +30,7 @@ public class Game {
 
     private KeyHandler keyHandler; // this field is for now
     private CollusionChecker collusionChecker; // collusion checker of the game
-    private List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
-    private Monster lastAddedMonster; // Holds the last added monster, to add it easily to the graphics
+    private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
     private Hall currentHall;
 
 
@@ -36,15 +38,15 @@ public class Game {
         player = new Player();
         timer = new Timer(); // no idea what will this do;
         //this.halls = halls;
+        listeners = new LinkedList<>();
         monsters = new LinkedList<>();
         //keyHandler = new KeyHandler();
         agents = new LinkedList<>();
-        lastAddedMonster = null;
+        agents.add(player);
+
         halls = new Hall[4];
         currentHall = halls[0];
         collusionChecker = CollusionChecker.getInstance(this);
-        Agent.setGame(this);
-        MonsterFactory mf = new MonsterFactory(this);
     }
     
     public static Game getInstance() {
@@ -54,10 +56,6 @@ public class Game {
 		return instance;
 	}
 
-    // No need for this method, game delegates its responsibility to
-    // Monster factory.
-    private void spawnMonster() {}
-
     // A method which will be used for the time passage of the game.
     public void update(){
         player.move();
@@ -65,6 +63,19 @@ public class Game {
             m.move();
         }
     }
+
+    public void pubishGameEvent() {
+        for (GameListener gl : listeners)
+            gl.onGameEvent(this);
+    }
+
+    public void startGame () {
+        Update up = new Update();
+        //Executor runs the method instead of threads
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(up);
+    }
+
 
     public void removeEnch() {}
     public void spawnEnch() {}
@@ -80,77 +91,110 @@ public class Game {
     public void handleResume() {}
     public Object getObject() {return null;}
 
+    public void addListener(GameListener gl) {
+        listeners.add(gl);
+    }
+
     public Hall[] getHalls() {
         return halls;
     }
+
     public void setHalls(Hall[] halls) {
         this.halls = halls;
     }
+
     public List<Monster> getMonsters() {
         return monsters;
     }
+
     public void setMonsters(List<Monster> monsters) {
         this.monsters = monsters;
     }
+
     public Timer getTimer() {
         return timer;
     }
+
     public void setTimer(Timer timer) {
         this.timer = timer;
     }
+
     public Player getPlayer() {
         return player;
     }
+
     public Hall getCurrentHall() {
         return currentHall;
     }
+
     public void setCurrentHall(Hall currentHall) {
         this.currentHall = currentHall;
     }
+
     public KeyHandler getKeyHandler() {
         return keyHandler;
     }
+
     public void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
+
     public CollusionChecker getCollusionChecker() {
         return collusionChecker;
     }
-    public void setCollusionChecker(CollusionChecker collusionChecker) {
-        this.collusionChecker = collusionChecker;
-    }
+
     public List<Agent> getAgents() {
         return agents;
     }
-    public void setAgents(List<Agent> agents) {
-        this.agents = agents;
-    }
-    public Monster getLastAddedMonster() {
-        return lastAddedMonster;
-    }
-    public void setLastAddedMonster(Monster lastAddedMonster) {
-        this.lastAddedMonster = lastAddedMonster;
-    }
 
-    /*
-	
-	public void placeObject(Coordinate c, ObjectType t) {
-		
-	}
-	
-	public void removeObject(Coordinate mouseCoordinates, ObjectType type) {
-		
-	}	
-	
-	public Tile[][] getGrid({
-		
-	} 
-	
-	public List<GameObject> getObjects() {
-		
-	}
-	
-	*/
-	
+    private class Update implements Runnable {
+        @Override
+        public void run() {
+            double currentTime;
+            double frameInterval = (double) 1000000000 / 60; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
+            double diff = 0; // represents the time passed between two consecutive frames
+            double lastTime = System.nanoTime();
+
+            //To break the loop, assign a boolen which becomes false
+            //When ESC is pressed or when game is over
+            //Handle in update method.
+            //To restart the game just set boolen true and reexecuce
+            while (true) {
+                currentTime = System.nanoTime();
+                diff += (currentTime - lastTime)/frameInterval;
+                lastTime = System.nanoTime();
+
+
+                if (diff >= 1) {
+
+                    update();
+                    pubishGameEvent();
+                    diff--;
+                }
+            }
+        }
+    }
 
 }
+
+
+
+    /*
+
+	public void placeObject(Coordinate c, ObjectType t) {
+
+	}
+
+	public void removeObject(Coordinate mouseCoordinates, ObjectType type) {
+
+	}
+
+	public Tile[][] getGrid({
+
+	}
+
+	public List<GameObject> getObjects() {
+
+	}
+
+	*/

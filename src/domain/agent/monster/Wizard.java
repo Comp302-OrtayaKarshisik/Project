@@ -8,7 +8,7 @@ public class Wizard extends Monster{
     // A method which generates a random coordinate for the
     public void teleportRune() {
         // This method just randomly changes the location of the rune without any constraints
-        game.getCurrentHall().getRuneLocation().setLocation(Game.random.nextInt(16),Game.random.nextInt(16));
+        Game.getInstance().getCurrentHall().getRuneLocation().setLocation(Game.random.nextInt(16),Game.random.nextInt(16));
     }
 
     @Override

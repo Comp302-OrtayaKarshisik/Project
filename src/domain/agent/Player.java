@@ -46,20 +46,18 @@ public class Player extends Agent {
 
     public void move () {
 
-        if (game.getKeyHandler().goUp)
+        if (Game.getInstance().getKeyHandler().goUp)
             setDirection(Direction.UP);
-        else if (game.getKeyHandler().goDown)
+        else if (Game.getInstance().getKeyHandler().goDown)
             setDirection(Direction.DOWN);
-        else if (game.getKeyHandler().goRight)
+        else if (Game.getInstance().getKeyHandler().goRight)
             setDirection(Direction.RIGHT);
-        else if (game.getKeyHandler().goLeft)
+        else if (Game.getInstance().getKeyHandler().goLeft)
             setDirection(Direction.LEFT);
         else
             setDirection(Direction.STOP);
 
-        if (game.getCollusionChecker().isInBoundary(this) &&
-                !game.getCollusionChecker().checkTileCollusions(this) &&
-                !game.getCollusionChecker().checkAgentCollusions(this)) {
+        if (Game.getInstance().getCollusionChecker().validMove(this)) {
 
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
@@ -89,6 +87,7 @@ public class Player extends Agent {
         if (health < 3)
             health++;
     }
+
     public void reduceHealth() {
         health--;
     }
@@ -96,6 +95,7 @@ public class Player extends Agent {
     public int getHealth() {
         return health;
     }
+
     public void setHealth(int health) {
         this.health = health;
     }
@@ -107,6 +107,7 @@ public class Player extends Agent {
     public boolean isHasRune() {
         return hasRune;
     }
+
     public void setHasRune(boolean hasRune) {
         this.hasRune = hasRune;
     }
@@ -114,6 +115,7 @@ public class Player extends Agent {
     public boolean isInvisible() {
         return invisible;
     }
+
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
     }

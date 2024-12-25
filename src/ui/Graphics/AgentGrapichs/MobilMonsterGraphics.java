@@ -1,34 +1,25 @@
 package ui.Graphics.AgentGrapichs;
 
 import domain.agent.monster.Monster;
+import domain.factories.MonsterFactory;
 import domain.util.Direction;
+import listeners.FactoryListener;
 import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-public abstract class MobilMonsterGraphics extends EntityGraphics {
-
+public abstract class MobilMonsterGraphics extends EntityGraphics implements FactoryListener {
 
     protected  BufferedImage rightPic, leftPic;
     protected int size;
     protected BufferedImage currentImg;
-    private final LinkedList<Monster> monsters;
+    protected final LinkedList<Monster> monsters;
 
     public MobilMonsterGraphics(int size) {
         this.size = size;
         this.monsters = new LinkedList<>();
-    }
-
-    // For now the graphics methods actually makes the monsters move
-    // Normally there should be a Game update method which should handel these things
-    public void update() {
-        //This update only lets one key movement to be recorded at the same time
-        //For diagonal movements switch else ifs to just ifs
-       for (Monster monster: monsters) {
-           monster.move();
-       }
     }
 
     public void draw(Graphics g) {
@@ -42,7 +33,7 @@ public abstract class MobilMonsterGraphics extends EntityGraphics {
         }
     }
 
-    public LinkedList<Monster> getMonsters() {
-        return monsters;
+    public void subscribe(MonsterFactory mf) {
+        mf.addListener(this);
     }
 }
