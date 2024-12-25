@@ -19,6 +19,7 @@ public class MonsterFactory {
     private final Timer timer;
     private final List<FactoryListener> listeners;
     private static MonsterFactory instance;
+    private long stopTime;
 
     public static MonsterFactory getInstance() {
         if (instance == null) {
@@ -31,26 +32,17 @@ public class MonsterFactory {
         //Adds a reference to the monster list in the game
         listeners = new LinkedList<>();
         timer = new Timer();
-        timer.scheduleAtFixedRate(
-                new TimerTask()
-                {
-                    public void run()
-                    {
-                        int monster = Game.random.nextInt(3);
-                        Monster w = switch (monster) {
-                            case 0 -> new Archer();
-                            case 1 -> new Fighter();
-                            case 2 -> new Wizard();
-                            default -> null;
-                        };
+        timer.scheduleAtFixedRate(new MonsterCreationTask(),50, 8000);        // repeat with period of 8
+    }
 
-                        Game.getInstance().getMonsters().add(w);
-                        Game.getInstance().getAgents().add(w);
-                        publishCreationEvent(w);
-                    }
-                },
-                50,      // run first occurrence immediately
-                8000);        // repeat with period of 8
+    public void pauseCreation() {
+        timer.cancel();
+        stopTime = System.nanoTime();
+    }
+
+    public void resumeCreation () {
+        long dt = (System.nanoTime() - stopTime)/1000;
+        timer.scheduleAtFixedRate(new MonsterCreationTask(), dt, 8000);
     }
 
     public void addListener(FactoryListener fl) {
@@ -64,6 +56,23 @@ public class MonsterFactory {
 
     public Timer getTimer() {
         return timer;
+    }
+
+    private class MonsterCreationTask extends TimerTask {
+        @Override
+        public void run() {
+            int monster = Game.random.nextInt(3);
+            Monster w = switch (monster) {
+                case 0 -> new Archer();
+                case 1 -> new Fighter();
+                case 2 -> new Wizard();
+                default -> null;
+            };
+
+            Game.getInstance().getMonsters().add(w);
+            Game.getInstance().getAgents().add(w);
+            publishCreationEvent(w);
+        }
     }
 
 }
