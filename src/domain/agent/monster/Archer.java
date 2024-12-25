@@ -21,8 +21,8 @@ public class Archer extends Monster {
         }
 
         frame = 0;
-
-        shootArrow();
+        
+        shootArrow(); // ARCHERIN SANİYEDE 1 ARROW ATMASI LAZIM. ONU AYARLAMAK GEREK.
 
         int dir = Game.random.nextInt(4);
 
@@ -36,9 +36,9 @@ public class Archer extends Monster {
             setDirection(Direction.LEFT);
 
 
-        if (game.getCollusionChecker().isInBoundary(this) &&
-                !game.getCollusionChecker().checkTileCollusions(this) &&
-                !game.getCollusionChecker().checkAgentCollusions(this)) {
+        if (game.getCollisionChecker().isInBoundary(this) &&
+                !game.getCollisionChecker().checkTileCollisions(this) &&
+                !game.getCollisionChecker().checkAgentCollisions(this)) {
 
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
@@ -52,6 +52,8 @@ public class Archer extends Monster {
     private void shootArrow() {
         if (Coordinate.euclideanDistance(this.getLocation(),game.getPlayer().getLocation()) <= 4)
             game.getPlayer().reduceHealth();
+        
+        
     }
 
 }

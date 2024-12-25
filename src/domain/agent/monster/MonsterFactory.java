@@ -26,19 +26,19 @@ public class MonsterFactory {
 
                         switch (monster) {
                             case 0:
-                                Archer a = new Archer();
+                                Monster a = new Archer();
                                 game.getMonsters().add(a);
                                 game.getAgents().add(a);
                                 game.setLastAddedMonster(a);
                                 break;
                             case 1:
-                                Fighter f = new Fighter();
+                                Monster f = new Fighter();
                                 game.getMonsters().add(f);
                                 game.getAgents().add(f);
                                 game.setLastAddedMonster(f);
                                 break;
                             case 2:
-                                Wizard w = new Wizard();
+                                Monster w = new Wizard();
                                 game.getMonsters().add(w);
                                 game.getAgents().add(w);
                                 game.setLastAddedMonster(w);

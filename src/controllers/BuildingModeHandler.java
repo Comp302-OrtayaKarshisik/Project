@@ -6,7 +6,11 @@ import ui.BuildModePage;
 import domain.*;
 import ui.PageManager;
 
+//singleton pattern is used
+
 public class BuildingModeHandler {
+	
+	private static BuildingModeHandler instance;
 	
 	private Game game;
 
@@ -14,12 +18,11 @@ public class BuildingModeHandler {
 
 	private GridDesign[] gridDesigns = new GridDesign[gameHallCount];
 
-
 	private int currentGameHall = 0;
 
 	private ObjectType selectedObject;
 
-	public BuildingModeHandler() {
+	private BuildingModeHandler() {
 		
 		this.game = Game.getInstance();
 		Textures.createSprites();
@@ -28,6 +31,14 @@ public class BuildingModeHandler {
 		}
 
 	}
+	
+	 public static BuildingModeHandler getInstance() {
+			if (instance == null) {
+				instance = new BuildingModeHandler();
+			}
+			return instance;
+		}
+
 
 	public GridDesign getCurrentHall(){
 		return gridDesigns[currentGameHall];

@@ -4,6 +4,11 @@ import domain.level.GridDesign;
 
 import javax.swing.JFrame;
 
+import controllers.BuildingModeHandler;
+
+//creates buildingmodehandler
+//creates pages
+
 public class PageManager {
 	
 	private static PageManager instance;
@@ -36,7 +41,10 @@ public class PageManager {
 	
 	public void showMainMenuPage() {showPage(new MainMenuPage());}
 	
-    public void showBuildingModePage() { showPage(new BuildModePage()); }
+    public void showBuildingModePage() { 
+    	
+    	BuildingModeHandler bmh = BuildingModeHandler.getInstance();
+    	showPage(new BuildModePage(bmh)); }
 
 	public void showPlayModePage(GridDesign[] gridDesigns) { showPage(new PlayModePage(gridDesigns)); }
 

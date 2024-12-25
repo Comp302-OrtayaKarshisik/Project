@@ -46,6 +46,8 @@ public class GamePanel extends JPanel {
 
     // Screen settings each ca
     private final int  baseTileSize = 48; // Objects will be 64x64
+    //private double scale = 1.4;
+    
     private int scalingFactor = 1; // Going to be an input for different resolutions etc
 
     private int horizontalSquares = 16; // how many squares in the x direction
@@ -207,6 +209,9 @@ public class GamePanel extends JPanel {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].getName().toLowerCase());
                     int w = objectSprite.getWidth();
                     int h = objectSprite.getHeight();
+                    //int scaledWidth = (int) (w * scale);
+                    //int scaledHeight = (int) (h * scale);
+                    
                     int offsetX = (baseTileSize - w) / 2;
                     int offsetY = (baseTileSize - h) / 2;
                     g.drawImage(objectSprite, row*baseTileSize+offsetX,(verticalSize-col-1)*baseTileSize+offsetY, w, h,null);
