@@ -68,6 +68,8 @@ public class PlayModePage extends Page implements PlayerListener {
 
         this.addPauseResumeButton();
 
+        this.displayLives(3);
+
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
 
         panelHolder.getGamePanel().startGame();
@@ -92,17 +94,26 @@ public class PlayModePage extends Page implements PlayerListener {
     }
 
     public void displayLives(int lives) {
+        if(lives < 0) {
+            return;
+        }
+        System.out.println("Remaining life: " + lives);
 
-        for(int i = livesIndicators.size(); i < lives; i++) {
+        for(int i = this.livesIndicators.size(); i < lives; i++) {
             JLabel imageLabel = new JLabel(resizedHeartImage);
 
             // Resizing Image
             imageLabel.setBounds(40 + i*45, 300, 32, 32);
+
+            this.livesIndicators.add(imageLabel);
+            this.buttonPanel.add(imageLabel);
         }
 
-        //this.buttonPanel.add(imageLabel);
 
-        this.addPauseResumeButton();
+        for (int i = this.livesIndicators.size()-1; i >= lives; i--) {
+            this.buttonPanel.remove(livesIndicators.get(i));
+        }
+
 
         this.buttonPanel.revalidate();
         this.buttonPanel.repaint();
@@ -110,6 +121,7 @@ public class PlayModePage extends Page implements PlayerListener {
 
     public void displayRune() {
         // Rune Image
+        System.out.println("render rune");
         ImageIcon runeImage = new ImageIcon("src/assets/rune.png");
         Image image1 = runeImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         ImageIcon resizedRuneImage = new ImageIcon(image1);
@@ -123,6 +135,9 @@ public class PlayModePage extends Page implements PlayerListener {
         textLabel.setFont(new Font("Serif", Font.BOLD, 22));
         textLabel.setForeground(new Color(40, 20, 20));
         this.buttonPanel.add(textLabel);
+
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
     }
 
     public void subscribe (Player p) {
