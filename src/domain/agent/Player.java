@@ -74,6 +74,8 @@ public class Player extends Agent {
         listeners.add(pl);
     }
 
+
+
     public void publishEvent(int num) {
         for (PlayerListener pl : listeners)
             pl.onHealthEvent(num);
@@ -124,6 +126,8 @@ public class Player extends Agent {
 
     public void setHasRune(boolean hasRune) {
         this.hasRune = hasRune;
+        for (PlayerListener pl : listeners)
+            pl.onRuneEvent();
     }
 
     public boolean isInvisible() {
