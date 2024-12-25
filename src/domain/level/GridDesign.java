@@ -15,7 +15,7 @@ public class GridDesign {
     public boolean placeObject(int row, int col, ObjectType type) {
         if(isValid(row,col) && grid[row][col] == null) {
             grid[row][col] = type;
-            placedObjectCount++;
+            if(type != ObjectType.COLUMN) placedObjectCount++;
             return  true;
         }
         return false;
@@ -38,8 +38,7 @@ public class GridDesign {
     public boolean isPlacementComplete()
     {
         //returns true for now for testing purposes
-        return true;
-        //return placedObjectCount >= minObjectLimit;
+        return placedObjectCount >= minObjectLimit;
     }
 
     private boolean isValid(int row, int col) {

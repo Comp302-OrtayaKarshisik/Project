@@ -95,11 +95,12 @@ public class Game {
 
     // maybe exac service is better
     public void pauseGame() {
-
+       paused = true;
        MonsterFactory.getInstance().pauseCreation();
     }
 
     public void resumeGame() {
+        paused = false;
         MonsterFactory.getInstance().resumeCreation();
     }
 
