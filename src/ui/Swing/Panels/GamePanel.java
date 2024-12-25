@@ -225,6 +225,10 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     public void mouseExited(MouseEvent e) {
     }
 
+    public void startGame() {
+        Game.getInstance().startGame();
+    }
+
     @Override
     public void onGameEvent(Game game) {
         repaint();
