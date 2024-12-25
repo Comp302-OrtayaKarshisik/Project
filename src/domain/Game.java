@@ -5,7 +5,6 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
-import domain.agent.monster.MonsterFactory;
 import domain.entities.RegularObject;
 import domain.level.CollisionChecker;
 import domain.level.Hall;

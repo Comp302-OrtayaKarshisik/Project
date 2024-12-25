@@ -24,8 +24,8 @@ public class CollisionChecker {
 
     public boolean validMove(Agent agent) {
         return isInBoundary(agent) &&
-                !checkTileCollusions(agent) &&
-                !checkAgentCollusions(agent);
+                !checkTileCollisions(agent) &&
+                !checkAgentCollisions(agent);
     }
 
     // Checks whether movement is in the boundary
