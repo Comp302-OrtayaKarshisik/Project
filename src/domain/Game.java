@@ -28,7 +28,6 @@ public class Game {
     private KeyHandler keyHandler; // this field is for now
     private CollusionChecker collusionChecker; // collusion checker of the game
     private List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
-    private Monster lastAddedMonster; // Holds the last added monster, to add it easily to the graphics
     private Hall currentHall;
 
 
@@ -40,11 +39,10 @@ public class Game {
         //keyHandler = new KeyHandler();
         agents = new LinkedList<>();
         agents.add(player);
-        lastAddedMonster = null;
+
         halls = new Hall[4];
         currentHall = halls[0];
         collusionChecker = CollusionChecker.getInstance(this);
-        MonsterFactory mf = new MonsterFactory(this);
     }
     
     public static Game getInstance() {
@@ -83,53 +81,57 @@ public class Game {
     public Hall[] getHalls() {
         return halls;
     }
+
     public void setHalls(Hall[] halls) {
         this.halls = halls;
     }
+
     public List<Monster> getMonsters() {
         return monsters;
     }
+
     public void setMonsters(List<Monster> monsters) {
         this.monsters = monsters;
     }
+
     public Timer getTimer() {
         return timer;
     }
+
     public void setTimer(Timer timer) {
         this.timer = timer;
     }
+
     public Player getPlayer() {
         return player;
     }
+
     public Hall getCurrentHall() {
         return currentHall;
     }
+
     public void setCurrentHall(Hall currentHall) {
         this.currentHall = currentHall;
     }
+
     public KeyHandler getKeyHandler() {
         return keyHandler;
     }
+
     public void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
+
     public CollusionChecker getCollusionChecker() {
         return collusionChecker;
     }
+
     public void setCollusionChecker(CollusionChecker collusionChecker) {
         this.collusionChecker = collusionChecker;
     }
+
     public List<Agent> getAgents() {
         return agents;
-    }
-    public void setAgents(List<Agent> agents) {
-        this.agents = agents;
-    }
-    public Monster getLastAddedMonster() {
-        return lastAddedMonster;
-    }
-    public void setLastAddedMonster(Monster lastAddedMonster) {
-        this.lastAddedMonster = lastAddedMonster;
     }
 
     /*

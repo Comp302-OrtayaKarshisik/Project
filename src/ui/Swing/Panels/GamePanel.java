@@ -124,19 +124,6 @@ public class GamePanel extends JPanel {
 
     // In this method we will update for the new graphics etc
     private void update() {
-
-        if (game.getLastAddedMonster() != null) {
-            System.out.print(game.getLastAddedMonster().getClass().getSimpleName());
-            if (game.getLastAddedMonster() instanceof Wizard)
-                wizardGraphics.getWizards().add((Wizard) game.getLastAddedMonster());
-            else if (game.getLastAddedMonster() instanceof Fighter)
-                fighterGraphics.getMonsters().add(game.getLastAddedMonster());
-            else
-                archerGraphics.getMonsters().add(game.getLastAddedMonster());
-
-            game.setLastAddedMonster(null);
-        }
-
         game.update(); // Time passed through the game
         // update also the other graphics in this place
     }
