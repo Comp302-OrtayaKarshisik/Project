@@ -11,15 +11,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // A class which creates random monsters
 // every 8 seconds
 public class MonsterFactory {
 
-    private Timer timer;
+    private ScheduledExecutorService schedule;
     private final List<FactoryListener> listeners;
     private static MonsterFactory instance;
+    private MonsterCreationTask currentTask;
     private long stopTime;
+    private long lastCreation;
+    private long passedTime;
+
 
     public static MonsterFactory getInstance() {
         if (instance == null) {
@@ -31,20 +38,26 @@ public class MonsterFactory {
     private MonsterFactory(){
         //Adds a reference to the monster list in the game
         listeners = new LinkedList<>();
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new MonsterCreationTask(),50, 8000);        // repeat with period of 8
+        schedule = Executors.newSingleThreadScheduledExecutor();
+        currentTask = new MonsterCreationTask();
+        schedule.scheduleAtFixedRate(currentTask, 50, 8000, TimeUnit.MILLISECONDS);        // repeat with period of 8
     }
 
     public void pauseCreation() {
-        timer.cancel();
-        stopTime = System.nanoTime();
+        currentTask.cancel();
+        schedule.close();
+        stopTime = System.currentTimeMillis();
+        passedTime = stopTime - lastCreation;
     }
 
     public void resumeCreation () {
-        timer = new Timer();
+        long dt = 8000 - passedTime;
+        lastCreation = System.currentTimeMillis() - passedTime;
+        System.out.println(dt);
+        currentTask = new MonsterCreationTask();
 
-        long dt = (System.nanoTime() - stopTime)/1000;
-        timer.scheduleAtFixedRate(new MonsterCreationTask(), dt, 8000);
+        schedule = Executors.newSingleThreadScheduledExecutor();
+        schedule.scheduleAtFixedRate(currentTask, dt > 0? dt: 50 , 8000, TimeUnit.MILLISECONDS);
     }
 
     public void addListener(FactoryListener fl) {
@@ -56,13 +69,10 @@ public class MonsterFactory {
             fl.onCreationEvent(monster);
     }
 
-    public Timer getTimer() {
-        return timer;
-    }
-
     private class MonsterCreationTask extends TimerTask {
         @Override
         public void run() {
+
             int monster = Game.random.nextInt(3);
             Monster w = switch (monster) {
                 case 0 -> new Archer();
@@ -74,6 +84,7 @@ public class MonsterFactory {
             Game.getInstance().getMonsters().add(w);
             Game.getInstance().getAgents().add(w);
             publishCreationEvent(w);
+            lastCreation = System.currentTimeMillis();
         }
     }
 

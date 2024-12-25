@@ -29,12 +29,8 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_LEFT) goLeft = true;
         if (key == KeyEvent.VK_RIGHT) goRight = true;
         if (key == KeyEvent.VK_ESCAPE) options = true;
-        if (key == KeyEvent.VK_ESCAPE) {
+        if (key == KeyEvent.VK_ESCAPE) Game.getInstance().togglePause();
 
-        }
-            if (key == KeyEvent.VK_ESCAPE) {
-                Game.getInstance().togglePause();
-            }
     }
 
     @Override

@@ -48,6 +48,8 @@ public class Player extends Agent {
             else if (enchantment.getType() == EnchantmentType.Reveal)
                Game.getInstance().getCurrentHall().higlightRune();
             else { // sikintili
+
+                Coordinate c;
                 for (Monster m : Game.getInstance().getMonsters()) {
                     if (m instanceof Fighter) {
                         ((Fighter) m).lureUsed(new Coordinate(5,5));
