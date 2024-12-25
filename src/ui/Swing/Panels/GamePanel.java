@@ -7,11 +7,14 @@ import javax.swing.*;
 import domain.Game;
 import domain.Textures;
 
+import listeners.GameListener;
+
 import domain.agent.monster.Fighter;
 import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
+import domain.util.Coordinate;
 import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
@@ -21,6 +24,8 @@ import ui.Graphics.TileSetImageGetter;
 import ui.PlayModePage;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +38,7 @@ import java.util.concurrent.Executors;
 
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
-public class GamePanel extends JPanel implements GameListener {
+public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     // to incorporate grid designs from build mode
     private int currentHall = 0;
@@ -43,7 +48,9 @@ public class GamePanel extends JPanel implements GameListener {
     private PlayModePage playModePage;
 
     // Screen settings each ca
-    private final int  baseTileSize = 48; // Objects will be 64x64
+    private final int baseTileSize = 48; // Objects will be 64x64
+    //private double scale = 1.4;
+
     private int scalingFactor = 1; // Going to be an input for different resolutions etc
 
     private int horizontalSquares = 16; // how many squares in the x direction
@@ -63,20 +70,20 @@ public class GamePanel extends JPanel implements GameListener {
     private Game game;
 
 
-
     public GamePanel() {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
+        addMouseListener(this);
         game = Game.getInstance();
         playerGraphics = PlayerGraphics.getInstance(48, game.getPlayer());
-        fighterGraphics =  FighterGraphics.getInstance(48);
+        fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
 
-        game.setCurrentHall(new Hall("s",0));
+        game.setCurrentHall(new Hall("s", 0));
         game.setKeyHandler(keyHandler);
         subscribe(game);
     }
@@ -86,38 +93,34 @@ public class GamePanel extends JPanel implements GameListener {
         this.gridDesigns = gridDesigns;
         this.playModePage = playModePage;
 
-        if(gridDesigns != null) {
+        if (gridDesigns != null) {
             this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
         }
 
     }
 
-    public void startGame() {
-        game.startGame();
-    }
+    /***
+     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
+     this(scalingFactor,horizontalSquares,verticalSquares);
+     this.FPS = FPS;
+     } ***/
 
     /***
-    public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares, int FPS) {
-        this(scalingFactor,horizontalSquares,verticalSquares);
-        this.FPS = FPS;
-    } ***/
+     public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
+     this.scalingFactor = scalingFactor;
+     this.horizontalSquares = horizontalSquares;
+     this.verticalSquares = verticalSquares;
 
-    /***
-    public GamePanel(int scalingFactor, int horizontalSquares, int verticalSquares) {
-        this.scalingFactor = scalingFactor;
-        this.horizontalSquares = horizontalSquares;
-        this.verticalSquares = verticalSquares;
-
-        this.setPreferredSize(new Dimension(width, height));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
-        this.addKeyListener(keyHandler); // Key listener to handle key presses
-        this.setFocusable(true); // All eyes on me
-        playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
-        //ighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
-        //archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
-        //wizardGraphics = new WizardGraphics(baseTileSize);
-    } ***/
+     this.setPreferredSize(new Dimension(width, height));
+     this.setBackground(Color.BLACK);
+     this.setDoubleBuffered(true); //Instead of drawing one by one, draw the imagine in the background first, then draw the entire image later
+     this.addKeyListener(keyHandler); // Key listener to handle key presses
+     this.setFocusable(true); // All eyes on me
+     playerGraphics = new PlayerGraphics(baseTileSize, game.getPlayer());
+     //ighterGraphics = new FighterGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+     //archerGraphics = new ArcherGraphics(baseTileSize, 16,horizontalBound,verticalBound);
+     //wizardGraphics = new WizardGraphics(baseTileSize);
+     } ***/
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -144,24 +147,82 @@ public class GamePanel extends JPanel implements GameListener {
         this.setOpaque(false);
     }
 
+    //Pause screen
+    private void drawPauseScreen(Graphics2D g2) {
+        // background
+        g2.setColor(new Color(101, 67, 33));
+        g2.fillRect(0, 0, width, height);
+
+        // pause text
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Gongster", Font.BOLD, 80));
+        String pauseText = "Game Paused";
+        int textWidth = g2.getFontMetrics().stringWidth(pauseText);
+        g2.drawString(pauseText, (width - textWidth) / 2, height / 3);
+
+        g2.setFont(new Font("Gongster", Font.BOLD, 50));
+        String resumeText = "Press ESC to Resume";
+        textWidth = g2.getFontMetrics().stringWidth(resumeText);
+        g2.drawString(resumeText, (width - textWidth) / 2, height / 2);
+
+        String helpText = "Press H for Help";
+        textWidth = g2.getFontMetrics().stringWidth(helpText);
+        g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
+    }
+
     // for drawing hall object from build mode
-    public void drawObjects(Graphics g) {
+    private void drawObjects(Graphics g) {
         Tile[][] grid = game.getCurrentHall().getGrid();
-        for(int row = 0; row < grid.length;row++) {
+        for (int row = 0; row < grid.length; row++) {
             // grid size needs to change
             int verticalSize = 16;
-            for(int col = 0; col < verticalSize; col++) {
+            for (int col = 0; col < verticalSize; col++) {
                 Tile gridObject = grid[row][col];
-                if(gridObject != null && (gridObject.getName() == "COLUMN" || gridObject.getName() == "CHEST_FULL" || gridObject.getName() == "CHEST_FULL_GOLD" || gridObject.getName() == "CHEST_CLOSED")) {
+                if (gridObject != null && (gridObject.getName() == "COLUMN" || gridObject.getName() == "CHEST_FULL" || gridObject.getName() == "CHEST_FULL_GOLD" || gridObject.getName() == "CHEST_CLOSED")) {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].getName().toLowerCase());
                     int w = objectSprite.getWidth();
                     int h = objectSprite.getHeight();
+                    //int scaledWidth = (int) (w * scale);
+                    //int scaledHeight = (int) (h * scale);
+
                     int offsetX = (baseTileSize - w) / 2;
                     int offsetY = (baseTileSize - h) / 2;
-                    g.drawImage(objectSprite, row*baseTileSize+offsetX,(verticalSize-col-1)*baseTileSize+offsetY, w, h,null);
+                    g.drawImage(objectSprite, row * baseTileSize + offsetX, (verticalSize - col - 1) * baseTileSize + offsetY, w, h, null);
                 }
             }
         }
+    }
+
+    // for drawing the rune
+    private void drawRune(Graphics g) {
+        BufferedImage runeSprite = Textures.getSprite("rune");
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        int col = e.getX() / baseTileSize;
+        int row = 15 - e.getY() / baseTileSize;
+        System.out.println("Clicked at" + col + ", " + row);
+        Coordinate chosenC = new Coordinate(col, row);
+        if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), chosenC) <= 1) {
+            game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     @Override
@@ -169,8 +230,7 @@ public class GamePanel extends JPanel implements GameListener {
         repaint();
     }
 
-    private void subscribe (Game game) {
+    private void subscribe(Game game) {
         game.addListener(this);
     }
-
 }

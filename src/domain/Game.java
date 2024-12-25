@@ -5,8 +5,9 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
+import domain.agent.monster.MonsterFactory;
 import domain.entities.RegularObject;
-import domain.level.CollusionChecker;
+import domain.level.CollisionChecker;
 import domain.level.Hall;
 import listeners.GameListener;
 
@@ -29,7 +30,7 @@ public class Game {
     private Hall[] halls;
 
     private KeyHandler keyHandler; // this field is for now
-    private CollusionChecker collusionChecker; // collusion checker of the game
+    private CollisionChecker collisionChecker; // collusion checker of the game
     private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
     private Hall currentHall;
 
@@ -46,7 +47,7 @@ public class Game {
 
         halls = new Hall[4];
         currentHall = halls[0];
-        collusionChecker = CollusionChecker.getInstance(this);
+        collisionChecker = CollisionChecker.getInstance(this);
     }
     
     public static Game getInstance() {
@@ -138,11 +139,13 @@ public class Game {
     public void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
-
-    public CollusionChecker getCollusionChecker() {
-        return collusionChecker;
+    public CollisionChecker getCollisionChecker() {
+        return collisionChecker;
     }
 
+    public void setCollusionChecker(CollisionChecker collusionChecker) {
+        this.collisionChecker = collusionChecker;
+    }
     public List<Agent> getAgents() {
         return agents;
     }
@@ -175,10 +178,6 @@ public class Game {
         }
     }
 
-}
-
-
-
     /*
 
 	public void placeObject(Coordinate c, ObjectType t) {
@@ -198,3 +197,5 @@ public class Game {
 	}
 
 	*/
+
+}

@@ -46,9 +46,9 @@ public class BuildModePage extends Page implements ActionListener {
     //private JButton btnNewButton_1;
     //private JButton btnNewButton_2;
 
-    public BuildModePage() {
+    public BuildModePage(BuildingModeHandler buildingModeHandler) {
     	super();
-    	this.buildingModeHandler = new BuildingModeHandler();
+    	this.buildingModeHandler = buildingModeHandler;
     	initUI();
     }
 
@@ -206,11 +206,7 @@ public class BuildModePage extends Page implements ActionListener {
                 }
         }
 
-    }
-    
-    
-    
-    
+    } 
  }
 
 class HallPanel extends JPanel implements MouseListener {
@@ -221,7 +217,9 @@ class HallPanel extends JPanel implements MouseListener {
 
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
-
+    
+    //private final double scale = 1.3;
+   
     private final  BuildingModeHandler buildingModeHandler;
 
     //the coordinates of the tiles that the mouse is hovered on (these coordinates will be highlighted for ease of use, in build mode.)
@@ -295,9 +293,13 @@ class HallPanel extends JPanel implements MouseListener {
                     BufferedImage objectSprite = Textures.getSprite(grid[row][col].toString().toLowerCase());
                     int w = objectSprite.getWidth();
                     int h = objectSprite.getHeight();
+                    
+                    //int scaledWidth = (int) (w * scale);
+                    //int scaledHeight = (int) (h * scale);
+                    
                     int offsetX = (tileSize - w) / 2;
                     int offsetY = (tileSize - h) / 2;
-                    g. drawImage(objectSprite, col*tileSize+offsetX, row*tileSize+offsetY, w, h, null);
+                    g. drawImage(objectSprite, row*tileSize+offsetX, col*tileSize+offsetY, w, h, null);
                 }
             }
         }
@@ -306,9 +308,9 @@ class HallPanel extends JPanel implements MouseListener {
 
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-        int col = e.getX() / tileSize;
-        int row = e.getY() / tileSize;
+	public void mousePressed(MouseEvent e) {
+        int row = e.getX() / tileSize;
+        int col = e.getY() / tileSize;
         System.out.println ("Clicked at" + col + ", " + row);
 
         if(SwingUtilities.isRightMouseButton(e)) {
@@ -336,7 +338,7 @@ class HallPanel extends JPanel implements MouseListener {
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
 
     }

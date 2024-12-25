@@ -22,6 +22,16 @@ public abstract class MobilMonsterGraphics extends EntityGraphics implements Fac
         this.monsters = new LinkedList<>();
     }
 
+    // For now the graphics methods actually makes the monsters move
+    // Normally there should be a Game update method which should handle these things
+    public void update() {
+        //This update only lets one key movement to be recorded at the same time
+        //For diagonal movements switch else ifs to just ifs
+       for (Monster monster: monsters) {
+           monster.move();
+       }
+    }
+
     public void draw(Graphics g) {
         for (Monster monster: monsters) {
             if (monster.getDirection() == Direction.LEFT) {

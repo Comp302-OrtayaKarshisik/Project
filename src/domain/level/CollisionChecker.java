@@ -4,19 +4,19 @@ import domain.Game;
 import domain.agent.Agent;
 import domain.util.Coordinate;
 
-public class CollusionChecker {
-    // Again collusion checker may not need the game
+public class CollisionChecker {
+    // Again collision checker may not need the game
     // Field.
     private final Game game;
-    private static CollusionChecker instance;
+    private static CollisionChecker instance;
 
-    private CollusionChecker(Game game) {
+    private CollisionChecker(Game game) {
         this.game = game;
     }
 
-    public static CollusionChecker getInstance(Game game) {
+    public static CollisionChecker getInstance(Game game) {
         if (instance == null) {
-            instance = new CollusionChecker(game);
+            instance = new CollisionChecker(game);
         }
         return instance;
     }
@@ -42,7 +42,7 @@ public class CollusionChecker {
 
     // A really primitive checker for the tiles
     // with the located object
-    public boolean checkTileCollusions (Agent agent) {
+    public boolean checkTileCollisions (Agent agent) {
         Tile tile;
         return switch (agent.getDirection()) {
             case STOP -> false;
@@ -66,7 +66,7 @@ public class CollusionChecker {
     }
 
     // The target list contains all the agents
-    public boolean checkAgentCollusions(Agent agent) {
+    public boolean checkAgentCollisions(Agent agent) {
         Tile tile;
         Coordinate c;
 

@@ -8,6 +8,7 @@ import domain.collectables.Enchantment;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 
+import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
 import java.security.Key;
 import java.security.SecureRandom;
@@ -17,16 +18,17 @@ public class Hall {
 
     private Timer timer; // this timer is responsible for creating enchantments
     private final String type;
-    private final Coordinate runeLocation;
+    private Coordinate runeLocation;
     private List<Enchantment> enchantments;
     private final int objectCapacity;
+    private ArrayList<Coordinate> runeLocations;
 
     private Tile[][] grid;
 
     public Hall(String type, int objectCapacity) {
         timer = new Timer();
         this.type = type;
-        this.runeLocation = new Coordinate(Game.random.nextInt(64),Game.random.nextInt(64));
+        this.runeLocations = new ArrayList<Coordinate>();
         this.enchantments = new LinkedList<>();
         this.objectCapacity = objectCapacity;
         this.grid = new Tile[64][64];
@@ -49,12 +51,20 @@ public class Hall {
     public void createEnchantment() {}
     public void fillHall(Object obj, int[][] loc) {}
 
-    public boolean isPlayerAdjacentToRune(Player player) {
-        return (player.getLocation().getX() == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
-                ((player.getLocation().getX() + 1) == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
-                ((player.getLocation().getX() - 1) == runeLocation.getX() && player.getLocation().getY() == runeLocation.getY()) ||
-                (player.getLocation().getX()  == runeLocation.getX() && (player.getLocation().getY() + 1 == runeLocation.getY())) ||
-                (player.getLocation().getX()  == runeLocation.getX() && (player.getLocation().getY() - 1  == runeLocation.getY()));
+    private boolean isRuneLocation(Coordinate c1) {
+        return c1.equals(this.runeLocation);
+    }
+
+    public void handleChosenBox(Player player, Coordinate c1) {
+        Tile obj = grid[c1.getX()][c1.getY()];
+        if (obj.getName() == "aa" || obj.getName() == "COLUMN") {
+            return;
+        }
+        grid[c1.getX()][c1.getY()] = new Tile("aa",new Coordinate(c1.getX(), c1.getY()));
+        if (isRuneLocation(c1)) {
+            System.out.println("found rune");
+            player.setHasRune(true);
+        }
     }
 
     public Timer getTimer() {
@@ -92,11 +102,22 @@ public class Hall {
             for(int col = 0; col < verticalSize; col++) {
                 ObjectType newTile = gridCreated[row][col];
                 if(newTile != null) {
+                    Coordinate objCoordinate = new Coordinate(row, verticalSize-col-1);
                     this.grid[row][verticalSize-col-1] =
-                            new Tile(newTile.toString(), new Coordinate(row, verticalSize-col-1), true);
+                            new Tile(newTile.toString(), objCoordinate, true);
+                    if(newTile != ObjectType.COLUMN) {
+                        runeLocations.add(objCoordinate);
+                    }
                 }
             }
         }
+
+        this.setNewRuneLocation();
+    }
+
+    public void setNewRuneLocation() {
+        int randomRuneLoc = Game.random.nextInt(runeLocations.size());
+        this.runeLocation = runeLocations.get(randomRuneLoc);
     }
 
     public Tile[][] getGrid() {
