@@ -151,6 +151,7 @@ public class PlayModePage extends Page implements PlayerListener {
 
     @Override
     public void onRuneEvent() {
+        this.panelHolder.setDoorOpen();
         displayRune();
     }
 }

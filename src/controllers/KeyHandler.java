@@ -1,7 +1,7 @@
 package controllers;
 
+import domain.Game;
 import domain.util.Direction;
-import ui.Swing.Panels.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -28,7 +28,12 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_LEFT) goLeft = true;
         if (key == KeyEvent.VK_RIGHT) goRight = true;
         if (key == KeyEvent.VK_ESCAPE) options = true;
+
         // pause/resume using ESC
+        // for handling pause
+        if (key == KeyEvent.VK_ESCAPE) {
+            Game.getInstance().pauseResumeGame();
+        }
     }
 
     @Override

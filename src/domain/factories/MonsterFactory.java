@@ -16,7 +16,7 @@ import java.util.TimerTask;
 // every 8 seconds
 public class MonsterFactory {
 
-    private final Timer timer;
+    private Timer timer;
     private final List<FactoryListener> listeners;
     private static MonsterFactory instance;
     private long stopTime;
@@ -41,6 +41,8 @@ public class MonsterFactory {
     }
 
     public void resumeCreation () {
+        timer = new Timer();
+
         long dt = (System.nanoTime() - stopTime)/1000;
         timer.scheduleAtFixedRate(new MonsterCreationTask(), dt, 8000);
     }
