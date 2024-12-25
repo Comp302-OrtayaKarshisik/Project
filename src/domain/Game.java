@@ -70,10 +70,10 @@ public class Game {
     }
 
     public void startGame () {
-        UpdateAndRender ur = new UpdateAndRender();
+        Update up = new Update();
         //Executor runs the method instead of threads
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(ur);
+        executor.execute(up);
     }
 
 
@@ -147,7 +147,7 @@ public class Game {
         return agents;
     }
 
-    private class UpdateAndRender implements Runnable {
+    private class Update implements Runnable {
         @Override
         public void run() {
             double currentTime;
