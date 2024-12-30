@@ -182,6 +182,9 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
     @Override
     public void onHealthEvent(int num) {
+        if (num == 0) {
+            PageManager.getInstance().showGameOverPage();
+        }
         displayLives(num);
     }
 

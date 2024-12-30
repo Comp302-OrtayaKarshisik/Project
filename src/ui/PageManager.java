@@ -40,11 +40,20 @@ public class PageManager {
 	}
 	
 	public void showMainMenuPage() {showPage(new MainMenuPage());}
+
+	public void showGameOverPage() {showPage(new GameOverPage());}
+
+	public void showWinGamePage() {showPage(new WinGamePage());}
 	
     public void showBuildingModePage() { 
     	
     	BuildingModeHandler bmh = BuildingModeHandler.getInstance();
     	showPage(new BuildModePage(bmh)); }
+
+	public void showNewBuildingModePage() {
+
+		BuildingModeHandler bmh = BuildingModeHandler.recreateBuildingModeHandler();
+		showPage(new BuildModePage(bmh)); }
 
 	public void showPlayModePage(GridDesign[] gridDesigns) { showPage(new PlayModePage(gridDesigns)); }
 

@@ -31,6 +31,11 @@ public class BuildingModeHandler {
 		}
 
 	}
+
+	public static BuildingModeHandler recreateBuildingModeHandler() {
+		instance = new BuildingModeHandler();
+		return instance;
+	}
 	
 	 public static BuildingModeHandler getInstance() {
 			if (instance == null) {

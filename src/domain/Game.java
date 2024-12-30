@@ -173,7 +173,7 @@ public class Game {
         @Override
         public void run() {
             double currentTime;
-            double frameInterval = (double) 1000000000 / 60; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
+            double frameInterval = (double) 1000000000 / 24; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
             double diff = 0; // represents the time passed between two consecutive frames
             double lastTime = System.nanoTime();
 
