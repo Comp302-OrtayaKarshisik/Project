@@ -37,26 +37,28 @@ public class Player extends Agent {
     // other objects thus other methods will help it
     // for now
     public void useEnchantment(Enchantment enchantment) {
-        if (bag.containsEnchantment(enchantment)) {
-            bag.removeEnchantment(enchantment);
-            if (enchantment.getType() == EnchantmentType.Cloak)
-                gainInvisibility();
-            else if (enchantment.getType() == EnchantmentType.Life)
-                increaseHealth();
-            else if (enchantment.getType() == EnchantmentType.Time)
-                Game.getInstance().getCurrentHall().increaseTime();
-            else if (enchantment.getType() == EnchantmentType.Reveal)
-               Game.getInstance().getCurrentHall().higlightRune();
-            else { // sikintili
-
-                Coordinate c;
-                for (Monster m : Game.getInstance().getMonsters()) {
-                    if (m instanceof Fighter) {
-                        ((Fighter) m).lureUsed(new Coordinate(5,5));
+        if(enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
+            if (enchantment.getType() == EnchantmentType.Life) {increaseHealth();}
+            else {Game.getInstance().getCurrentHall().increaseTime();}
+        }
+        else {
+            if (bag.containsEnchantment(enchantment)) {
+                bag.removeEnchantment(enchantment);
+                if (enchantment.getType() == EnchantmentType.Cloak) {gainInvisibility();}
+                else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getCurrentHall().higlightRune();}
+                else { // sikintili
+                    Coordinate c;
+                    for (Monster m : Game.getInstance().getMonsters()) {
+                        if (m instanceof Fighter) {
+                            ((Fighter) m).lureUsed(new Coordinate(5, 5));
+                        }
                     }
                 }
             }
         }
+
+
+
     }
 
     public void collectEnchantment(Enchantment Enchantment) {

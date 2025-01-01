@@ -20,6 +20,7 @@ import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
+import ui.Graphics.EnchantmentGraphics;
 import ui.Graphics.TileSetImageGetter;
 import ui.PlayModePage;
 
@@ -66,6 +67,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private final FighterGraphics fighterGraphics;
     private final ArcherGraphics archerGraphics;
     private final WizardGraphics wizardGraphics;
+    private final EnchantmentGraphics enchantmentGraphics;
     private Game game;
 
 
@@ -81,7 +83,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
-
+        enchantmentGraphics = EnchantmentGraphics.getInstance(48);
         game.setCurrentHall(new Hall("s", 0));
         game.setKeyHandler(keyHandler);
         subscribe(game);
@@ -134,6 +136,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         fighterGraphics.draw(g2);
         archerGraphics.draw(g2);
         wizardGraphics.draw(g2);
+        enchantmentGraphics.draw(g2);
+
         } else {
             drawPauseScreen(g2);
         }
@@ -206,13 +210,11 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int col = e.getX() / baseTileSize;
-        int row = 15 - e.getY() / baseTileSize;
-        System.out.println("Clicked at" + col + ", " + row);
-        Coordinate chosenC = new Coordinate(col, row);
-        if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), chosenC) <= 1) {
-            game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
-        }
+        int x = e.getX() / baseTileSize;
+        int y = 15 - (e.getY() / baseTileSize);
+        System.out.println("clicked at x: " + x + " y: " + y);
+        Coordinate chosenC = new Coordinate(x, y);
+        game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
     }
 
     @Override

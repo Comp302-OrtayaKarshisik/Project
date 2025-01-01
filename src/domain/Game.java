@@ -5,7 +5,9 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
+import domain.collectables.Enchantment;
 import domain.entities.RegularObject;
+import domain.factories.EnchantmentFactory;
 import domain.factories.MonsterFactory;
 import domain.level.CollisionChecker;
 import domain.level.Hall;
@@ -34,6 +36,7 @@ public class Game {
     private CollisionChecker collisionChecker; // collusion checker of the game
     private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
     private Hall currentHall;
+    private List<Enchantment> enchantments;
 
 
     private Game() {
@@ -43,6 +46,7 @@ public class Game {
         //this.halls = halls;
         listeners = new LinkedList<>();
         monsters = new LinkedList<>();
+        enchantments = new LinkedList<>();
         //keyHandler = new KeyHandler();
         agents = new LinkedList<>();
         agents.add(player);
@@ -64,6 +68,9 @@ public class Game {
         player.move();
         for (Monster m : monsters) {
             m.move();
+        }
+        for (Enchantment e : enchantments) {
+            e.decreaseRemainingFrame();
         }
     }
 
@@ -96,10 +103,12 @@ public class Game {
     // maybe exac service is better
     public void pauseGame() {
         MonsterFactory.getInstance().pauseCreation();
+        EnchantmentFactory.getInstance().pauseCreation();
     }
 
     public void resumeGame() {
         MonsterFactory.getInstance().resumeCreation();
+        EnchantmentFactory.getInstance().resumeCreation();
     }
 
 
@@ -127,6 +136,10 @@ public class Game {
 
     public List<Monster> getMonsters() {
         return monsters;
+    }
+
+    public List<Enchantment> getEnchantments() {
+        return enchantments;
     }
 
     public void setMonsters(List<Monster> monsters) {
