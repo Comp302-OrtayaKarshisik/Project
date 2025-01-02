@@ -2,7 +2,6 @@ package ui;
 
 import domain.Game;
 import domain.agent.Player;
-import domain.level.GridDesign;
 import listeners.GameListener;
 import listeners.PlayerListener;
 import ui.Swing.Panels.GamePanel;
@@ -16,8 +15,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
     private HallPanelHolder panelHolder;
 
-    private GridDesign[] gridDesigns;
-
     private JPanel objectChooserPanel;
 
     private JPanel buttonPanel;
@@ -28,14 +25,18 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
     private ImageIcon pauseResumeIcon;
 
+    private JLabel runeLabel;
+
+    private JLabel runeText;
+
     private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
 
     private boolean isPaused = false;
 
-    public PlayModePage(GridDesign gridDesigns[]) {
+    public PlayModePage() {
         super();
-        this.gridDesigns = gridDesigns;
         initUI();
+        Game.getInstance().startGame();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
         this.setBackground(new Color(66, 40, 53));
 
-        this.panelHolder = new HallPanelHolder(new GamePanel(gridDesigns, this));
+        this.panelHolder = new HallPanelHolder(new GamePanel());
         this.add(panelHolder);
 
         this.objectChooserPanel = new JPanel();
@@ -79,10 +80,9 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         this.displayLives(3);
 
         this.subscribe(Game.getInstance());
+        this.subscribe(Game.getInstance().getPlayer());
 
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
-
-        panelHolder.getGamePanel().startGame();
     }
 
     private void addPauseResumeButton() {
@@ -151,22 +151,31 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         this.buttonPanel.repaint();
     }
 
-    public void displayRune() {
+    private void displayRune() {
         // Rune Image
         System.out.println("render rune");
         ImageIcon runeImage = new ImageIcon("src/assets/rune.png");
         Image image1 = runeImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         ImageIcon resizedRuneImage = new ImageIcon(image1);
-        JLabel runeLabel = new JLabel(resizedRuneImage);
+
+        this.runeLabel = new JLabel(resizedRuneImage);
         runeLabel.setBounds(85, 480, 32, 32);
         this.buttonPanel.add(runeLabel);
 
         // Rune Collected Text
-        JLabel textLabel = new JLabel("Rune Collected!!");
-        textLabel.setBounds(25, 430, 200, 20);
-        textLabel.setFont(new Font("Serif", Font.BOLD, 22));
-        textLabel.setForeground(new Color(40, 20, 20));
-        this.buttonPanel.add(textLabel);
+        this.runeText = new JLabel("Rune Collected!!");
+        runeText.setBounds(25, 430, 200, 20);
+        runeText.setFont(new Font("Serif", Font.BOLD, 22));
+        runeText.setForeground(new Color(40, 20, 20));
+        this.buttonPanel.add(runeText);
+
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
+    }
+
+    private void removeRune() {
+        this.buttonPanel.remove(this.runeLabel);
+        this.buttonPanel.remove(this.runeText);
 
         this.buttonPanel.revalidate();
         this.buttonPanel.repaint();
@@ -189,9 +198,14 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
     }
 
     @Override
-    public void onRuneEvent() {
-        this.panelHolder.setDoorOpen();
-        displayRune();
+    public void onRuneEvent(boolean hasRune) {
+        if(hasRune) {
+            displayRune();
+        }
+        else {
+            removeRune();
+        }
+        this.panelHolder.setDoorOpen(hasRune);
     }
 
     @Override

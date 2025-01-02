@@ -58,6 +58,12 @@ public class EnchantmentFactory {
         for (EnchantmentListener efl: listeners) {efl.onRemovalEvent(e);}
     }
 
+    public void publishNextHallEvent() {
+        for (EnchantmentListener efl: listeners) {
+            efl.onClearEvent();
+        }
+    }
+
     private class EnchantmentCreationTask extends TimerTask {
         @Override
         public void run() {

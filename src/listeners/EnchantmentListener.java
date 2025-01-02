@@ -6,4 +6,6 @@ public interface EnchantmentListener {
     public abstract void onCreationEvent(Enchantment enchantment);
 
     public abstract void onRemovalEvent(Enchantment enchantment);
+
+    public abstract void onClearEvent();
 }

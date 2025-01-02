@@ -6,4 +6,6 @@ public interface FactoryListener {
 
     public abstract void onCreationEvent(Monster monster);
 
+    public abstract void onDeletionEvent();
+
 }

@@ -20,6 +20,7 @@ public class Player extends Agent {
     private boolean hasRune;
     private boolean invisible;
     private final Timer timer; // This methods is for now;
+    private Coordinate doorCoordinate;
 
     public Player() {
         listeners = new LinkedList<>();
@@ -28,6 +29,7 @@ public class Player extends Agent {
         hasRune = false;
         invisible = false;
         setLocation(new Coordinate(0,0));
+        doorCoordinate = new Coordinate(9, 0);
         timer = new Timer();
         setDirection(Direction.STOP);
     }
@@ -80,9 +82,11 @@ public class Player extends Agent {
         else
             setDirection(Direction.STOP);
 
+        Direction currDirection = getDirection();
+
         if (Game.getInstance().getCollisionChecker().validMove(this)) {
 
-            switch (getDirection()) {
+            switch (currDirection) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
                 case DOWN -> getLocation().setY(getLocation().getY() - 1);
                 case RIGHT -> getLocation().setX(getLocation().getX() + 1);
@@ -90,6 +94,12 @@ public class Player extends Agent {
             }
         }
 
+        // for getting to the next Hall
+        if (currDirection == Direction.DOWN && hasRune && location.equals(doorCoordinate)) {
+            this.location.setLocation(0, 0);
+            this.setHasRune(false);
+            Game.getInstance().nextHall();
+        }
     }
 
     public void addListener(PlayerListener pl) {
@@ -146,7 +156,7 @@ public class Player extends Agent {
     public void setHasRune(boolean hasRune) {
         this.hasRune = hasRune;
         for (PlayerListener pl : listeners)
-            pl.onRuneEvent();
+            pl.onRuneEvent(hasRune);
     }
 
     public boolean isInvisible() {

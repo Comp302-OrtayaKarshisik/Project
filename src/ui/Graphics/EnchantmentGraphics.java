@@ -54,6 +54,10 @@ public class EnchantmentGraphics extends EntityGraphics implements EnchantmentLi
         enchantments.remove(enchantment);
     }
 
+    @Override
+    public void onClearEvent() {
+        this.enchantments.clear();
+    }
 
     private void initalizeSpriteMap()
     {

@@ -40,12 +40,6 @@ import java.util.concurrent.Executors;
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
 public class GamePanel extends JPanel implements MouseListener, GameListener {
-    // to incorporate grid designs from build mode
-    private int currentHall = 0;
-    private GridDesign[] gridDesigns;
-
-    // to display hero's lives
-    private PlayModePage playModePage;
 
     // Screen settings each ca
     private final int baseTileSize = 48; // Objects will be 64x64
@@ -58,8 +52,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     private int verticalSquares = 16; // how many squares in the y direction
     private int height = verticalSquares * (scalingFactor * baseTileSize); // vertical pixels
-
-    private int FPS = 60; // frames per second classic, can change but the default is 60
 
     KeyHandler keyHandler = new KeyHandler();
 
@@ -84,21 +76,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
         enchantmentGraphics = EnchantmentGraphics.getInstance(48);
-        game.setCurrentHall(new Hall("s", 0));
         game.setKeyHandler(keyHandler);
         subscribe(game);
-    }
-
-    public GamePanel(GridDesign[] gridDesigns, PlayModePage playModePage) {
-        this();
-        this.gridDesigns = gridDesigns;
-        this.playModePage = playModePage;
-        this.playModePage.subscribe(Game.getInstance().getPlayer());
-
-        if (gridDesigns != null) {
-            this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
-        }
-
     }
 
     /***
@@ -231,10 +210,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-    }
-
-    public void startGame() {
-        Game.getInstance().startGame();
     }
 
     @Override
