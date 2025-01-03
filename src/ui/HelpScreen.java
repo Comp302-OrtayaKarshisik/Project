@@ -32,14 +32,14 @@ public class HelpScreen extends JFrame {
             null,
             null,
             null,
-            "assets/archer.png",
-            "assets/fighter.png",
-            "assets/wizard.png",
+            "src/assets/archer.png",
+            "src/assets/fighter.png",
+            "src/assets/wizard.png",
             null,  // No image for "Extra Time" yet
-            "assets/reveal.png",
-            "assets/cloak.png",
-            "assets/lure.png",
-            "assets/heart.png"
+            "src/assets/reveal.png",
+            "src/assets/cloak.png",
+            "src/assets/lure.png",
+            "src/assets/heart.png"
     };
     public HelpScreen() {
         setTitle("Help - Rokuelike Game");
