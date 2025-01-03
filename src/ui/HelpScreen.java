@@ -90,5 +90,4 @@ public class HelpScreen extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-
 }
