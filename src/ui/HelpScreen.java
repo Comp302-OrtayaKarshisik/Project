@@ -14,16 +14,33 @@ public class HelpScreen extends JFrame {
     private JButton btnNext, btnPrevious;
     private int currentPage = 0;
     private final String[] helpTexts = {
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Welcome to Lance of Destiny</h1><p>This game is about two warriors racing to obtain the Lance of Power. Use spells and skills to overcome barriers and defeat your opponent.<br>You can play singleplayer and multiplayer mode.</p></body></html>",
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Gameplay</h1><p>Control the Magical Staff to direct the Fire Ball to destroy barriers and prevent it from falling.</p></html>",
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Barriers</h1><p>There are several types of barriers like Simple Barrier, Reinforced Barrier, and Explosive Barrier, each with different properties.</p></html>",
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Spells</h1><p>Collect spells to enhance your abilities or hinder your opponent. Spells like 'Hex' and 'Magical Staff Expansion' can be pivotal in gameplay.</p></html>",
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Controls I</h1><p>Use arrow keys to move the Magical Staff.</p></html>",
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Controls II</h1><p>Use 'A' and 'D' to rotate it.</p></html>",
-            "<html><head><style>body { text-align: center; } li { text-align: left; }</style></head><body><h1>Singleplayer & Multiplayer</h1><p>The game can be played in single player and multiplayer modes.</p><ul><li><strong>Host a Game:</strong> Select this option to create a new game session that other players can join.</li><li><strong>Join a Game:</strong> If you want to join an existing game, select this option. You can select the game you want to join from the list.</li></ul></body></html>\n",
-            "<html><head><style>body { text-align: center; }</style></head><body><h1>Build the Game</h1><p>In building mode, there are two options for placing barriers: <br> 1) Specify the quantity of each type of barrier and let the game automatically place them. <br> 2) Manually select the type of barrier and its location.</p></html>"
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Welcome to Rokue Like</h1><p>This game is about a adventurer going escaping from different dungeon halls. Use enchantments and runes to avoid from the monsters and get out of the halls.<br>You can also save the game and play later.</p></body></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Build the Game</h1><p>In building mode,manually select the type of object and its location. <br> There must be at least 6 objects in the earth hall.<br>There must be at least 9 objects in the air hall.<br> There must be at least 13 objects in the water hall. <br> There must be at least 17 objects in the fire hall. </p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Moving</h1><p>Move the character using 'w', 'a' ,'s', 'd'.</p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Runes</h1><p>You have to find the rune in the hall to open the door and go to next hall.</p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Archer Monsters</h1><p>Shoots arrows every second if the hero is within 4 squares. The hero loses a life unless they are wearing the Cloak of Protection.</p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Fighter Monsters</h1><p>Attacks when close to the hero with a dagger. Can be distracted by the luring gem.</p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Wizard Monsters</h1><p> If less than 30% of the time remains, it teleports the player and disappears;<br> if more than 70% of the time remains, it teleports the rune every 3 seconds; <br> if between 30% and 70%, it stays for 2 seconds without doing anything and disappears.</p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Extra Time</h1><p>Adds 5 seconds to the timer when collected.</p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Reveal</h1><p>Highlights a 4x4 grid area showing where the rune is hidden. Press 'R' to use.  </p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Cloak of Protection</h1><p> Protects the hero from archer attacks for 20 seconds. Press 'P' to use. </p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Luring Gem</h1><p> Distracts fighter monsters by luring them toward a direction. Press 'B' and press W/A/S/D to select the throwing direction. </p></html>",
+            "<html><head><style>body { text-align: center; }</style></head><body><h1>Extra Life</h1><p> Increases hero’s lives by 1 when collected. </p></html>"
     };
-
+    private final String[] imagePaths = {
+            null,  // No image for the first 4 pages yet
+            null,
+            null,
+            null,
+            "assets/archer.png",
+            "assets/fighter.png",
+            "assets/wizard.png",
+            null,  // No image for "Extra Time" yet
+            "assets/reveal.png",
+            "assets/cloak.png",
+            "assets/lure.png",
+            "assets/heart.png"
+    };
     public HelpScreen() {
         setTitle("Help - Rokuelike Game");
         setSize(800, 500); // Square size
@@ -34,25 +51,21 @@ public class HelpScreen extends JFrame {
         cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
 
-        for (String text : helpTexts) {
+        for (int i = 0; i < helpTexts.length; i++) {
             JPanel panel = new JPanel(new BorderLayout());
-            JLabel label = new JLabel(text);
+            panel.setBackground(new Color(101, 67, 33));
+            JLabel label = new JLabel(helpTexts[i]);
             label.setHorizontalAlignment(JLabel.CENTER);
+            label.setFont(new Font("Gongster", Font.PLAIN, 18));
+            label.setForeground(Color.WHITE);
 
-            if (text.contains("Use arrow keys to BLABLABLA")) {
-                ImageIcon gifIcon = new ImageIcon("assets/move.gif");
-                JLabel gifLabel = new JLabel(gifIcon);
-                panel.add(gifLabel, BorderLayout.NORTH);
-            } else if (text.contains("Use 'A' and 'D' to rotate it")) {
-                ImageIcon gifIcon = new ImageIcon("assets/rotate.gif");
-                JLabel gifLabel = new JLabel(gifIcon);
-                panel.add(gifLabel, BorderLayout.NORTH);
-            } else if (text.contains("In building mode, there are two options for placing barriers:")) {
-                ImageIcon gifIcon = new ImageIcon("assets/BuildingMode.gif");
-                JLabel gifLabel = new JLabel(gifIcon);
-                panel.add(gifLabel, BorderLayout.NORTH);
-            }
-            panel.add(label);
+
+            ImageIcon imageIcon = new ImageIcon(imagePaths[i]);
+            JLabel imageLabel = new JLabel(imageIcon);
+            imageLabel.setHorizontalAlignment(JLabel.CENTER);
+            panel.add(imageLabel, BorderLayout.NORTH);
+
+            panel.add(label, BorderLayout.CENTER);
             mainPanel.add(panel);
         }
 
