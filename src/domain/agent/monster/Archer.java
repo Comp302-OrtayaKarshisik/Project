@@ -7,6 +7,7 @@ import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.ArcherListener;
 import listeners.FactoryListener;
+import ui.Graphics.ArrowGraphics;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,16 +30,12 @@ public class Archer extends Monster {
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
 
+        ArrowGraphics.getInstance(48).subscribe(this);
 
     }
 
     public void addListener(ArcherListener al) {
         listeners.add(al);
-    }
-
-    public void publishCreationEvent() {
-        for (ArcherListener al : listeners)
-            al.onCreationEvent(this);
     }
 
     public void publishArrowActivationEvent() {
@@ -81,7 +78,7 @@ public class Archer extends Monster {
 
         if (arrow == null || !arrow.alive) {
             arrow = new Arrow(this); // Initialize the arrow only when needed
-            publishCreationEvent();}
+            }
 
         Coordinate archerloc = this.getLocation();
         Coordinate playerloc = Game.getInstance().getPlayer().getLocation();

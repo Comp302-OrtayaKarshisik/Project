@@ -20,7 +20,7 @@ public class Projectile extends Entity {
     public int dy;
     public boolean alive;
     public final int speed = 1;
-    private final int maxLife = 700;
+    private final int maxLife = 200;
     public int life;
 
     public Projectile() {}

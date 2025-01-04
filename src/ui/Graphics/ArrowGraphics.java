@@ -62,7 +62,7 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
 
             // Rotate and draw the arrow image
             g2d.rotate(angle, x + arrowImage.getWidth() / 2, y + arrowImage.getHeight() / 2);
-            g2d.drawImage(arrowImage, x*48, y*48, size, size, null);
+            g2d.drawImage(arrowImage, x, y, size, size, null);
 
             // Restore original transform
             g2d.setTransform(oldTransform);
@@ -72,9 +72,6 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
     public void subscribe(Archer archer) {
         archer.addListener(this);}
 
-    public void onCreationEvent(Archer archer) {
-        this.subscribe(archer);
-    }
 
     public void onArrowActivationEvent(Archer archer) {
             arrows.add(archer.arrow);}
