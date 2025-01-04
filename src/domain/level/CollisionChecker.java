@@ -5,23 +5,18 @@ import domain.agent.Agent;
 import domain.collectables.Enchantment;
 import domain.util.Coordinate;
 
+// A helper class for the dungeon
+// at this point
 public class CollisionChecker {
-    // Again collision checker may not need the game
-    // Field.
-    private final Game game;
-    private static CollisionChecker instance;
 
-    private CollisionChecker(Game game) {
-        this.game = game;
+    private final int ROW_NUMBER = 16;
+    private final int COL_NUMBER = 16;
+
+    private Dungeon dungeon;
+
+    public CollisionChecker(Dungeon dungeon) {
+        this.dungeon = dungeon;
     }
-
-    public static CollisionChecker getInstance(Game game) {
-        if (instance == null) {
-            instance = new CollisionChecker(game);
-        }
-        return instance;
-    }
-
 
     public boolean validMove(Agent agent) {
         return isInBoundary(agent) &&
@@ -34,10 +29,10 @@ public class CollisionChecker {
     // returns true if the movement is in the boundary
     public boolean isInBoundary (Agent agent) {
         return switch (agent.getDirection()) {
-            case UP -> agent.getLocation().getY() + 1 <= 15;
+            case UP -> agent.getLocation().getY() + 1 < ROW_NUMBER;
             case DOWN -> agent.getLocation().getY() - 1 >= 0;
             case LEFT -> agent.getLocation().getX() - 1 >= 0;
-            case RIGHT -> agent.getLocation().getX() + 1 <= 15;
+            case RIGHT -> agent.getLocation().getX() + 1 < COL_NUMBER;
             case STOP -> true;
         };
     }
@@ -49,19 +44,19 @@ public class CollisionChecker {
         return switch (agent.getDirection()) {
             case STOP -> false;
             case UP -> {
-                tile = game.getCurrentHall().getGrid()[agent.getLocation().getX()][agent.getLocation().getY() + 1];
+                tile = dungeon.getCurrentHall().getGrid()[agent.getLocation().getX()][agent.getLocation().getY() + 1];
                 yield tile.isCollisable();
             }
             case DOWN -> {
-                tile = game.getCurrentHall().getGrid()[agent.getLocation().getX()][agent.getLocation().getY() - 1];
+                tile = dungeon.getCurrentHall().getGrid()[agent.getLocation().getX()][agent.getLocation().getY() - 1];
                 yield tile.isCollisable();
             }
             case LEFT -> {
-                tile = game.getCurrentHall().getGrid()[agent.getLocation().getX() - 1][agent.getLocation().getY()];
+                tile = dungeon.getCurrentHall().getGrid()[agent.getLocation().getX() - 1][agent.getLocation().getY()];
                 yield tile.isCollisable();
             }
             case RIGHT -> {
-                tile = game.getCurrentHall().getGrid()[agent.getLocation().getX() + 1][agent.getLocation().getY()];
+                tile = dungeon.getCurrentHall().getGrid()[agent.getLocation().getX() + 1][agent.getLocation().getY()];
                 yield tile.isCollisable();
             }
         };
@@ -77,7 +72,7 @@ public class CollisionChecker {
             case LEFT -> c = new Coordinate(agent.getLocation().getX() - 1, agent.getLocation().getY());
             default -> c = agent.getLocation();
         }
-        for (Enchantment enchantment : game.getEnchantments()) {
+        for (Enchantment enchantment : Game.getInstance().getEnchantments()) {
             if (enchantment.getLocation().equals(c)) {
                 return true;
             }
@@ -100,7 +95,7 @@ public class CollisionChecker {
             default -> c = agent.getLocation();
         }
 
-        for (Agent target : game.getAgents()) {
+        for (Agent target : Game.getInstance().getAgents()) {
             if (!target.equals(agent) && target.getLocation().equals(c)) {
                 return true;
             }
@@ -111,17 +106,17 @@ public class CollisionChecker {
     public boolean checkTileEmpty(Coordinate c)
     {
 
-        if (game.getCurrentHall().getGrid()[c.getX()][c.getY()].isCollisable()) {
+        if (dungeon.getCurrentHall().getGrid()[c.getX()][c.getY()].isCollisable()) {
             return false;
         }
 
-        for (Agent target : game.getAgents()) {
+        for (Agent target :Game.getInstance().getAgents()) {
             if (target.getLocation().equals(c)) {
                 return false;
             }
         }
 
-        for (Enchantment enchantment : game.getEnchantments()) {
+        for (Enchantment enchantment : Game.getInstance().getEnchantments()) {
             if (enchantment.getLocation().equals(c)) {
                 return false;
             }
@@ -130,7 +125,4 @@ public class CollisionChecker {
         return true;
     }
 
-    public Game getGame() {
-        return game;
-    }
 }

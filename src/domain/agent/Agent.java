@@ -12,9 +12,12 @@ public abstract class Agent {
     protected Coordinate location;
     protected final Direction[] DIRECTIONS = Direction.values();
 
+    public abstract void move();
+
     public Coordinate getLocation() {
         return location;
     }
+
     public void setLocation(Coordinate location) {
         this.location = location;
     }
@@ -22,7 +25,9 @@ public abstract class Agent {
     public Direction getDirection() {
         return direction;
     }
+
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
+
 }

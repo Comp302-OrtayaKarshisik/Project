@@ -8,12 +8,11 @@ import domain.util.Direction;
 
 public class Fighter extends Monster  {
 
-
     private static final int MOVE_FRAME_LIMIT = 20;
     private static final int ATTACK_FRAME_LIMIT = 60;
+
     private int moveFrame;
     private int attackFrame;
-
     private boolean lured;
     private Coordinate lureLoc;
 
@@ -32,6 +31,7 @@ public class Fighter extends Monster  {
             moveFrame++;
             return;
         }
+
         moveFrame = 0;
 
         // Fighter already reached the lure location
@@ -45,7 +45,7 @@ public class Fighter extends Monster  {
             Direction prev = getDirection();
             setDirection(Direction.values()[Game.random.nextInt(4)]);
 
-            if (Game.getInstance().getCollisionChecker().validMove(this)) {
+            if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
                 switch (getDirection()) {
                     case UP -> getLocation().setY(getLocation().getY() + 1);
                     case DOWN -> getLocation().setY(getLocation().getY() - 1);
@@ -64,7 +64,7 @@ public class Fighter extends Monster  {
             for (Direction direction : Direction.values()) {
                 setDirection(direction);
 
-                if (Game.getInstance().getCollisionChecker().validMove(this)) {
+                if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
                     switch (getDirection()) {
                         case UP -> getLocation().setY(getLocation().getY() + 1);
                         case DOWN -> getLocation().setY(getLocation().getY() - 1);

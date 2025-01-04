@@ -18,7 +18,7 @@ public class Enchantment {
         this.type = type;
         this.remainingFrame = ENCHANTMENT_DURATION_FRAME;
         Coordinate c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
-        while (!CollisionChecker.getInstance(Game.getInstance()).checkTileEmpty(c)) //ensure spawned on empty tile.
+        while (!Game.getInstance().getDungeon().getCollisionChecker().checkTileEmpty(c)) //ensure spawned on empty tile.
         {
             c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
         }

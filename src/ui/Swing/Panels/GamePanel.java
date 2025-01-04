@@ -153,7 +153,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     // for drawing hall object from build mode
     private void drawObjects(Graphics g) {
-        Tile[][] grid = game.getCurrentHall().getGrid();
+        Tile[][] grid = game.getDungeon().getCurrentHall().getGrid();
         for (int row = 0; row < grid.length; row++) {
             // grid size needs to change
             int verticalSize = 16;
@@ -193,7 +193,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         int y = 15 - (e.getY() / baseTileSize);
         System.out.println("clicked at x: " + x + " y: " + y);
         Coordinate chosenC = new Coordinate(x, y);
-        game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+        game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
     }
 
     @Override

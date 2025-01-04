@@ -86,7 +86,6 @@ public class MonsterFactory {
                 default -> null;
             };
 
-            Game.getInstance().getMonsters().add(w);
             Game.getInstance().getAgents().add(w);
             publishCreationEvent(w);
             lastCreation = System.currentTimeMillis();
