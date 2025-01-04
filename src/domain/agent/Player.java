@@ -14,6 +14,9 @@ import java.util.*;
 
 public class Player extends Agent {
 
+    private final int MAX_HEALTH = 3;
+    private final int INVISIBILITY_DURATION = 5;
+
     private final List<PlayerListener> listeners;
     private int health;
     private final Bag bag;
@@ -41,16 +44,16 @@ public class Player extends Agent {
     public void useEnchantment(Enchantment enchantment) {
         if(enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
             if (enchantment.getType() == EnchantmentType.Life) {increaseHealth();}
-            else {Game.getInstance().getCurrentHall().increaseTime();}
+            else {Game.getInstance().getDungeon().getCurrentHall().increaseTime();}
         }
         else {
             if (bag.containsEnchantment(enchantment)) {
                 bag.removeEnchantment(enchantment);
                 if (enchantment.getType() == EnchantmentType.Cloak) {gainInvisibility();}
-                else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getCurrentHall().higlightRune();}
+                else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
                 else { // sikintili
                     Coordinate c;
-                    for (Monster m : Game.getInstance().getMonsters()) {
+                    for (Agent m : Game.getInstance().getAgents()) {
                         if (m instanceof Fighter) {
                             ((Fighter) m).lureUsed(new Coordinate(5, 5));
                         }
@@ -84,7 +87,7 @@ public class Player extends Agent {
 
         Direction currDirection = getDirection();
 
-        if (Game.getInstance().getCollisionChecker().validMove(this)) {
+        if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
 
             switch (currDirection) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
@@ -118,7 +121,7 @@ public class Player extends Agent {
             public void run() {
                invisible = false;
             }
-        }, 5000);
+        }, INVISIBILITY_DURATION * 1000);
     }
 
     public void collectRune() {
@@ -126,7 +129,7 @@ public class Player extends Agent {
     }
 
     public void increaseHealth() {
-        if (health < 3) {
+        if (health < MAX_HEALTH) {
             health++;
             publishEvent(health);
         }

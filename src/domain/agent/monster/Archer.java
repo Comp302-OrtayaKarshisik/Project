@@ -32,7 +32,7 @@ public class Archer extends Monster {
         Direction prev = getDirection();
         setDirection(DIRECTIONS[Game.random.nextInt(4)]);
 
-        if (Game.getInstance().getCollisionChecker().validMove(this)) {
+        if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
             switch (getDirection()) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
                 case DOWN -> getLocation().setY(getLocation().getY() - 1);

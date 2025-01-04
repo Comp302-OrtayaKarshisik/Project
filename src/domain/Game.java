@@ -3,15 +3,12 @@ package domain;
 
 import controllers.KeyHandler;
 import domain.agent.Agent;
-import domain.agent.monster.Monster;
 import domain.agent.Player;
 import domain.collectables.Enchantment;
-import domain.entities.RegularObject;
 import domain.factories.EnchantmentFactory;
 import domain.factories.MonsterFactory;
-import domain.level.CollisionChecker;
+import domain.level.Dungeon;
 import domain.level.GridDesign;
-import domain.level.Hall;
 import listeners.GameListener;
 
 import java.security.SecureRandom;
@@ -24,37 +21,19 @@ import java.util.concurrent.Executors;
 public class Game {
 
     private ExecutorService executor;
-    private final List<GameListener> listeners;
+    private List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
+
     private static Game instance;
-    private RegularObject[] objects;
-    private final Player player;
+    private Player player;
     private Timer timer;
-    private List<Monster> monsters;
-    private Hall[] halls;
+
     private volatile boolean paused;
     private KeyHandler keyHandler; // this field is for now
-    private CollisionChecker collisionChecker; // collusion checker of the game
-    private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
-    private int currentHall;
+
+    private List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
     private List<Enchantment> enchantments;
-    private GridDesign[] gridDesigns;
-
-
-    private Game() {
-        executor =  Executors.newSingleThreadExecutor();
-        player = new Player();
-        timer = new Timer(); // no idea what will this do;
-        //this.halls = halls;
-        listeners = new LinkedList<>();
-        monsters = new LinkedList<>();
-        enchantments = new LinkedList<>();
-        //keyHandler = new KeyHandler();
-        agents = new LinkedList<>();
-        agents.add(player);
-        paused = false;
-        collisionChecker = CollisionChecker.getInstance(this);
-    }
+    private Dungeon dungeon;
 
     public static Game getInstance() {
         if (instance == null) {
@@ -63,51 +42,75 @@ public class Game {
         return instance;
     }
 
-    // A method which will be used for the time passage of the game.
-    public void update(){
-        player.move();
-        for (Monster m : monsters) {
-            m.move();
-        }
-        for (Enchantment e : enchantments) {
-            e.decreaseRemainingFrame();
-        }
-    }
+    private Game() {
+        executor =  Executors.newSingleThreadExecutor();
+        player = new Player();
+        timer = new Timer(); // no idea what will this do;
 
-    public void pubishGameEvent() {
-        for (GameListener gl : listeners)
-            gl.onGameEvent(this);
-    }
-
-    public void initPlayMode(GridDesign[] gridDesigns) {
-        this.gridDesigns = gridDesigns;
-        int placedObjectCount = gridDesigns[0].getPlacedObjectCount();
-
-        halls = new Hall[4];
-        halls[0] = new Hall(null, placedObjectCount);
-        halls[0].transferGridDesign(gridDesigns[0]);
-
-        currentHall = 0;
-    }
-
-    public void nextHall() {
-        if(currentHall == 3) {
-            return;
-        }
-        currentHall++;
-        halls[currentHall] = new Hall("a", gridDesigns[currentHall].getPlacedObjectCount());
-        halls[currentHall].transferGridDesign(gridDesigns[currentHall]);
-
-        monsters = new LinkedList<>();
+        dungeon = new Dungeon();
+        listeners = new LinkedList<>();
         enchantments = new LinkedList<>();
 
-        MonsterFactory.getInstance().publishNextHallEvent();
+        agents = new LinkedList<>();
+        agents.add(player);
+        paused = false;
     }
 
     public void startGame () {
         Update up = new Update();
         //Executor runs the method instead of threads
         executor.execute(up);
+    }
+
+    // a method which will terminate everything in the game
+    public void endGame() {
+        //really important
+    }
+
+    // A method which will be used for the time passage of the game.
+    public void update(){
+        // really important fact is that player has to be the
+        // first element of the given list
+        for (Agent m : agents) {
+            m.move();
+        }
+
+        for (Enchantment e : enchantments) {
+            e.decreaseRemainingFrame();
+        }
+    }
+
+    public void publishGameEvent() {
+        for (GameListener gl : listeners)
+            gl.onGameEvent(this);
+    }
+
+    public void initPlayMode(GridDesign[] gridDesigns) {
+        dungeon.loadDesigns(gridDesigns);
+    }
+
+    public Dungeon getDungeon(){
+        return dungeon;
+    }
+
+    public void setDungeon(Dungeon dungeon){
+        this.dungeon = dungeon;
+    }
+
+    public void nextHall() {
+        // should just end at this point
+        if(dungeon.getCurrentHallIndex() == 3) {
+            return;
+        }
+        dungeon.nextHall();
+
+        //clears the agent problem
+        agents.clear();
+        agents.add(player);
+
+        enchantments = new LinkedList<>();
+
+        MonsterFactory.getInstance().publishNextHallEvent();
     }
 
     public synchronized void togglePause() {
@@ -118,14 +121,9 @@ public class Game {
         else
             resumeGame();
 
-        pubishGameEvent(); // Notify listeners
+        publishGameEvent(); // Notify listeners
     }
 
-    public boolean isPaused() {
-        return paused;
-    }
-
-    // maybe exac service is better
     public void pauseGame() {
         MonsterFactory.getInstance().pauseCreation();
         EnchantmentFactory.getInstance().pauseCreation();
@@ -136,72 +134,12 @@ public class Game {
         EnchantmentFactory.getInstance().resumeCreation();
     }
 
-
-    public void removeEnch() {}
-    public void spawnEnch() {}
-    public void endGame() {}
     public void handleCollectable() {}
     public void openHall() {}
     public void createVictoryScreen() {}
     public boolean isTimeExpired () {return false;}
     public boolean isPlayerDead() {return true;}
     public Object getObject() {return null;}
-
-    public void addListener(GameListener gl) {
-        listeners.add(gl);
-    }
-
-    public Hall[] getHalls() {
-        return halls;
-    }
-
-    public void setHalls(Hall[] halls) {
-        this.halls = halls;
-    }
-
-    public List<Monster> getMonsters() {
-        return monsters;
-    }
-
-    public List<Enchantment> getEnchantments() {
-        return enchantments;
-    }
-
-    public void setMonsters(List<Monster> monsters) {
-        this.monsters = monsters;
-    }
-
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public void setTimer(Timer timer) {
-        this.timer = timer;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Hall getCurrentHall() {
-        return halls[currentHall];
-    }
-
-    public KeyHandler getKeyHandler() {
-        return keyHandler;
-    }
-
-    public void setKeyHandler(KeyHandler keyHandler) {
-        this.keyHandler = keyHandler;
-    }
-
-    public CollisionChecker getCollisionChecker() {
-        return collisionChecker;
-    }
-
-    public List<Agent> getAgents() {
-        return agents;
-    }
 
     private class Update implements Runnable {
         @Override
@@ -223,31 +161,48 @@ public class Game {
 
                     if (diff >= 1) {
                         update();
-                        pubishGameEvent();
+                        publishGameEvent();
                         diff = 0;
                     }
                 }
             }
         }
     }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void addListener(GameListener gl) {
+        listeners.add(gl);
+    }
+
+    public List<Enchantment> getEnchantments() {
+        return enchantments;
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public KeyHandler getKeyHandler() {
+        return keyHandler;
+    }
+
+    public void setKeyHandler(KeyHandler keyHandler) {
+        this.keyHandler = keyHandler;
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
 }
-
-    /*
-
-	public void placeObject(Coordinate c, ObjectType t) {
-
-	}
-
-	public void removeObject(Coordinate mouseCoordinates, ObjectType type) {
-
-	}
-
-	public Tile[][] getGrid({
-
-	}
-
-	public List<GameObject> getObjects() {
-
-	}
-
-	*/
