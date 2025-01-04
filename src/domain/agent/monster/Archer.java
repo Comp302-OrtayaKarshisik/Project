@@ -87,8 +87,10 @@ public class Archer extends Monster {
         if (arrow.alive) {arrow.update();}
 
         if (attackFrame >= ATTACK_FRAME_LIMIT) {
-            int dx;
-            int dy;
+
+            int dx = 0;
+            int dy = 0;
+
 
             if (Coordinate.euclideanDistance(archerloc, playerloc) <= ATTACK_RANGE &&
                     !Game.getInstance().getPlayer().isInvisible()) {
@@ -106,13 +108,13 @@ public class Archer extends Monster {
                 attackFrame = 0;
             } else { // if player is not found in the attack range */
 
-                int[] directions = {-1, 0, 1};
+                switch (DIRECTIONS[Game.random.nextInt(4)]) {
+                    case UP -> {dx = 0;dy = 1;}
+                    case DOWN -> {dx = 0;dy = -1;}
+                    case RIGHT -> {dx = 1;dy = 0;}
+                    case LEFT -> {dx = -1;dy = 0;}
 
-                do {
-                    dx = directions[Game.random.nextInt(3)];
-                    dy = directions[Game.random.nextInt(3)];
-                } while (dx == 0 && dy == 0);
-
+                }
                 arrow.set(initialarrowloc, dx, dy, true, this);
                 publishArrowActivationEvent();
                 attackFrame = 0;
