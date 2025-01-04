@@ -69,6 +69,11 @@ public class MonsterFactory {
             fl.onCreationEvent(monster);
     }
 
+    public void publishNextHallEvent() {
+        for (FactoryListener fl: listeners)
+            fl.onDeletionEvent();
+    }
+
     private class MonsterCreationTask extends TimerTask {
         @Override
         public void run() {

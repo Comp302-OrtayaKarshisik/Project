@@ -2,6 +2,7 @@ package domain.level;
 
 import domain.Game;
 import domain.agent.Agent;
+import domain.collectables.Enchantment;
 import domain.util.Coordinate;
 
 public class CollisionChecker {
@@ -25,7 +26,8 @@ public class CollisionChecker {
     public boolean validMove(Agent agent) {
         return isInBoundary(agent) &&
                 !checkTileCollisions(agent) &&
-                !checkAgentCollisions(agent);
+                !checkAgentCollisions(agent) &&
+                !checkEnchantmentCollisions(agent);
     }
 
     // Checks whether movement is in the boundary
@@ -65,6 +67,25 @@ public class CollisionChecker {
         };
     }
 
+    public boolean checkEnchantmentCollisions(Agent agent) {
+        Coordinate c;
+        switch (agent.getDirection()) {
+            case STOP -> c = new Coordinate(agent.getLocation().getX(),agent.getLocation().getY());
+            case UP -> c = new Coordinate(agent.getLocation().getX(),agent.getLocation().getY() + 1);
+            case DOWN -> c = new Coordinate(agent.getLocation().getX(),agent.getLocation().getY() - 1);
+            case RIGHT -> c = new Coordinate(agent.getLocation().getX() + 1, agent.getLocation().getY());
+            case LEFT -> c = new Coordinate(agent.getLocation().getX() - 1, agent.getLocation().getY());
+            default -> c = agent.getLocation();
+        }
+        for (Enchantment enchantment : game.getEnchantments()) {
+            if (enchantment.getLocation().equals(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     // The target list contains all the agents
     public boolean checkAgentCollisions(Agent agent) {
         Tile tile;
@@ -85,6 +106,28 @@ public class CollisionChecker {
             }
         }
         return false;
+    }
+
+    public boolean checkTileEmpty(Coordinate c)
+    {
+
+        if (game.getCurrentHall().getGrid()[c.getX()][c.getY()].isCollisable()) {
+            return false;
+        }
+
+        for (Agent target : game.getAgents()) {
+            if (target.getLocation().equals(c)) {
+                return false;
+            }
+        }
+
+        for (Enchantment enchantment : game.getEnchantments()) {
+            if (enchantment.getLocation().equals(c)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public Game getGame() {

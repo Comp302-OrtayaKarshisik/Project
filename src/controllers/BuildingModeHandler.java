@@ -27,9 +27,14 @@ public class BuildingModeHandler {
 		this.game = Game.getInstance();
 		Textures.createSprites();
 		for(int i = 0; i < gridDesigns.length; i++){
-			gridDesigns[i] = new GridDesign(16,16,2);
+			gridDesigns[i] = new GridDesign(16,16,0);
 		}
 
+	}
+
+	public static BuildingModeHandler recreateBuildingModeHandler() {
+		instance = new BuildingModeHandler();
+		return instance;
 	}
 	
 	 public static BuildingModeHandler getInstance() {

@@ -33,6 +33,10 @@ public abstract class MobilMonsterGraphics extends EntityGraphics implements Fac
         }
     }
 
+    public void onDeletionEvent() {
+        this.monsters.clear();
+    }
+
     public void subscribe(MonsterFactory mf) {
         mf.addListener(this);
     }
