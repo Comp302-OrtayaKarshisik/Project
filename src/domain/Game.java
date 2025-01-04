@@ -202,7 +202,17 @@ public class Game {
     public List<Agent> getAgents() {
         return agents;
     }
-
+    public double getTimeRemaining(){return 0;}
+    public double getTotalTime(){return 0;}
+    public synchronized void removeMonster(Monster monster) {
+        if (monsters.contains(monster)) {
+            monsters.remove(monster);
+            agents.remove(monster);
+            System.out.println("Monster removed: " + monster.getClass().getSimpleName());
+        } else {
+            System.out.println("Monster not found!");
+        }
+    }
     private class Update implements Runnable {
         @Override
         public void run() {
