@@ -62,6 +62,8 @@ public class Hall {
 
     public void handleChosenBox(Player player, Coordinate c1) {
 
+        // for enchantment logic
+
         for (Enchantment enchantment : game.getEnchantments()) {
             //System.out.println("scanning found enchantment at x: " + enchantment.getLocation().getX() + " y: " + enchantment.getLocation().getY());
             if (enchantment.getLocation().equals(c1)) {
@@ -73,15 +75,19 @@ public class Hall {
             }
         }
 
+        // for rune logic
+
         Tile obj = grid[c1.getX()][c1.getY()];
         if (obj.getName() == "aa" || obj.getName() == "COLUMN") {
             return;
         }
 
-        grid[c1.getX()][c1.getY()] = new Tile("aa",new Coordinate(c1.getX(), c1.getY()));
-        if (isRuneLocation(c1) && Coordinate.manhattanDistance(game.getPlayer().getLocation(), c1) <= 1) {
-            System.out.println("found rune");
-            player.setHasRune(true);
+        if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), c1) <= 1) {
+            grid[c1.getX()][c1.getY()] = new Tile("aa",new Coordinate(c1.getX(), c1.getY()));
+            if(isRuneLocation(c1)) {
+                System.out.println("found rune");
+                player.setHasRune(true);
+            }
         }
     }
 
