@@ -111,6 +111,7 @@ public class Game {
         enchantments = new LinkedList<>();
 
         MonsterFactory.getInstance().publishNextHallEvent();
+        EnchantmentFactory.getInstance().publishNextHallEvent();
     }
 
     public synchronized void togglePause() {
