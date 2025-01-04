@@ -5,9 +5,12 @@ import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.monster.Monster;
 import domain.agent.Player;
+import domain.collectables.Enchantment;
 import domain.entities.RegularObject;
+import domain.factories.EnchantmentFactory;
 import domain.factories.MonsterFactory;
 import domain.level.CollisionChecker;
+import domain.level.GridDesign;
 import domain.level.Hall;
 import listeners.GameListener;
 
@@ -33,7 +36,9 @@ public class Game {
     private KeyHandler keyHandler; // this field is for now
     private CollisionChecker collisionChecker; // collusion checker of the game
     private final List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
-    private Hall currentHall;
+    private int currentHall;
+    private List<Enchantment> enchantments;
+    private GridDesign[] gridDesigns;
 
 
     private Game() {
@@ -43,12 +48,11 @@ public class Game {
         //this.halls = halls;
         listeners = new LinkedList<>();
         monsters = new LinkedList<>();
+        enchantments = new LinkedList<>();
         //keyHandler = new KeyHandler();
         agents = new LinkedList<>();
         agents.add(player);
         paused = false;
-        halls = new Hall[4];
-        currentHall = halls[0];
         collisionChecker = CollisionChecker.getInstance(this);
     }
 
@@ -65,11 +69,39 @@ public class Game {
         for (Monster m : monsters) {
             m.move();
         }
+        for (Enchantment e : enchantments) {
+            e.decreaseRemainingFrame();
+        }
     }
 
     public void pubishGameEvent() {
         for (GameListener gl : listeners)
             gl.onGameEvent(this);
+    }
+
+    public void initPlayMode(GridDesign[] gridDesigns) {
+        this.gridDesigns = gridDesigns;
+        int placedObjectCount = gridDesigns[0].getPlacedObjectCount();
+
+        halls = new Hall[4];
+        halls[0] = new Hall(null, placedObjectCount);
+        halls[0].transferGridDesign(gridDesigns[0]);
+
+        currentHall = 0;
+    }
+
+    public void nextHall() {
+        if(currentHall == 3) {
+            return;
+        }
+        currentHall++;
+        halls[currentHall] = new Hall("a", gridDesigns[currentHall].getPlacedObjectCount());
+        halls[currentHall].transferGridDesign(gridDesigns[currentHall]);
+
+        monsters = new LinkedList<>();
+        enchantments = new LinkedList<>();
+
+        MonsterFactory.getInstance().publishNextHallEvent();
     }
 
     public void startGame () {
@@ -96,10 +128,12 @@ public class Game {
     // maybe exac service is better
     public void pauseGame() {
         MonsterFactory.getInstance().pauseCreation();
+        EnchantmentFactory.getInstance().pauseCreation();
     }
 
     public void resumeGame() {
         MonsterFactory.getInstance().resumeCreation();
+        EnchantmentFactory.getInstance().resumeCreation();
     }
 
 
@@ -129,6 +163,10 @@ public class Game {
         return monsters;
     }
 
+    public List<Enchantment> getEnchantments() {
+        return enchantments;
+    }
+
     public void setMonsters(List<Monster> monsters) {
         this.monsters = monsters;
     }
@@ -146,11 +184,7 @@ public class Game {
     }
 
     public Hall getCurrentHall() {
-        return currentHall;
-    }
-
-    public void setCurrentHall(Hall currentHall) {
-        this.currentHall = currentHall;
+        return halls[currentHall];
     }
 
     public KeyHandler getKeyHandler() {

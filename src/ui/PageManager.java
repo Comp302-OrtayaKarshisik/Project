@@ -1,5 +1,6 @@
 package ui;
 
+import domain.Game;
 import domain.level.GridDesign;
 
 import javax.swing.JFrame;
@@ -55,7 +56,10 @@ public class PageManager {
 		BuildingModeHandler bmh = BuildingModeHandler.recreateBuildingModeHandler();
 		showPage(new BuildModePage(bmh)); }
 
-	public void showPlayModePage(GridDesign[] gridDesigns) { showPage(new PlayModePage(gridDesigns)); }
+	public void showPlayModePage(GridDesign[] gridDesigns) {
+		Game.getInstance().initPlayMode(gridDesigns);
+		showPage(new PlayModePage());
+	}
 
     public void showFrame() {
         mainFrame.setVisible(true);

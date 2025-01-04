@@ -5,8 +5,10 @@ import domain.Textures;
 import domain.agent.Player;
 import domain.collectables.EnchantmentType;
 import domain.collectables.Enchantment;
+import domain.factories.EnchantmentFactory;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
+import ui.Graphics.EnchantmentGraphics;
 
 import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
@@ -22,12 +24,14 @@ public class Hall {
     private List<Enchantment> enchantments;
     private final int objectCapacity;
     private ArrayList<Coordinate> runeLocations;
+    private Game game;
 
     private Tile[][] grid;
 
     public Hall(String type, int objectCapacity) {
         timer = new Timer();
         this.type = type;
+        game = Game.getInstance();
         this.runeLocations = new ArrayList<Coordinate>();
         this.enchantments = new LinkedList<>();
         this.objectCapacity = objectCapacity;
@@ -57,12 +61,25 @@ public class Hall {
     }
 
     public void handleChosenBox(Player player, Coordinate c1) {
+
+        for (Enchantment enchantment : game.getEnchantments()) {
+            //System.out.println("scanning found enchantment at x: " + enchantment.getLocation().getX() + " y: " + enchantment.getLocation().getY());
+            if (enchantment.getLocation().equals(c1)) {
+                //handle enchantment logic.
+                Game.getInstance().getPlayer().useEnchantment(enchantment);//probably shouldn't call it here.
+                game.getEnchantments().remove(enchantment);
+                EnchantmentFactory.getInstance().notifyRemoval(enchantment);
+                return;
+            }
+        }
+
         Tile obj = grid[c1.getX()][c1.getY()];
         if (obj.getName() == "aa" || obj.getName() == "COLUMN") {
             return;
         }
+
         grid[c1.getX()][c1.getY()] = new Tile("aa",new Coordinate(c1.getX(), c1.getY()));
-        if (isRuneLocation(c1)) {
+        if (isRuneLocation(c1) && Coordinate.manhattanDistance(game.getPlayer().getLocation(), c1) <= 1) {
             System.out.println("found rune");
             player.setHasRune(true);
         }
