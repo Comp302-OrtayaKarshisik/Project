@@ -9,12 +9,12 @@ import domain.Textures;
 
 import listeners.GameListener;
 
-import domain.agent.monster.Fighter;
-import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
 import domain.util.Coordinate;
+import ui.Graphics.AgentGrapichs.*;
+import ui.Graphics.ArrowGraphics;
 import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
@@ -60,6 +60,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private final ArcherGraphics archerGraphics;
     private final WizardGraphics wizardGraphics;
     private final EnchantmentGraphics enchantmentGraphics;
+    private final ArrowGraphics arrowGraphics;
     private Game game;
 
 
@@ -76,6 +77,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
         enchantmentGraphics = EnchantmentGraphics.getInstance(48);
+        arrowGraphics = ArrowGraphics.getInstance(48);
+
         game.setKeyHandler(keyHandler);
         subscribe(game);
     }
@@ -114,6 +117,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         playerGraphics.draw(g2);
         fighterGraphics.draw(g2);
         archerGraphics.draw(g2);
+        arrowGraphics.draw(g2);
         wizardGraphics.draw(g2);
         enchantmentGraphics.draw(g2);
 
