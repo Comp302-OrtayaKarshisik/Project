@@ -2,6 +2,7 @@ package controllers;
 
 import domain.Game;
 import domain.util.Direction;
+import ui.HelpScreen;
 import ui.Swing.Panels.GamePanel;
 
 import java.awt.event.KeyEvent;
@@ -10,11 +11,14 @@ import java.awt.event.KeyListener;
 
 // One change could be the latter pressed button will get the lead
 public class KeyHandler implements KeyListener {
+    private HelpScreen helpScreen;
 
     // These are public for now, later we can change them to private or protected
     public boolean goUp, goDown, goLeft, goRight, revealUsed, lureUsed, protectionUsed, options;
     public Direction runeThrowDirection; // U,D,L,R representing up,down,left,right
     public KeyHandler() {
+        helpScreen = new HelpScreen(); // Initialize the HelpScreen JFrame
+
     }
 
     @Override
@@ -30,7 +34,11 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_RIGHT) goRight = true;
         if (key == KeyEvent.VK_ESCAPE) options = true;
         if (key == KeyEvent.VK_ESCAPE) Game.getInstance().togglePause();
-
+        if (Game.getInstance().isPaused() && (key == KeyEvent.VK_H)) {
+            if (!helpScreen.isVisible()) {
+                helpScreen.setVisible(true);
+            }
+        }
     }
 
     @Override
