@@ -1,9 +1,10 @@
 package domain.agent;
 
+import domain.entities.Entity;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
-public abstract class Agent {
+public abstract class Agent extends Entity {
 
     // Agents need a lot of fields from the game
     // This fields may change later

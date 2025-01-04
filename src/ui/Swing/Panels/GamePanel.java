@@ -9,26 +9,18 @@ import domain.Textures;
 
 import listeners.GameListener;
 
-import domain.agent.monster.Fighter;
-import domain.agent.monster.Wizard;
 import domain.level.GridDesign;
 import domain.level.Hall;
 import domain.level.Tile;
 import domain.util.Coordinate;
-import listeners.GameListener;
-import ui.Graphics.AgentGrapichs.ArcherGraphics;
-import ui.Graphics.AgentGrapichs.FighterGraphics;
-import ui.Graphics.AgentGrapichs.PlayerGraphics;
-import ui.Graphics.AgentGrapichs.WizardGraphics;
-import ui.Graphics.TileSetImageGetter;
+import ui.Graphics.AgentGrapichs.*;
+import ui.Graphics.ArrowGraphics;
 import ui.PlayModePage;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 // In the next generations of the game KeyListener will
 // be replaced by KeyBindings
@@ -66,6 +58,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private final FighterGraphics fighterGraphics;
     private final ArcherGraphics archerGraphics;
     private final WizardGraphics wizardGraphics;
+    private final ArrowGraphics arrowGraphics;
     private Game game;
 
 
@@ -81,6 +74,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
+        arrowGraphics = ArrowGraphics.getInstance(48);
 
         game.setCurrentHall(new Hall("s", 0));
         game.setKeyHandler(keyHandler);
@@ -133,6 +127,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         playerGraphics.draw(g2);
         fighterGraphics.draw(g2);
         archerGraphics.draw(g2);
+        arrowGraphics.draw(g2);
         wizardGraphics.draw(g2);
         } else {
             drawPauseScreen(g2);

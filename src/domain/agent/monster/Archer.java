@@ -1,23 +1,56 @@
 package domain.agent.monster;
 
 import domain.Game;
+import domain.entities.Arrow;
+import domain.entities.Projectile;
 import domain.util.Coordinate;
 import domain.util.Direction;
+import listeners.ArcherListener;
+import listeners.FactoryListener;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class Archer extends Monster {
 
+
+    private LinkedList<ArcherListener> listeners;
     private static final int ATTACK_RANGE = 4;
     private static final int MOVE_FRAME_LIMIT = 20;
     private static final int ATTACK_FRAME_LIMIT = 60;
 
     private int moveFrame;
     private int attackFrame;
+    public Projectile arrow;
 
     public Archer() {
         super();
+        listeners = new LinkedList<>();
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
+
+
     }
+
+    public void addListener(ArcherListener al) {
+        listeners.add(al);
+    }
+
+    public void publishCreationEvent() {
+        for (ArcherListener al : listeners)
+            al.onCreationEvent(this);
+    }
+
+    public void publishArrowActivationEvent() {
+        for (ArcherListener al : listeners)
+            al.onArrowActivationEvent(this);
+    }
+
+    /*public void publishArrowDeactivationEvent() {
+        for (ArcherListener al : listeners)
+            al.onArrowDeactivationEvent(this);
+    }*/
+
 
     // move method of the archer
     public void move() {
@@ -45,12 +78,53 @@ public class Archer extends Monster {
     }
 
     private void shootArrow() {
-        if (Coordinate.euclideanDistance(this.getLocation(), Game.getInstance().getPlayer().getLocation()) <= ATTACK_RANGE &&
-                !Game.getInstance().getPlayer().isInvisible() && attackFrame >= ATTACK_FRAME_LIMIT) {
-            Game.getInstance().getPlayer().reduceHealth();
-            attackFrame = 0;
+
+        if (arrow == null || !arrow.alive) {
+            arrow = new Arrow(this); // Initialize the arrow only when needed
+            publishCreationEvent();}
+
+        Coordinate archerloc = this.getLocation();
+        Coordinate playerloc = Game.getInstance().getPlayer().getLocation();
+        Coordinate initialarrowloc = new Coordinate(archerloc.getX(), archerloc.getY());
+
+        if (arrow.alive) {arrow.update();}
+
+        if (attackFrame >= ATTACK_FRAME_LIMIT) {
+            int dx;
+            int dy;
+
+            if (Coordinate.euclideanDistance(archerloc, playerloc) <= ATTACK_RANGE &&
+                    !Game.getInstance().getPlayer().isInvisible()) {
+
+                dx = playerloc.getX() - archerloc.getX();
+                dy = playerloc.getY() - archerloc.getY();
+
+                int gcd = gcd(Math.abs(dx), Math.abs(dy));
+                dx /= gcd;
+                dy /= gcd;
+
+                arrow.set(initialarrowloc, dx, dy, true, this);
+                publishArrowActivationEvent();
+                Game.getInstance().getPlayer().reduceHealth();
+                attackFrame = 0;
+            } else { // if player is not found in the attack range */
+
+                int[] directions = {-1, 0, 1};
+
+                do {
+                    dx = directions[Game.random.nextInt(3)];
+                    dy = directions[Game.random.nextInt(3)];
+                } while (dx == 0 && dy == 0);
+
+                arrow.set(initialarrowloc, dx, dy, true, this);
+                publishArrowActivationEvent();
+                attackFrame = 0;
+            }
         }
-        attackFrame++;
+        attackFrame++;}
+
+        private int gcd ( int a, int b){
+            return b == 0 ? a : gcd(b, a % b);
+        }
     }
 
-}
