@@ -97,8 +97,8 @@ public class HallPanelHolder extends JPanel {
         g.drawImage(doorOpen, 462,789, tileSize, tileSize, null);
     }
 
-    public void setDoorOpen() {
-        isDoorOpen = true;
+    public void setDoorOpen(boolean isDoorOpen) {
+        this.isDoorOpen = isDoorOpen;
         this.repaint();
     }
 

@@ -14,12 +14,16 @@ import java.util.*;
 
 public class Player extends Agent {
 
+    private final int MAX_HEALTH = 3;
+    private final int INVISIBILITY_DURATION = 5;
+
     private final List<PlayerListener> listeners;
     private int health;
     private final Bag bag;
     private boolean hasRune;
     private boolean invisible;
     private final Timer timer; // This methods is for now;
+    private Coordinate doorCoordinate;
 
     public Player() {
         listeners = new LinkedList<>();
@@ -28,6 +32,7 @@ public class Player extends Agent {
         hasRune = false;
         invisible = false;
         setLocation(new Coordinate(0,0));
+        doorCoordinate = new Coordinate(9, 0);
         timer = new Timer();
         setDirection(Direction.STOP);
     }
@@ -37,26 +42,28 @@ public class Player extends Agent {
     // other objects thus other methods will help it
     // for now
     public void useEnchantment(Enchantment enchantment) {
-        if (bag.containsEnchantment(enchantment)) {
-            bag.removeEnchantment(enchantment);
-            if (enchantment.getType() == EnchantmentType.Cloak)
-                gainInvisibility();
-            else if (enchantment.getType() == EnchantmentType.Life)
-                increaseHealth();
-            else if (enchantment.getType() == EnchantmentType.Time)
-                Game.getInstance().getCurrentHall().increaseTime();
-            else if (enchantment.getType() == EnchantmentType.Reveal)
-               Game.getInstance().getCurrentHall().higlightRune();
-            else { // sikintili
-
-                Coordinate c;
-                for (Monster m : Game.getInstance().getMonsters()) {
-                    if (m instanceof Fighter) {
-                        ((Fighter) m).lureUsed(new Coordinate(5,5));
+        if(enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
+            if (enchantment.getType() == EnchantmentType.Life) {increaseHealth();}
+            else {Game.getInstance().getDungeon().getCurrentHall().increaseTime();}
+        }
+        else {
+            if (bag.containsEnchantment(enchantment)) {
+                bag.removeEnchantment(enchantment);
+                if (enchantment.getType() == EnchantmentType.Cloak) {gainInvisibility();}
+                else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
+                else { // sikintili
+                    Coordinate c;
+                    for (Agent m : Game.getInstance().getAgents()) {
+                        if (m instanceof Fighter) {
+                            ((Fighter) m).lureUsed(new Coordinate(5, 5));
+                        }
                     }
                 }
             }
         }
+
+
+
     }
 
     public void collectEnchantment(Enchantment Enchantment) {
@@ -78,9 +85,11 @@ public class Player extends Agent {
         else
             setDirection(Direction.STOP);
 
-        if (Game.getInstance().getCollisionChecker().validMove(this)) {
+        Direction currDirection = getDirection();
 
-            switch (getDirection()) {
+        if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
+
+            switch (currDirection) {
                 case UP -> getLocation().setY(getLocation().getY() + 1);
                 case DOWN -> getLocation().setY(getLocation().getY() - 1);
                 case RIGHT -> getLocation().setX(getLocation().getX() + 1);
@@ -88,6 +97,12 @@ public class Player extends Agent {
             }
         }
 
+        // for getting to the next Hall
+        if (currDirection == Direction.DOWN && hasRune && location.equals(doorCoordinate)) {
+            this.location.setLocation(0, 0);
+            this.setHasRune(false);
+            Game.getInstance().nextHall();
+        }
     }
 
     public void addListener(PlayerListener pl) {
@@ -106,7 +121,7 @@ public class Player extends Agent {
             public void run() {
                invisible = false;
             }
-        }, 5000);
+        }, INVISIBILITY_DURATION * 1000);
     }
 
     public void collectRune() {
@@ -114,7 +129,7 @@ public class Player extends Agent {
     }
 
     public void increaseHealth() {
-        if (health < 3) {
+        if (health < MAX_HEALTH) {
             health++;
             publishEvent(health);
         }
@@ -144,7 +159,7 @@ public class Player extends Agent {
     public void setHasRune(boolean hasRune) {
         this.hasRune = hasRune;
         for (PlayerListener pl : listeners)
-            pl.onRuneEvent();
+            pl.onRuneEvent(hasRune);
     }
 
     public boolean isInvisible() {

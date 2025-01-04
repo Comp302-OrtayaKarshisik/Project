@@ -15,12 +15,21 @@ import domain.level.Tile;
 import domain.util.Coordinate;
 import ui.Graphics.AgentGrapichs.*;
 import ui.Graphics.ArrowGraphics;
+import listeners.GameListener;
+import ui.Graphics.AgentGrapichs.ArcherGraphics;
+import ui.Graphics.AgentGrapichs.FighterGraphics;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
+import ui.Graphics.AgentGrapichs.WizardGraphics;
+import ui.Graphics.EnchantmentGraphics;
+import ui.Graphics.TileSetImageGetter;
 import ui.PlayModePage;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // In the next generations of the game KeyListener will
 // be replaced by KeyBindings
@@ -31,12 +40,6 @@ import java.awt.image.BufferedImage;
 // GameSettingsPanel will take GamePanel and will change
 // FPS,ETC
 public class GamePanel extends JPanel implements MouseListener, GameListener {
-    // to incorporate grid designs from build mode
-    private int currentHall = 0;
-    private GridDesign[] gridDesigns;
-
-    // to display hero's lives
-    private PlayModePage playModePage;
 
     // Screen settings each ca
     private final int baseTileSize = 48; // Objects will be 64x64
@@ -50,14 +53,13 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private int verticalSquares = 16; // how many squares in the y direction
     private int height = verticalSquares * (scalingFactor * baseTileSize); // vertical pixels
 
-    private int FPS = 60; // frames per second classic, can change but the default is 60
-
     KeyHandler keyHandler = new KeyHandler();
 
     private final PlayerGraphics playerGraphics;
     private final FighterGraphics fighterGraphics;
     private final ArcherGraphics archerGraphics;
     private final WizardGraphics wizardGraphics;
+    private final EnchantmentGraphics enchantmentGraphics;
     private final ArrowGraphics arrowGraphics;
     private Game game;
 
@@ -74,23 +76,11 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
+        enchantmentGraphics = EnchantmentGraphics.getInstance(48);
         arrowGraphics = ArrowGraphics.getInstance(48);
 
-        game.setCurrentHall(new Hall("s", 0));
         game.setKeyHandler(keyHandler);
         subscribe(game);
-    }
-
-    public GamePanel(GridDesign[] gridDesigns, PlayModePage playModePage) {
-        this();
-        this.gridDesigns = gridDesigns;
-        this.playModePage = playModePage;
-        this.playModePage.subscribe(Game.getInstance().getPlayer());
-
-        if (gridDesigns != null) {
-            this.game.getCurrentHall().transferGridDesign(gridDesigns[0]);
-        }
-
     }
 
     /***
@@ -129,6 +119,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         archerGraphics.draw(g2);
         arrowGraphics.draw(g2);
         wizardGraphics.draw(g2);
+        enchantmentGraphics.draw(g2);
+
         } else {
             drawPauseScreen(g2);
         }
@@ -165,7 +157,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     // for drawing hall object from build mode
     private void drawObjects(Graphics g) {
-        Tile[][] grid = game.getCurrentHall().getGrid();
+        Tile[][] grid = game.getDungeon().getCurrentHall().getGrid();
         for (int row = 0; row < grid.length; row++) {
             // grid size needs to change
             int verticalSize = 16;
@@ -201,13 +193,11 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int col = e.getX() / baseTileSize;
-        int row = 15 - e.getY() / baseTileSize;
-        System.out.println("Clicked at" + col + ", " + row);
-        Coordinate chosenC = new Coordinate(col, row);
-        if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), chosenC) <= 1) {
-            game.getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
-        }
+        int x = e.getX() / baseTileSize;
+        int y = 15 - (e.getY() / baseTileSize);
+        System.out.println("clicked at x: " + x + " y: " + y);
+        Coordinate chosenC = new Coordinate(x, y);
+        game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
     }
 
     @Override
@@ -224,10 +214,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-    }
-
-    public void startGame() {
-        Game.getInstance().startGame();
     }
 
     @Override

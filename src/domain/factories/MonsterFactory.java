@@ -69,6 +69,11 @@ public class MonsterFactory {
             fl.onCreationEvent(monster);
     }
 
+    public void publishNextHallEvent() {
+        for (FactoryListener fl: listeners)
+            fl.onDeletionEvent();
+    }
+
     private class MonsterCreationTask extends TimerTask {
         @Override
         public void run() {
@@ -81,7 +86,6 @@ public class MonsterFactory {
                 default -> null;
             };
 
-            Game.getInstance().getMonsters().add(w);
             Game.getInstance().getAgents().add(w);
             publishCreationEvent(w);
             lastCreation = System.currentTimeMillis();
