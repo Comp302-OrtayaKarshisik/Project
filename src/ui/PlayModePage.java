@@ -234,6 +234,18 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
         displayLives(num);
     }
 
+
+    @Override
+    public void onTimerEvent(CountDownTimer timer) {
+        updateTimer(timer);
+
+        if (timer.getTimeRemaining() <= 0) {
+            PageManager.getInstance().showGameOverPage();
+        }
+    }
+
+
+
     @Override
     public void onRuneEvent(boolean hasRune) {
         if(hasRune) {
@@ -253,10 +265,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
         }
     }
 
-    @Override
-    public void onTimerEvent(CountDownTimer timer) {
-        updateTimer(timer);
-    }
 
 
 
