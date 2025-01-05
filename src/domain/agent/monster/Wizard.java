@@ -3,6 +3,7 @@ package domain.agent.monster;
 import domain.Game;
 import domain.util.Coordinate;
 import domain.level.CountDownTimer;
+import ui.Graphics.AgentGrapichs.WizardGraphics;
 
 public class Wizard extends Monster{
     private WizardBehaviorStrategy currentBehavior;
@@ -40,7 +41,8 @@ public class Wizard extends Monster{
 
     public void  disappear() {
         System.out.println("Wizard disappeared!");
-        Game.getInstance().removeMonster(this);//!!!!!!!!!!!!!I did a remove method to game class pls check !!!!!!!!!!11
+        Game.getInstance().removeMonster(this);
+        WizardGraphics.getInstance(48).onDeletionEventOne(this); //!!!!!!!!!!!!!I did a remove method to game class pls check !!!!!!!!!!11
     }
 
 

@@ -20,7 +20,6 @@ public class PlayerRelocationStrategy implements WizardBehaviorStrategy{
             int y = new Random().nextInt(16);  // 0 to 15
             randomLocation = new Coordinate(x, y);
         } while (!collisionChecker.checkTileEmpty(randomLocation));  // Keep generating until we find an empty location
-
         // Set the player’s new location
         Game.getInstance().getPlayer().setLocation(randomLocation);
         System.out.println("Player teleported to: " + randomLocation.getX() + ", " + randomLocation.getY());
