@@ -186,11 +186,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         }
     }
 
-    // for drawing the rune
-    private void drawRune(Graphics g) {
-        BufferedImage runeSprite = Textures.getSprite("rune");
-    }
-
     @Override
     public void mousePressed(MouseEvent e) {
         int x = e.getX() / baseTileSize;
