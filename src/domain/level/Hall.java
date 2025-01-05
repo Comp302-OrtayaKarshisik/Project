@@ -18,23 +18,23 @@ import java.util.*;
 
 public class Hall {
 
-    private Timer timer; // this timer is responsible for creating enchantments
+    private CountDownTimer timer;
     private final String type;
     private Coordinate runeLocation;
     private List<Enchantment> enchantments;
-    private final int objectCapacity;
+    private final int placedObjectCount; //initial timer value is 5 times this.
     private ArrayList<Coordinate> runeLocations;
     private Game game;
 
     private Tile[][] grid;
 
-    public Hall(String type, int objectCapacity) {
-        timer = new Timer();
+    public Hall(String type, int placedObjectCount) {
+        timer = new CountDownTimer(placedObjectCount * 5);
         this.type = type;
         game = Game.getInstance();
         this.runeLocations = new ArrayList<Coordinate>();
         this.enchantments = new LinkedList<>();
-        this.objectCapacity = objectCapacity;
+        this.placedObjectCount = placedObjectCount;
         this.grid = new Tile[64][64];
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j <16; j++) {
@@ -63,7 +63,6 @@ public class Hall {
     public void handleChosenBox(Player player, Coordinate c1) {
 
         // for enchantment logic
-
         for (Enchantment enchantment : game.getEnchantments()) {
             //System.out.println("scanning found enchantment at x: " + enchantment.getLocation().getX() + " y: " + enchantment.getLocation().getY());
             if (enchantment.getLocation().equals(c1)) {
@@ -91,11 +90,8 @@ public class Hall {
         }
     }
 
-    public Timer getTimer() {
+    public CountDownTimer getTimer() {
         return timer;
-    }
-    public void setTimer(Timer timer) {
-        this.timer = timer;
     }
 
     public List<Enchantment> getEnchantments() {
@@ -106,7 +102,7 @@ public class Hall {
     }
 
     public int getObjectCapacity() {
-        return objectCapacity;
+        return placedObjectCount;
     }
 
     public String getType() {
