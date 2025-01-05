@@ -87,6 +87,7 @@ public class Game {
 
     public void initPlayMode(GridDesign[] gridDesigns) {
         dungeon.loadDesigns(gridDesigns);
+        dungeon.getCurrentHall().getTimer().start();
     }
 
     public Dungeon getDungeon(){
@@ -98,12 +99,13 @@ public class Game {
     }
 
     public void nextHall() {
+        dungeon.getCurrentHall().getTimer().pause(); //stop the timer of the previous hall.
         // should just end at this point
         if(dungeon.getCurrentHallIndex() == 3) {
             return;
         }
         dungeon.nextHall();
-
+        dungeon.getCurrentHall().getTimer().start();
         //clears the agent problem
         agents.clear();
         agents.add(player);
@@ -126,11 +128,13 @@ public class Game {
     }
 
     public void pauseGame() {
+        dungeon.getCurrentHall().getTimer().pause();
         MonsterFactory.getInstance().pauseCreation();
         EnchantmentFactory.getInstance().pauseCreation();
     }
 
     public void resumeGame() {
+        dungeon.getCurrentHall().getTimer().start(); //start = resume
         MonsterFactory.getInstance().resumeCreation();
         EnchantmentFactory.getInstance().resumeCreation();
     }

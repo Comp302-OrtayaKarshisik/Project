@@ -2,8 +2,10 @@ package ui;
 
 import domain.Game;
 import domain.agent.Player;
+import domain.level.CountDownTimer;
 import listeners.GameListener;
 import listeners.PlayerListener;
+import listeners.TimerListener;
 import ui.Swing.Panels.GamePanel;
 import ui.Swing.Panels.HallPanelHolder;
 
@@ -11,7 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class PlayModePage extends Page implements PlayerListener, GameListener {
+public class PlayModePage extends Page implements PlayerListener, GameListener, TimerListener {
 
     private HallPanelHolder panelHolder;
 
@@ -28,6 +30,8 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
     private JLabel runeLabel;
 
     private JLabel runeText;
+
+    private JLabel timerLabel;
 
     private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
 
@@ -67,6 +71,16 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
         //buttonPanel.setBorder(new RoundedBorder(20));
 
+
+        timerLabel = new JLabel("Seconds: " +
+                Game.getInstance().getDungeon().getCurrentHall().getTimer().getInitialTimeRemaining());
+        timerLabel.setBounds(40, 400, 200, 20);
+        timerLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        timerLabel.setFont(new Font("Serif", Font.BOLD, 22));
+        timerLabel.setForeground(new Color(255, 255, 255));
+        this.buttonPanel.add(timerLabel);
+
+
         //Add Heart Image
         ImageIcon heartImage = new ImageIcon("src/assets/heart.png");
         Image image = heartImage.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -75,12 +89,25 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
         this.buttonPanel.setLayout(null);
 
+
+
+
+
         this.addPauseResumeButton();
 
         this.displayLives(3);
 
+        //subscribe to all halls timers.
+        for (int i = 0; i < 4; i++) {
+            CountDownTimer timer = Game.getInstance().getDungeon().getHalls()[i].getTimer();
+            this.subscribe(timer);
+        }
+
+
         this.subscribe(Game.getInstance());
         this.subscribe(Game.getInstance().getPlayer());
+
+
 
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
     }
@@ -151,6 +178,12 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         this.buttonPanel.repaint();
     }
 
+    private void updateTimer(CountDownTimer timer) {
+        timerLabel.setText("Seconds: " + timer.getTimeRemaining());
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
+    }
+
     private void displayRune() {
         // Rune Image
         System.out.println("render rune");
@@ -189,6 +222,10 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         game.addListener(this);
     }
 
+    private void subscribe(CountDownTimer timer) {
+        timer.addListener(this);
+    }
+
     @Override
     public void onHealthEvent(int num) {
         if (num == 0) {
@@ -215,4 +252,12 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
             this.togglePauseImage();
         }
     }
+
+    @Override
+    public void onTimerEvent(CountDownTimer timer) {
+        updateTimer(timer);
+    }
+
+
+
 }
