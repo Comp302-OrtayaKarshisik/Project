@@ -4,6 +4,7 @@ package domain;
 import controllers.KeyHandler;
 import domain.agent.Agent;
 import domain.agent.Player;
+import domain.agent.monster.Monster;
 import domain.collectables.Enchantment;
 import domain.factories.EnchantmentFactory;
 import domain.factories.MonsterFactory;
@@ -173,7 +174,14 @@ public class Game {
             }
         }
     }
-
+    public synchronized void removeMonster(Monster monster) {
+        if (agents.contains(monster)) {
+            agents.remove(monster);
+            System.out.println("Monster removed: " + monster.getClass().getSimpleName());
+        } else {
+            System.out.println("Monster not found!");
+        }
+    }
     public boolean isPaused() {
         return paused;
     }
