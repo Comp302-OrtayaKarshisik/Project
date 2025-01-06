@@ -59,17 +59,21 @@ public class Player extends Agent {
                         }
                     }
                 }
+                for (PlayerListener pl : listeners)
+                    pl.onRemoveEnch(enchantment.getType());
             }
         }
 
-
-
     }
 
-    public void collectEnchantment(Enchantment Enchantment) {
-        bag.addEnchantment(Enchantment);
-        if (Enchantment.getType() == EnchantmentType.Life && Enchantment.getType() == EnchantmentType.Time)
-            useEnchantment(Enchantment);
+    public void collectEnchantment(Enchantment enchantment) {
+        if (enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
+            useEnchantment(enchantment);
+            return;
+        }
+        bag.addEnchantment(enchantment);
+        for (PlayerListener pl : listeners)
+            pl.onCollectEnch(enchantment.getType());
     }
 
     public void move () {
