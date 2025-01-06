@@ -42,6 +42,7 @@ public class Player extends Agent {
     // other objects thus other methods will help it
     // for now
     public void useEnchantment(Enchantment enchantment) {
+
         if(enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
             if (enchantment.getType() == EnchantmentType.Life) {increaseHealth();}
             else {Game.getInstance().getDungeon().getCurrentHall().getTimer().increaseTimeRemaining(5);}
@@ -61,8 +62,6 @@ public class Player extends Agent {
                 }
             }
         }
-
-
 
     }
 
