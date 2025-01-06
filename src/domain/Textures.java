@@ -1,11 +1,13 @@
 package domain;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /**Initializes texture HashMap and reads all files in assets folder
  * 
@@ -51,4 +53,14 @@ public class Textures {
 		else return sprites.get("error");
 	}
 
+	public static JLabel createImageLabels(String fileName, int x, int y, int width, int height) {
+		ImageIcon imageIcon = new ImageIcon("src/assets/" + fileName +".png");
+		Image image1 = imageIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		ImageIcon resizedImageIcon = new ImageIcon(image1);
+		JLabel imageLabel = new JLabel(resizedImageIcon);
+
+		imageLabel.setBounds(x, y, width, height);
+		imageLabel.setName(fileName);
+		return imageLabel;
+	}
 }

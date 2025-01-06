@@ -67,7 +67,6 @@ public class Hall {
             //System.out.println("scanning found enchantment at x: " + enchantment.getLocation().getX() + " y: " + enchantment.getLocation().getY());
             if (enchantment.getLocation().equals(c1)) {
                 //handle enchantment logic.
-                System.out.println("ench collected");
                 Game.getInstance().getPlayer().collectEnchantment(enchantment);//probably shouldn't call it here.
                 game.getEnchantments().remove(enchantment);
                 EnchantmentFactory.getInstance().notifyRemoval(enchantment);
