@@ -41,6 +41,10 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
     private boolean isPaused = false;
 
+    private int collectedRunes = 0;
+
+    private final int totalRunes = 4;
+
     public PlayModePage() {
         super();
         initUI();
@@ -283,6 +287,10 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     public void onRuneEvent(boolean hasRune) {
         if(hasRune) {
             displayRune();
+            collectedRunes++;
+            if (collectedRunes == totalRunes) {
+                PageManager.getInstance().showWinGamePage();
+            }
         }
         else {
             removeRune();
