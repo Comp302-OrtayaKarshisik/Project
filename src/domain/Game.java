@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 
 public class Game {
 
+    public ISaveLoadAdapter saveLoad = new FileSaveLoadAdapter(); //REACH THIS ATTRIBUTE IN SAVELOAD EVENT HANDLING METHOD
     private ExecutorService executor;
     private List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
