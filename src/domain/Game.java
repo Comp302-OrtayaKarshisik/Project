@@ -11,6 +11,7 @@ import domain.factories.MonsterFactory;
 import domain.level.Dungeon;
 import domain.level.GridDesign;
 import listeners.GameListener;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
 import java.security.SecureRandom;
 import java.util.LinkedList;
@@ -58,9 +59,9 @@ public class Game {
         paused = false;
     }
 
-
-
     public void startGame () {
+        MonsterFactory.getInstance().newGame();
+
         Update up = new Update();
         //Executor runs the method instead of threads
         executor.execute(up);
@@ -69,6 +70,9 @@ public class Game {
     // a method which will terminate everything in the game
     public void endGame() {
         //really important
+        MonsterFactory.getInstance().gameOver();
+
+        instance = null;
     }
 
     // A method which will be used for the time passage of the game.

@@ -263,6 +263,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     public void onHealthEvent(int num) {
         if (num == 0) {
             PageManager.getInstance().showGameOverPage();
+            Game.getInstance().endGame();
         }
         displayLives(num);
     }
@@ -274,10 +275,9 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
         if (timer.getTimeRemaining() <= 0) {
             PageManager.getInstance().showGameOverPage();
+            Game.getInstance().endGame();
         }
     }
-
-
 
     @Override
     public void onRuneEvent(boolean hasRune) {

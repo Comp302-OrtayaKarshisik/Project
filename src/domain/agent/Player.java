@@ -9,6 +9,7 @@ import domain.level.Hall;
 import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
 import java.util.*;
 
@@ -35,6 +36,7 @@ public class Player extends Agent {
         doorCoordinate = new Coordinate(9, 0);
         timer = new Timer();
         setDirection(Direction.STOP);
+        PlayerGraphics.getInstance(48).setPlayer(this);
     }
 
     // else statement is empty for now

@@ -71,13 +71,15 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
         addMouseListener(this);
-        game = Game.getInstance();
-        playerGraphics = PlayerGraphics.getInstance(48, game.getPlayer());
+
+        playerGraphics = PlayerGraphics.getInstance(48);
         fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
         enchantmentGraphics = EnchantmentGraphics.getInstance(48);
         arrowGraphics = ArrowGraphics.getInstance(48);
+
+        game = Game.getInstance();
 
         game.setKeyHandler(keyHandler);
         subscribe(game);

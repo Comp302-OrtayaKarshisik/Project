@@ -15,11 +15,10 @@ public abstract class MobilMonsterGraphics extends EntityGraphics implements Fac
     protected  BufferedImage rightPic, leftPic;
     protected int size;
     protected BufferedImage currentImg;
-    protected final LinkedList<Monster> monsters;
+    protected LinkedList<Monster> monsters;
 
     public MobilMonsterGraphics(int size) {
         this.size = size;
-        this.monsters = new LinkedList<>();
     }
 
     public void draw(Graphics g) {
@@ -31,6 +30,16 @@ public abstract class MobilMonsterGraphics extends EntityGraphics implements Fac
             }
             g.drawImage(currentImg, monster.getLocation().getX()*48,(15 - monster.getLocation().getY())*48 , size, size,null);
         }
+    }
+
+    @Override
+    public void onNewGameEvent(){
+        this.monsters = new LinkedList<>();
+    }
+
+    @Override
+    public void onGameOverEvent(){
+        this.monsters = null;
     }
 
     public void onDeletionEvent() {
