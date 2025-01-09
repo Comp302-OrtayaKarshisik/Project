@@ -72,6 +72,7 @@ public class Player extends Agent {
             useEnchantment(enchantment);
             return;
         }
+
         bag.addEnchantment(enchantment);
         for (PlayerListener pl : listeners)
             pl.onCollectEnch(enchantment.getType());
@@ -129,10 +130,6 @@ public class Player extends Agent {
         }, INVISIBILITY_DURATION * 1000);
     }
 
-    public void collectRune() {
-        hasRune = true;
-    }
-
     public void increaseHealth() {
         if (health < MAX_HEALTH) {
             health++;
@@ -145,22 +142,6 @@ public class Player extends Agent {
         publishEvent(health);
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public Bag getBag() {
-        return bag;
-    }
-
-    public boolean isHasRune() {
-        return hasRune;
-    }
-
     public void setHasRune(boolean hasRune) {
         this.hasRune = hasRune;
         for (PlayerListener pl : listeners)
@@ -169,10 +150,6 @@ public class Player extends Agent {
 
     public boolean isInvisible() {
         return invisible;
-    }
-
-    public void setInvisible(boolean invisible) {
-        this.invisible = invisible;
     }
 
 }

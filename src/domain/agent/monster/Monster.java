@@ -11,7 +11,6 @@ public abstract class Monster extends Agent {
         super.setLocation(new Coordinate(Game.random.nextInt(16), Game.random.nextInt(16)));
     }
 
-
 }
 
 

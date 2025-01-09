@@ -14,7 +14,6 @@ public class Bag {
         enchantmentCounter.put(EnchantmentType.Reveal, 0);
         enchantmentCounter.put(EnchantmentType.Luring, 0);
         enchantmentCounter.put(EnchantmentType.Cloak, 0);
-
     }
 
     public boolean containsEnchantment(Enchantment enchantment) {
@@ -31,6 +30,7 @@ public class Bag {
     public HashMap<EnchantmentType, Integer> getEnchantmentCounter() {
         return enchantmentCounter;
     }
+
     public void setEnchantmentCounter(HashMap<EnchantmentType, Integer> enchantmentCounter) {
         this.enchantmentCounter = enchantmentCounter;
     }

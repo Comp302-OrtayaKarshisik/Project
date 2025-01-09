@@ -24,7 +24,7 @@ public class Game {
     private ExecutorService executor;
     private List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
-
+    private boolean loaded = false;
     private static Game instance;
     private Player player;
     private Timer timer;
@@ -35,6 +35,7 @@ public class Game {
     private List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
     private List<Enchantment> enchantments;
     private Dungeon dungeon;
+
 
     public static Game getInstance() {
         if (instance == null) {
@@ -56,6 +57,8 @@ public class Game {
         agents.add(player);
         paused = false;
     }
+
+
 
     public void startGame () {
         Update up = new Update();
@@ -174,6 +177,7 @@ public class Game {
             }
         }
     }
+
     public synchronized void removeMonster(Monster monster) {
         if (agents.contains(monster)) {
             agents.remove(monster);
@@ -182,6 +186,7 @@ public class Game {
             System.out.println("Monster not found!");
         }
     }
+
     public boolean isPaused() {
         return paused;
     }

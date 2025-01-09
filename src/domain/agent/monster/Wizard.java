@@ -1,7 +1,10 @@
 package domain.agent.monster;
 
 import domain.Game;
-import domain.util.Coordinate;
+import domain.agent.monster.wizardStrategies.IdleStrategy;
+import domain.agent.monster.wizardStrategies.PlayerRelocationStrategy;
+import domain.agent.monster.wizardStrategies.RuneRelocationStrategy;
+import domain.agent.monster.wizardStrategies.WizardBehaviorStrategy;
 import domain.level.CountDownTimer;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
 
