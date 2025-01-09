@@ -61,6 +61,7 @@ public class Game {
 
     public void startGame () {
         MonsterFactory.getInstance().newGame();
+        EnchantmentFactory.getInstance().newGame();
 
         Update up = new Update();
         //Executor runs the method instead of threads
@@ -70,7 +71,13 @@ public class Game {
     // a method which will terminate everything in the game
     public void endGame() {
         //really important
+
+        //NORMALLY GAME LOOP HAS TO TERMINATTE ITSELF
+        executor.close();
+
         MonsterFactory.getInstance().gameOver();
+        EnchantmentFactory.getInstance().gameOver();
+        dungeon.getCurrentHall().getTimer().pause();
 
         instance = null;
     }

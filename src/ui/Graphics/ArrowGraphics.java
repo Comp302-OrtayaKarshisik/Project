@@ -77,5 +77,7 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
             arrows.add(archer.arrow);}
 
     public void onArrowDeactivationEvent(Archer archer) {
-        arrows.remove(archer.arrow);}
+        arrows.remove(archer.arrow);
+    }
+
 }

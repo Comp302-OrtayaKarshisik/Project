@@ -26,11 +26,24 @@ public class EnchantmentFactory {
         }
         return instance;
     }
+
     private EnchantmentFactory(){
         listeners = new LinkedList<>();
+    }
+
+    public void newGame() {
+        publishNewGameEvent();
+
         schedule = Executors.newSingleThreadScheduledExecutor();
         currentTask = new EnchantmentCreationTask();
-        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS);
+        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS); // repeat with period of 8
+    }
+
+    public void gameOver() {
+        publishGameOverEvent();
+
+        currentTask.cancel();
+        schedule.close();
     }
 
     public void pauseCreation() {
@@ -61,6 +74,18 @@ public class EnchantmentFactory {
     public void publishNextHallEvent() {
         for (EnchantmentListener efl: listeners) {
             efl.onClearEvent();
+        }
+    }
+
+    public void publishNewGameEvent() {
+        for (EnchantmentListener efl: listeners) {
+            efl.onNewGameEvent();
+        }
+    }
+
+    public void publishGameOverEvent() {
+        for (EnchantmentListener efl: listeners) {
+            efl.onGameOverEvent();
         }
     }
 
