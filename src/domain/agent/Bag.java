@@ -17,15 +17,15 @@ public class Bag {
 
     }
 
-    public boolean containsEnchantment(Enchantment enchantment) {
-        return enchantmentCounter.get(enchantment.getType()) != 0;
+    public boolean containsEnchantment(EnchantmentType enchantment) {
+        return enchantmentCounter.get(enchantment) != 0;
     }
 
-    public void removeEnchantment(Enchantment enchantment) {
-        enchantmentCounter.put(enchantment.getType(), enchantmentCounter.get(enchantment.getType())-1);
+    public void removeEnchantment(EnchantmentType enchantment) {
+        enchantmentCounter.put(enchantment, enchantmentCounter.get(enchantment)-1);
     }
-    public void addEnchantment(Enchantment enchantment) {
-        enchantmentCounter.put(enchantment.getType(), enchantmentCounter.get(enchantment.getType())+1);
+    public void addEnchantment(EnchantmentType enchantment) {
+        enchantmentCounter.put(enchantment, enchantmentCounter.get(enchantment)+1);
     }
 
     public HashMap<EnchantmentType, Integer> getEnchantmentCounter() {

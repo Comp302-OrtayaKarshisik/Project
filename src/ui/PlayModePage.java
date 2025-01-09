@@ -35,9 +35,19 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
     private JLabel timerLabel;
 
-    private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
+    private JLabel cloakLabel;
+    private JLabel cloakCountLabel;
+    private int cloakCount = 0;
 
-    private ArrayList<JLabel> collectedEnchLabels = new ArrayList<JLabel>();
+    private JLabel lureLabel;
+    private JLabel lureCountLabel;
+    private int lureCount = 0;
+
+    private JLabel revealLabel;
+    private JLabel revealCountLabel;
+    private int revealCount = 0;
+
+    private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
 
     private boolean isPaused = false;
 
@@ -98,6 +108,11 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
         Image image = heartImage.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         this.resizedHeartImage = new ImageIcon(image);
 
+        //Add Ench Labels
+        cloakLabel = Textures.createImageLabels("cloak", 0, 570, 32, 32);
+        lureLabel = Textures.createImageLabels("lure", 0, 570, 32, 32);
+        revealLabel = Textures.createImageLabels("reveal", 0, 570, 32, 32);
+
 
         this.buttonPanel.setLayout(null);
         this.addPauseResumeButton();
@@ -148,26 +163,20 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     }
 
     public void displayLives(int lives) {
-        if(lives < 0) {
-            return;
-        }
         System.out.println("Remaining life: " + lives);
 
         for(int i = this.livesIndicators.size(); i < lives; i++) {
             JLabel imageLabel = new JLabel(resizedHeartImage);
-
-            // Resizing Image
             imageLabel.setBounds(40 + i*45, 300, 32, 32);
 
             this.livesIndicators.add(imageLabel);
             this.buttonPanel.add(imageLabel);
         }
 
-
-        for (int i = this.livesIndicators.size()-1; i >= lives; i--) {
-            this.buttonPanel.remove(livesIndicators.get(i));
+        for (int i = this.livesIndicators.size(); i > lives; i--) {
+            this.buttonPanel.remove(livesIndicators.get(i-1));
+            this.livesIndicators.remove(i-1);
         }
-
 
         this.buttonPanel.revalidate();
         this.buttonPanel.repaint();
@@ -211,44 +220,55 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     }
 
     private void addEnchToBag(EnchantmentType type) {
-        String fileName;
+        int numEnch = cloakCount + lureCount + revealCount;
+        int numLabel;
+        JLabel enchLabel;
+
         switch(type) {
             case Cloak:
-                fileName = "cloak";
+                enchLabel = cloakLabel;
+                numLabel = ++cloakCount;
                 break;
             case Luring:
-                fileName = "lure";
+                enchLabel = lureLabel;
+                numLabel = ++lureCount;
                 break;
             default:
-                fileName = "reveal";
+                enchLabel = revealLabel;
+                numLabel = ++revealCount;
                 break;
         }
 
-        int  xPlace = collectedEnchLabels.size() % 3;
+        int xPlace = numEnch % 3;
         int xOffset = 52;
-        int yOffset = collectedEnchLabels.size() >= 3 ? 33 : 0;
+        int yOffset = numEnch >= 3 ? 33 : 0;
 
-        JLabel enchLabel = Textures.createImageLabels(fileName, xOffset + 33 * xPlace, 570 + yOffset, 32, 32);
-        this.collectedEnchLabels.add(enchLabel);
-        this.buttonPanel.add(enchLabel);
-        this.buttonPanel.setComponentZOrder(enchLabel, 1);
+        if(numLabel == 0) {
+            enchLabel.setBounds(xOffset + 33 * xPlace, 570 + yOffset, 32, 32);
+            this.buttonPanel.add(enchLabel);
+            this.buttonPanel.setComponentZOrder(enchLabel, 1);
+        }
+        else if(numLabel == 1) {
 
+        }
+        else{
+
+        }
         this.buttonPanel.revalidate();
         this.buttonPanel.repaint();
     }
 
     private void removeEnchFromBag(EnchantmentType type) {
-        for (JLabel runeLabel: this.collectedEnchLabels) {
-            if(runeLabel.getName().equals(type.name().toLowerCase())) {
-                this.buttonPanel.remove(runeLabel);
-                this.collectedEnchLabels.remove(runeLabel);
 
-                this.buttonPanel.revalidate();
-                this.buttonPanel.repaint();
-
-                return;
-            }
+        switch(type) {
+            case Cloak :
+                break;
         }
+
+        this.buttonPanel.remove(runeLabel);
+
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
     }
 
     public void subscribe (Player p) {
@@ -277,7 +297,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
         updateTimer(timer);
 
         if (timer.getTimeRemaining() <= 0) {
-            PageManager.getInstance().showGameOverPage();
+            //PageManager.getInstance().showGameOverPage();
         }
     }
 
