@@ -216,6 +216,11 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         repaint();
     }
 
+    @Override
+    public void onHighlightEvent(Coordinate coordinate) {
+
+    }
+
     private void subscribe(Game game) {
         game.addListener(this);
     }

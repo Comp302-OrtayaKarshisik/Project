@@ -218,4 +218,7 @@ public class Game {
         return agents;
     }
 
+    public List<GameListener> getListeners() {
+        return listeners;
+    }
 }

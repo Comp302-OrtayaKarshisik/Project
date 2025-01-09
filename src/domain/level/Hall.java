@@ -8,6 +8,7 @@ import domain.collectables.Enchantment;
 import domain.factories.EnchantmentFactory;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
+import listeners.GameListener;
 import ui.Graphics.EnchantmentGraphics;
 
 import javax.xml.stream.Location;
@@ -46,7 +47,18 @@ public class Hall {
     public EnchantmentType type(int [][] xy) {return null;}
     public void increaseTime() {}
     public String typeOfCollectable() {return null;}
-    public void higlightRune() {}
+
+    public void higlightRune() {
+        int minX = Math.max(runeLocation.getX()-3, 0);
+        int maxX = Math.max(runeLocation.getX()-3, 13);
+        int minY = Math.max(runeLocation.getY()-3, 0);
+        int maxY = Math.max(runeLocation.getY()-3, 13);
+        int x = Game.random.nextInt(minX, maxX);
+        int y = Game.random.nextInt(minY, maxY);
+        for(GameListener gl: Game.getInstance().getListeners()) {
+            gl.onHighlightEvent(new Coordinate(x, y));
+        }
+    }
     public void removeHiglight() {}
     public void throwLure(Key key) {}
 
