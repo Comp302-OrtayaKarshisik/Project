@@ -46,6 +46,8 @@ public class Game {
     }
 
     private Game() {
+        Agent.setGame(this);
+
         executor =  Executors.newSingleThreadExecutor();
         player = new Player();
         timer = new Timer(); // no idea what will this do;

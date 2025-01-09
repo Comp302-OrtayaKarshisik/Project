@@ -148,5 +148,4 @@ public class Hall {
         this.grid = grid;
     }
 
-
 }
