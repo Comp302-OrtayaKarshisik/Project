@@ -25,7 +25,10 @@ public class Wizard extends Monster{
         if (timeRemainingPercentage < 30) {
             setBehavior(new PlayerRelocationStrategy());
         } else if (timeRemainingPercentage > 70) {
-            setBehavior(new RuneRelocationStrategy());
+            if (currentBehavior instanceof RuneRelocationStrategy) {
+            }else {
+                setBehavior(new RuneRelocationStrategy());
+            }
         } else {
             setBehavior(new IdleStrategy());
         }
@@ -33,9 +36,6 @@ public class Wizard extends Monster{
     }
 
     public void setBehavior(WizardBehaviorStrategy behavior) {
-        if (currentBehavior instanceof RuneRelocationStrategy) {
-            ((RuneRelocationStrategy) currentBehavior).stop();  // Stop the previous timer if RuneRelocationStrategy
-        }
         this.currentBehavior = behavior;
     }
 
