@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Player extends Agent {
 
-    private final int MAX_HEALTH = 3;
+    private final int MAX_HEALTH = 5;
     private final int INVISIBILITY_DURATION = 5;
 
     private final List<PlayerListener> listeners;
@@ -41,16 +41,16 @@ public class Player extends Agent {
     // also luring gem and highlight mostly changes
     // other objects thus other methods will help it
     // for now
-    public void useEnchantment(Enchantment enchantment) {
-        if(enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
-            if (enchantment.getType() == EnchantmentType.Life) {increaseHealth();}
+    public void useEnchantment(EnchantmentType enchantment) {
+        if(enchantment == EnchantmentType.Life || enchantment == EnchantmentType.Time) {
+            if (enchantment == EnchantmentType.Life) {increaseHealth();}
             else {Game.getInstance().getDungeon().getCurrentHall().getTimer().increaseTimeRemaining(5);}
         }
         else {
             if (bag.containsEnchantment(enchantment)) {
                 bag.removeEnchantment(enchantment);
-                if (enchantment.getType() == EnchantmentType.Cloak) {gainInvisibility();}
-                else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
+                if (enchantment == EnchantmentType.Cloak) {gainInvisibility();}
+                else if (enchantment== EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
                 else { // sikintili
                     Coordinate c;
                     for (Agent m : Game.getInstance().getAgents()) {
@@ -60,7 +60,7 @@ public class Player extends Agent {
                     }
                 }
                 for (PlayerListener pl : listeners)
-                    pl.onRemoveEnch(enchantment.getType());
+                    pl.onRemoveEnch(enchantment);
             }
         }
 
@@ -68,10 +68,10 @@ public class Player extends Agent {
 
     public void collectEnchantment(Enchantment enchantment) {
         if (enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
-            useEnchantment(enchantment);
+            useEnchantment(enchantment.getType());
             return;
         }
-        bag.addEnchantment(enchantment);
+        bag.addEnchantment(enchantment.getType());
         for (PlayerListener pl : listeners)
             pl.onCollectEnch(enchantment.getType());
     }

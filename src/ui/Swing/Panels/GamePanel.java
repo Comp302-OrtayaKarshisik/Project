@@ -21,8 +21,6 @@ import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
 import ui.Graphics.EnchantmentGraphics;
-import ui.Graphics.TileSetImageGetter;
-import ui.PlayModePage;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -30,6 +28,8 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // In the next generations of the game KeyListener will
 // be replaced by KeyBindings
@@ -53,6 +53,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private int verticalSquares = 16; // how many squares in the y direction
     private int height = verticalSquares * (scalingFactor * baseTileSize); // vertical pixels
 
+    private Coordinate highlightCoordinate;
+
     KeyHandler keyHandler = new KeyHandler();
 
     private final PlayerGraphics playerGraphics;
@@ -61,6 +63,9 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private final WizardGraphics wizardGraphics;
     private final EnchantmentGraphics enchantmentGraphics;
     private final ArrowGraphics arrowGraphics;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     private Game game;
 
 
@@ -121,6 +126,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         wizardGraphics.draw(g2);
         enchantmentGraphics.draw(g2);
 
+        this.highlightRune(g);
+
         } else {
             drawPauseScreen(g2);
         }
@@ -153,6 +160,13 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         String helpText = "Press H for Help";
         textWidth = g2.getFontMetrics().stringWidth(helpText);
         g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
+    }
+
+    private void highlightRune(Graphics g) {
+        if(highlightCoordinate != null) {
+            g.setColor(new Color(255, 255, 255, 64));
+            g.fillRect(highlightCoordinate.getX() * baseTileSize, highlightCoordinate.getY() * baseTileSize, baseTileSize*4, baseTileSize*4);
+        }
     }
 
     // for drawing hall object from build mode
@@ -214,6 +228,15 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     @Override
     public void onGameEvent(Game game) {
         repaint();
+    }
+
+    @Override
+    public void onHighlightEvent(Coordinate coordinate) {
+        this.highlightCoordinate = coordinate;
+         // wait 2 seconds
+        scheduler.schedule(() -> {
+            this.highlightCoordinate = null;
+        }, 2, TimeUnit.SECONDS);
     }
 
     private void subscribe(Game game) {
