@@ -42,7 +42,7 @@ public class Projectile extends Entity {
 
 
         Coordinate playerLoc = Game.getInstance().getPlayer().getLocation();
-        if (pos.equals(playerLoc) && Coordinate.euclideanDistance(user.getLocation(), playerLoc) <= 4) {
+        if (pos.equals(playerLoc) && Coordinate.euclideanDistance(user.getLocation(), playerLoc) <= 4 && !Game.getInstance().getPlayer().isInvisible()) {
             Game.getInstance().getPlayer().reduceHealth();
             alive = false;
             return;

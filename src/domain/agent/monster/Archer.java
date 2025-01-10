@@ -29,6 +29,7 @@ public class Archer extends Monster {
         listeners = new LinkedList<>();
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
+        arrow = new Arrow(this);
 
         ArrowGraphics.getInstance(48).subscribe(this);
 
@@ -78,25 +79,21 @@ public class Archer extends Monster {
      * Shoots an arrow per 60 frame. Direction is explicitly determined or randomized based on attack range/player state.
      * <p>
      * Requires: <p>
-     * - Archer, Arrow, archerLocation, playerLocation, attackRange, attackFrame. <p>
+     * -  Game, Coordinate, Archer, Player, Arrow, archerLocation, playerLocation, attackRange, attackFrame. <p>
      * - `alive` to be a boolean indicating whether arrow is active or not. <p>
      * <p>
      * Modifies: <p>
-     * - Updates/determines arrow attributes such as direction > (dx, dy).
+     * - Updates/determines arrow attributes such as initialArrowLoc, direction > (dx, dy).
      * - Updates arrow state if arrow is alive > arrow.update()
      * - Until attackFrameLimit, attackFrame is incremented by 1 on each call to shootArrow().
      * -
      * <p>
      * Effects: <p>
      * - If attackFrame > attackFrameLimit: arrowActivationEvent is published to ArrowGraphics. <p>
-     * - Sets arrow attributes > arrow.set(...) <p>
+     * - Sets arrow attributes > arrow.set(pos, dx, dy, alive, user) <p>
      */
 
     private void shootArrow() {
-
-        if (arrow == null) {
-            arrow = new Arrow(this); // Initialize the arrow only when needed
-            }
 
         Coordinate archerloc = this.getLocation();
         Coordinate playerloc = Game.getInstance().getPlayer().getLocation();
@@ -122,7 +119,7 @@ public class Archer extends Monster {
                 arrow.set(initialarrowloc, dx, dy, true, this);
                 publishArrowActivationEvent();
                 attackFrame = 0;
-            } else { // if player is not found in the attack range */
+            } else { // if player is not found in the attack range
 
                 switch (DIRECTIONS[Game.random.nextInt(4)]) {
                     case UP -> {dx = 0;dy = 1;}
