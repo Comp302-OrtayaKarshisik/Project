@@ -43,19 +43,10 @@ public class Hall {
         }
     }
 
-    public EnchantmentType type(int [][] xy) {return null;}
-    public void increaseTime() {}
-    public String typeOfCollectable() {return null;}
     public void higlightRune() {}
     public void removeHiglight() {}
     public void throwLure(Key key) {}
 
-    public int checkTimer() {return 0;}
-    // An ench factory will do this
-    public void createEnchantment() {}
-
-
-    public void fillHall(Object obj, int[][] loc) {}
     private boolean isRuneLocation(Coordinate c1) {
         return c1.equals(this.runeLocation);
     }
@@ -90,29 +81,6 @@ public class Hall {
         }
     }
 
-    public CountDownTimer getTimer() {
-        return timer;
-    }
-
-    public List<Enchantment> getEnchantments() {
-        return enchantments;
-    }
-    public void setEnchantments(List<Enchantment> enchantments) {
-        this.enchantments = enchantments;
-    }
-
-    public int getObjectCapacity() {
-        return placedObjectCount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Coordinate getRuneLocation() {
-        return runeLocation;
-    }
-
     // Transfer grid  design from build mode to Hall
     public void transferGridDesign(GridDesign gridDesign) {
         if(gridDesign==null) return;
@@ -131,7 +99,6 @@ public class Hall {
                 }
             }
         }
-
         this.setNewRuneLocation();
     }
 
@@ -144,8 +111,7 @@ public class Hall {
         return grid;
     }
 
-    public void setGrid(Tile[][] grid) {
-        this.grid = grid;
+    public CountDownTimer getTimer() {
+        return timer;
     }
-
 }

@@ -194,7 +194,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         int y = 15 - (e.getY() / baseTileSize);
         System.out.println("clicked at x: " + x + " y: " + y);
         Coordinate chosenC = new Coordinate(x, y);
-        game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+        game.handleChosenBox(game.getPlayer(), chosenC);
     }
 
     @Override

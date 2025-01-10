@@ -11,18 +11,11 @@ public class Enchantment {
 
     private final EnchantmentType type;
     private int remainingFrame;
-    private final Coordinate location;
-
+    private Coordinate location;
 
     public Enchantment(EnchantmentType type) {
         this.type = type;
         this.remainingFrame = ENCHANTMENT_DURATION_FRAME;
-        Coordinate c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
-        while (!Game.getInstance().getDungeon().getCollisionChecker().checkTileEmpty(c)) //ensure spawned on empty tile.
-        {
-            c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
-        }
-        this.location = c;
     }
 
     public void decreaseRemainingFrame()
@@ -35,6 +28,10 @@ public class Enchantment {
             Game.getInstance().getEnchantments().remove(this);
             EnchantmentFactory.getInstance().notifyRemoval(this);
         }
+    }
+
+    public void setLocation(Coordinate location){
+        this.location = location;
     }
 
     public Coordinate getLocation() {return location;}

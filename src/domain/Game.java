@@ -10,8 +10,10 @@ import domain.factories.EnchantmentFactory;
 import domain.factories.MonsterFactory;
 import domain.level.Dungeon;
 import domain.level.GridDesign;
+import domain.util.Coordinate;
 import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
+import ui.Graphics.ArrowGraphics;
 
 import java.security.SecureRandom;
 import java.util.LinkedList;
@@ -25,10 +27,8 @@ public class Game {
     private ExecutorService executor;
     private List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
-    private boolean loaded = false;
     private static Game instance;
     private Player player;
-    private Timer timer;
 
     private volatile boolean paused;
     private KeyHandler keyHandler; // this field is for now
@@ -50,7 +50,6 @@ public class Game {
 
         executor =  Executors.newSingleThreadExecutor();
         player = new Player();
-        timer = new Timer(); // no idea what will this do;
 
         dungeon = new Dungeon();
         listeners = new LinkedList<>();
@@ -65,9 +64,9 @@ public class Game {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
 
-        Update up = new Update();
+        ArrowGraphics.getInstance(48).onNewGameEvent();
         //Executor runs the method instead of threads
-        executor.execute(up);
+        executor.execute(new Update());
     }
 
     // a method which will terminate everything in the game
@@ -75,11 +74,12 @@ public class Game {
         //really important
 
         //NORMALLY GAME LOOP HAS TO TERMINATTE ITSELF
-        executor.close();
+        dungeon.getCurrentHall().getTimer().pause();
+        executor.shutdown();
 
         MonsterFactory.getInstance().gameOver();
         EnchantmentFactory.getInstance().gameOver();
-        dungeon.getCurrentHall().getTimer().pause();
+        ArrowGraphics.getInstance(48).onGameOverEvent();
 
         instance = null;
     }
@@ -107,20 +107,13 @@ public class Game {
         dungeon.getCurrentHall().getTimer().start();
     }
 
-    public Dungeon getDungeon(){
-        return dungeon;
-    }
-
-    public void setDungeon(Dungeon dungeon){
-        this.dungeon = dungeon;
-    }
-
     public void nextHall() {
         dungeon.getCurrentHall().getTimer().pause(); //stop the timer of the previous hall.
         // should just end at this point
         if(dungeon.getCurrentHallIndex() == 3) {
             return;
         }
+
         dungeon.nextHall();
         dungeon.getCurrentHall().getTimer().start();
         //clears the agent problem
@@ -156,7 +149,11 @@ public class Game {
         EnchantmentFactory.getInstance().resumeCreation();
     }
 
-    public void handleCollectable() {}
+    public void handleChosenBox(Player player, Coordinate c1) {
+        dungeon.getCurrentHall().handleChosenBox(player,c1);
+    }
+
+
     public void openHall() {}
     public void createVictoryScreen() {}
     public boolean isTimeExpired () {return false;}
@@ -212,14 +209,6 @@ public class Game {
         return enchantments;
     }
 
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public void setTimer(Timer timer) {
-        this.timer = timer;
-    }
-
     public Player getPlayer() {
         return player;
     }
@@ -234,6 +223,10 @@ public class Game {
 
     public List<Agent> getAgents() {
         return agents;
+    }
+
+    public Dungeon getDungeon(){
+        return dungeon;
     }
 
 }

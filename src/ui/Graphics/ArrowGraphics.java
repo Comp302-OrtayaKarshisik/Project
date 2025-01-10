@@ -23,13 +23,12 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
     private static ArrowGraphics instance;
 
     protected int size;
-    protected final LinkedList<Projectile> arrows;
+    protected LinkedList<Projectile> arrows;
     private BufferedImage arrowImage;
 
 
     private ArrowGraphics(int size) {
         this.size = size;
-        this.arrows = new LinkedList<>();
         getDefaultImages();
     }
 
@@ -74,10 +73,19 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
 
 
     public void onArrowActivationEvent(Archer archer) {
-            arrows.add(archer.arrow);}
+            arrows.add(archer.arrow);
+    }
 
     public void onArrowDeactivationEvent(Archer archer) {
         arrows.remove(archer.arrow);
+    }
+
+    public void onNewGameEvent() {
+        this.arrows = new LinkedList<>();
+    }
+
+    public void onGameOverEvent() {
+        arrows = null;
     }
 
 }

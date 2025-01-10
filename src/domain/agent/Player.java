@@ -140,8 +140,10 @@ public class Player extends Agent {
     }
 
     public void reduceHealth() {
-        health--;
-        publishEvent(health);
+        if(!invisible){
+            health--;
+            publishEvent(health);
+        }
     }
 
     public void setHasRune(boolean hasRune) {
@@ -154,4 +156,11 @@ public class Player extends Agent {
         return invisible;
     }
 
+    public int getHealth(){
+        return health;
+    }
+
+    public Bag getBag(){
+        return bag;
+    }
 }

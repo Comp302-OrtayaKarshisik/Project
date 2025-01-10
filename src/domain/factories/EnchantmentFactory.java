@@ -3,6 +3,7 @@ package domain.factories;
 import domain.Game;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
+import domain.util.Coordinate;
 import listeners.EnchantmentListener;
 
 import java.util.LinkedList;
@@ -101,6 +102,14 @@ public class EnchantmentFactory {
                 case 4 -> new Enchantment(EnchantmentType.Cloak);
                 default -> null;
             };
+
+            Coordinate c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
+            while (!Game.getInstance().getDungeon().getCollisionChecker().checkTileEmpty(c)) //ensure spawned on empty tile.
+            {
+                c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
+            }
+            e.setLocation(c);
+
             System.out.println("Enchantment created at x: " + e.getLocation().getX() + " y: " + e.getLocation().getY());
 
             Game.getInstance().getEnchantments().add(e);
