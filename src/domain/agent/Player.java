@@ -54,7 +54,7 @@ public class Player extends Agent {
                 bag.removeEnchantment(enchantment);
                 if (enchantment.getType() == EnchantmentType.Cloak) {gainInvisibility();}
                 else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
-                else { // sikintili
+                else {
                     Coordinate c;
                     for (Agent m : Game.getInstance().getAgents()) {
                         if (m instanceof Fighter) {
