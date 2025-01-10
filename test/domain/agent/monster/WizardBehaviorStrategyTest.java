@@ -1,6 +1,7 @@
 package domain.agent.monster;
 import domain.level.Dungeon;
 import domain.level.Hall;
+import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -8,30 +9,65 @@ import domain.Game;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import domain.level.GridDesign;
 
 class WizardBehaviorStrategyTest {
     private Wizard wizard;
     private Game game;
-
+    int testRow;
+    int testColumn;
     @BeforeEach
     public void setUp() {
         game = Game.getInstance();
         wizard = new Wizard();
+        testRow = Game.random.nextInt(2, 14);
+        testColumn = Game.random.nextInt(2, 14);
 
-        // Manually initialize dungeon and halls
-        Dungeon dungeon = new Dungeon();
-        Hall[] halls = new Hall[4];  // Assuming 4 halls
-        for (int i = 0; i < halls.length; i++) {
-            halls[i] = new Hall("TestHall" + i, 10);// Each hall has an initial object capacity of 10
-            // Manually add rune locations
-            halls[i].setSpecificRuneLocation(new Coordinate(4, 2));
+        // Initialize the grid designs for the dungeon
+        GridDesign[] gridDesigns = new GridDesign[4];
+        for (int i = 0; i < 4; i++) {
+            gridDesigns[i] = new GridDesign(16, 16, 2);
 
+            // Place the first set of objects for rune locations
+            gridDesigns[i].placeObject(testRow, testColumn, ObjectType.CHEST_CLOSED);
+            gridDesigns[i].placeObject(15 - testRow, 15 - testColumn, ObjectType.CHEST_CLOSED);
+
+            // Place additional objects at various positions to populate runeLocations
+            for (int x = 2; x < 14; x += 3) {
+                for (int y = 2; y < 14; y += 3) {
+                    gridDesigns[i].placeObject(x, y, ObjectType.CHEST_CLOSED);
+                }
+            }
+
+            //  add some more variety
+            gridDesigns[i].placeObject(3, 5, ObjectType.CHEST_CLOSED);
+            gridDesigns[i].placeObject(12, 10, ObjectType.CHEST_CLOSED);
         }
-        dungeon.setHalls(halls);
-        game.setDungeon(dungeon);  // Inject the initialized dungeon into the game
 
-        // Set current hall to the first one and start its timer
-        dungeon.getCurrentHall().getTimer().reset();
+        // Initialize the game with the grid designs
+        game.initPlayMode(gridDesigns);
+        // Ensure that the current hall has valid rune locations
+        Hall currentHall = game.getDungeon().getCurrentHall();
+        currentHall.setNewRuneLocation();
+        System.out.println("Initial Rune Location: " + currentHall.getRuneLocation());
+
+    }
+    @Test
+    void testRuneRelocationStrategy() throws InterruptedException {
+        WizardBehaviorStrategy behavior = new RuneRelocationStrategy();
+        Coordinate initialRuneLocation = game.getDungeon().getCurrentHall().getRuneLocation();
+
+        System.out.println("Initial Rune Location: " + initialRuneLocation);
+
+        game.getDungeon().getCurrentHall().getTimer().reset();
+        Thread.sleep(3600);
+        behavior.execute(wizard);
+
+        Coordinate newRuneLocation = game.getDungeon().getCurrentHall().getRuneLocation();
+        System.out.println("New Rune Location: " + newRuneLocation);
+
+        // Verify that the rune's location has changed
+        assertNotEquals(initialRuneLocation, newRuneLocation);
     }
 
     @Test
@@ -48,19 +84,7 @@ class WizardBehaviorStrategyTest {
         assertFalse(game.getAgents().contains(wizard));
     }
 
-    @Test
-    void testRuneRelocationStrategy() throws InterruptedException {
-        WizardBehaviorStrategy behavior = new RuneRelocationStrategy();
-        game.getDungeon().getCurrentHall().setSpecificRuneLocation(new Coordinate(2, 2));
-    Coordinate initialruneLocation = game.getDungeon().getCurrentHall().getRuneLocation();
 
-        // Simulate > 70% time remaining
-        game.getDungeon().getCurrentHall().getTimer().reset();
-        behavior.execute(wizard);
-
-        // Verify that the rune's location has changed
-        assertNotEquals(initialruneLocation, game.getDungeon().getCurrentHall().getRuneLocation());
-    }
 
     @Test
     void testIdleStrategy() throws InterruptedException {
