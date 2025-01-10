@@ -9,6 +9,7 @@ import domain.level.Hall;
 import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
 import java.util.*;
 
@@ -35,6 +36,7 @@ public class Player extends Agent {
         doorCoordinate = new Coordinate(9, 0);
         timer = new Timer();
         setDirection(Direction.STOP);
+        PlayerGraphics.getInstance(48).setPlayer(this);
     }
 
     // else statement is empty for now
@@ -51,7 +53,7 @@ public class Player extends Agent {
                 bag.removeEnchantment(enchantment);
                 if (enchantment == EnchantmentType.Cloak) {gainInvisibility();}
                 else if (enchantment== EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
-                else { // sikintili
+                else {
                     Coordinate c;
                     for (Agent m : Game.getInstance().getAgents()) {
                         if (m instanceof Fighter) {
@@ -72,6 +74,7 @@ public class Player extends Agent {
             return;
         }
         bag.addEnchantment(enchantment.getType());
+
         for (PlayerListener pl : listeners)
             pl.onCollectEnch(enchantment.getType());
     }
@@ -128,10 +131,6 @@ public class Player extends Agent {
         }, INVISIBILITY_DURATION * 1000);
     }
 
-    public void collectRune() {
-        hasRune = true;
-    }
-
     public void increaseHealth() {
         if (health < MAX_HEALTH) {
             health++;
@@ -140,24 +139,10 @@ public class Player extends Agent {
     }
 
     public void reduceHealth() {
-        health--;
-        publishEvent(health);
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public Bag getBag() {
-        return bag;
-    }
-
-    public boolean isHasRune() {
-        return hasRune;
+        if(!invisible){
+            health--;
+            publishEvent(health);
+        }
     }
 
     public void setHasRune(boolean hasRune) {
@@ -170,8 +155,15 @@ public class Player extends Agent {
         return invisible;
     }
 
-    public void setInvisible(boolean invisible) {
-        this.invisible = invisible;
+    public int getHealth(){
+        return health;
     }
 
+    public Bag getBag(){
+        return bag;
+    }
+
+    public boolean isHasRune() {
+        return hasRune;
+    }
 }

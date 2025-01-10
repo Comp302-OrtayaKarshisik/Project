@@ -1,6 +1,7 @@
-package domain.agent.monster;
+package domain.agent.monster.wizardStrategies;
 
 import domain.Game;
+import domain.agent.monster.Wizard;
 import domain.level.CollisionChecker;
 import domain.util.Coordinate;
 
