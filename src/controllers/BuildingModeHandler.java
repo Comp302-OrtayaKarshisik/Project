@@ -56,6 +56,21 @@ public class BuildingModeHandler {
 		return this.selectedObject;
 	}
 
+
+	/**
+	 * Requires:
+	 *  - selectedObject is not null.
+	 *  - 0 <= row < gridDesigns[currentGameHall].getRowCount()
+	 *  - 0 <= col < gridDesigns[currentGameHall].getColumnCount()
+	 *  - grid[row][col] needs to be null.
+	 * Modifies:
+	 *  - gridDesigns[currentGameHall] (the current hall's grid)
+	 * Effects:
+	 *  - If selectedObject is null, returns false (no placement).
+	 *  - If row or col are out of valid bounds or place is not empty,
+	 *    placeObject() method will return false and not be placed.
+	 *  - Returns true if placement is successful, false otherwise.
+	 */
 	public  boolean placeObjectAt(int row, int col) {
 		if(selectedObject == null) return false;
 		GridDesign currentHall = gridDesigns[currentGameHall];
