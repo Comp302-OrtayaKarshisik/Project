@@ -8,4 +8,8 @@ public interface FactoryListener {
 
     public abstract void onDeletionEvent();
 
+    public abstract void onNewGameEvent();
+
+    public abstract void onGameOverEvent();
+
 }

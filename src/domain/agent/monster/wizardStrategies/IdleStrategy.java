@@ -1,4 +1,6 @@
-package domain.agent.monster;
+package domain.agent.monster.wizardStrategies;
+
+import domain.agent.monster.Wizard;
 
 import java.util.Timer;
 import java.util.TimerTask;

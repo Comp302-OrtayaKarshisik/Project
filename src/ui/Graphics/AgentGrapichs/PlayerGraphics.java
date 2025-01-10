@@ -15,17 +15,16 @@ public class PlayerGraphics extends EntityGraphics {
     private BufferedImage rightPic, leftPic;
     private final int size;
     private BufferedImage currentImg;
-    private final Player player;
+    private Player player;
 
-    private PlayerGraphics(int size, Player player) {
+    private PlayerGraphics(int size) {
         this.size = size;
-        this.player = player;
         getDefaultImages();
     }
 
-    public static PlayerGraphics getInstance(int size, Player player) {
+    public static PlayerGraphics getInstance(int size) {
         if (instance == null) {
-            instance = new PlayerGraphics(size,player);
+            instance = new PlayerGraphics(size);
         }
         return instance;
     }
@@ -55,4 +54,9 @@ public class PlayerGraphics extends EntityGraphics {
         }
         g.drawImage(currentImg, player.getLocation().getX() * size, (15 - player.getLocation().getY()) * size, size, size,null);
     }
+
+    public void setPlayer (Player player) {
+        this.player = player;
+    }
+
 }

@@ -17,11 +17,10 @@ public class WizardGraphics extends EntityGraphics implements FactoryListener {
     private static WizardGraphics instance;
     protected int size;
     protected BufferedImage img;
-    private final LinkedList<Wizard> wizards;
+    private LinkedList<Wizard> wizards;
 
     private WizardGraphics(int size) {
         this.size = size;
-        wizards = new LinkedList<>();
         getDefaultImages();
         this.subscribe(MonsterFactory.getInstance());
     }
@@ -54,9 +53,19 @@ public class WizardGraphics extends EntityGraphics implements FactoryListener {
     }
 
     public void onDeletionEvent() {
-
         this.wizards.clear();
     }
+
+    @Override
+    public void onNewGameEvent(){
+        wizards = new LinkedList<>();
+    }
+
+    @Override
+    public void onGameOverEvent(){
+        wizards = null;
+    }
+
     public void onDeletionEventOne(Wizard wizard) {
         wizards.remove(wizard);  // Remove the specific wizard from the list
     }
@@ -64,4 +73,5 @@ public class WizardGraphics extends EntityGraphics implements FactoryListener {
     public void subscribe(MonsterFactory mf) {
         mf.addListener(this);
     }
+
 }

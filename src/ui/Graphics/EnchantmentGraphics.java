@@ -18,12 +18,12 @@ public class EnchantmentGraphics extends EntityGraphics implements EnchantmentLi
     private static EnchantmentGraphics instance;
     private int size;
     private HashMap<EnchantmentType, BufferedImage> enchantmentImages;
-    private final LinkedList<Enchantment> enchantments;
+    private LinkedList<Enchantment> enchantments;
 
     public EnchantmentGraphics(int size){
         initalizeSpriteMap();
         this.size = size;
-        this.enchantments = new LinkedList<>();
+
         this.subscribe(EnchantmentFactory.getInstance());
     }
 
@@ -57,6 +57,16 @@ public class EnchantmentGraphics extends EntityGraphics implements EnchantmentLi
     @Override
     public void onClearEvent() {
         this.enchantments.clear();
+    }
+
+    @Override
+    public void onNewGameEvent(){
+        this.enchantments = new LinkedList<>();
+    }
+
+    @Override
+    public void onGameOverEvent(){
+        enchantments = null;
     }
 
     private void initalizeSpriteMap()

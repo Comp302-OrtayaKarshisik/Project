@@ -36,6 +36,7 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_RIGHT) goRight = true;
         if (key == KeyEvent.VK_ESCAPE) options = true;
         if (key == KeyEvent.VK_ESCAPE) Game.getInstance().togglePause();
+
         if (Game.getInstance().isPaused() && (key == KeyEvent.VK_H)) {
             if (!helpScreen.isVisible()) {
                 helpScreen.setVisible(true);
