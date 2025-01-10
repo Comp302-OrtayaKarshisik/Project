@@ -102,7 +102,6 @@ public class Archer extends Monster {
 
                 arrow.set(initialarrowloc, dx, dy, true, this);
                 publishArrowActivationEvent();
-                Game.getInstance().getPlayer().reduceHealth();
                 attackFrame = 0;
             } else { // if player is not found in the attack range */
 

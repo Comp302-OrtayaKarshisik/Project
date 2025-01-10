@@ -14,15 +14,12 @@ public class Renderer {
 	public Renderer() {
 		this.scale = 3;
 	}
-	
+
 	
 	
 	public void renderEmptyHall(Graphics g) {
 		
 		BufferedImage sprite = Textures.getSprite("floor_plain");
-		
-		
-		
 	}
 
 }

@@ -124,5 +124,4 @@ public class CollisionChecker {
 
         return true;
     }
-
 }

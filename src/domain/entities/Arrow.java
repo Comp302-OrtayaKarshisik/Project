@@ -25,11 +25,9 @@ public class Arrow extends Projectile {
 
 
     public Arrow(Archer archer) {
-        speed = 5;
+        speed = 10;
         maxLife = 80;
         life = maxLife;
         alive = false;
     }
-
-
  }
