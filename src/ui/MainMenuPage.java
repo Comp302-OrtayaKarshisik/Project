@@ -11,6 +11,7 @@ public class MainMenuPage extends Page implements ActionListener{
     private JButton startButton;
     private JButton helpButton;
     private ImageIcon icon;
+    private HelpScreen helpScreen;
 
     MainMenuPage() {
         // Add the background image
@@ -18,6 +19,8 @@ public class MainMenuPage extends Page implements ActionListener{
     	super();
     	
     	initUI();
+
+        helpScreen = new HelpScreen();
 
     }
     
@@ -67,6 +70,8 @@ public class MainMenuPage extends Page implements ActionListener{
 
         if(e.getSource()==helpButton){
             //open view help
+            helpScreen.setVisible(true);
+
         }
     }
 }

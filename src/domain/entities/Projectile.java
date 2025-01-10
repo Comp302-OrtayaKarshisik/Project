@@ -6,6 +6,7 @@ import domain.agent.monster.Archer;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
+
 //user Archer olarak seçildi
 // Entity -> Projectile -> Arrow
 // Entity -> Agent -> Monster -> Archer
@@ -14,13 +15,14 @@ import domain.util.Direction;
 public class Projectile extends Entity {
 
     public Archer user;
+
     public Coordinate pos;
     public Direction randomDirection;
     public int dx;
     public int dy;
     public boolean alive;
     public final int speed = 1;
-    private final int maxLife = 200;
+    private final int maxLife = 60;
     public int life;
 
     public Projectile() {}
@@ -35,18 +37,26 @@ public class Projectile extends Entity {
     }
 
     public void update() {
-        //alive'ı burda false yap, deactivation event publishle
 
-        pos.setX(pos.getX() + dx*speed);
-        pos.setY(pos.getY() + dy*speed);
+        pos.setX(pos.getX() + dx * speed);
+        pos.setY(pos.getY() + dy * speed);
+
+
+        Coordinate playerLoc = Game.getInstance().getPlayer().getLocation();
+        if (pos.equals(playerLoc) && Coordinate.euclideanDistance(user.getLocation(), playerLoc) <= 4) {
+            Game.getInstance().getPlayer().reduceHealth();
+            alive = false;
+            return;
+        }
+
 
         life--;
 
         if (life <= 0) {
             alive = false;
-            //user.publishArrowDeactivationEvent();
         }
     }
+
 
     public int getDx() {
         return dx;
@@ -56,7 +66,4 @@ public class Projectile extends Entity {
         return dy;
     }
 
-    public void checkCollision() {
-        //check collision and determine isAlive
-    }
 }

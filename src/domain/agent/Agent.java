@@ -20,7 +20,7 @@ public abstract class Agent extends Entity {
     }
 
     public void setLocation(Coordinate location) {
-        this.location = location;
+        this.location = new Coordinate(location.getX(), location.getY());  // Create new reference
     }
 
     public Direction getDirection() {

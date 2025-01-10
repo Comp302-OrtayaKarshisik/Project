@@ -1,9 +1,13 @@
 package ui;
 
 import domain.Game;
+import domain.Textures;
 import domain.agent.Player;
+import domain.collectables.EnchantmentType;
+import domain.level.CountDownTimer;
 import listeners.GameListener;
 import listeners.PlayerListener;
+import listeners.TimerListener;
 import ui.Swing.Panels.GamePanel;
 import ui.Swing.Panels.HallPanelHolder;
 
@@ -11,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class PlayModePage extends Page implements PlayerListener, GameListener {
+public class PlayModePage extends Page implements PlayerListener, GameListener, TimerListener {
 
     private HallPanelHolder panelHolder;
 
@@ -29,13 +33,25 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
     private JLabel runeText;
 
+    private JLabel timerLabel;
+
     private ArrayList<JLabel> livesIndicators = new ArrayList<JLabel>();
 
+    private ArrayList<JLabel> collectedEnchLabels = new ArrayList<JLabel>();
+
     private boolean isPaused = false;
+
+    private int collectedRunes = 0;
+
+    private final int totalRunes = 4;
 
     public PlayModePage() {
         super();
         initUI();
+
+        this.subscribe(Game.getInstance());
+        this.subscribe(Game.getInstance().getPlayer());
+
         Game.getInstance().startGame();
     }
 
@@ -67,6 +83,16 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
         //buttonPanel.setBorder(new RoundedBorder(20));
 
+
+        timerLabel = new JLabel("Seconds: " +
+                Game.getInstance().getDungeon().getCurrentHall().getTimer().getInitialTimeRemaining());
+        timerLabel.setBounds(40, 400, 200, 20);
+        timerLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        timerLabel.setFont(new Font("Serif", Font.BOLD, 22));
+        timerLabel.setForeground(new Color(255, 255, 255));
+        this.buttonPanel.add(timerLabel);
+
+
         //Add Heart Image
         ImageIcon heartImage = new ImageIcon("src/assets/heart.png");
         Image image = heartImage.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -74,13 +100,15 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
 
         this.buttonPanel.setLayout(null);
-
         this.addPauseResumeButton();
-
         this.displayLives(3);
+        this.displayInventory();
 
-        this.subscribe(Game.getInstance());
-        this.subscribe(Game.getInstance().getPlayer());
+        //subscribe to all halls timers.
+        for (int i = 0; i < 4; i++) {
+            CountDownTimer timer = Game.getInstance().getDungeon().getHalls()[i].getTimer();
+            this.subscribe(timer);
+        }
 
         SwingUtilities.invokeLater(panelHolder.getExternalPanel()::requestFocusInWindow);
     }
@@ -94,11 +122,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         Image image2 = resumeImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         pauseResumeIcon = new ImageIcon(image2);
 
-        ImageIcon exitImage = new ImageIcon("src/assets/exit.png");
-        Image image3 = exitImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        ImageIcon resizedExitImage = new ImageIcon(image3);
-
-
         this.pauseResumeBtn = new JLabel(resizedPauseImage);
         this.pauseResumeBtn.setBounds(40, 150, 32, 32);
 
@@ -111,8 +134,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
 
         this.buttonPanel.add(pauseResumeBtn);
 
-        JLabel exitBtn = new JLabel(resizedExitImage);
-        exitBtn.setBounds(85, 150, 32, 32);
+        JLabel exitBtn = Textures.createImageLabels("exit",85, 150, 32, 32);
         this.buttonPanel.add(exitBtn);
     }
 
@@ -151,15 +173,16 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         this.buttonPanel.repaint();
     }
 
+    private void updateTimer(CountDownTimer timer) {
+        timerLabel.setText("Seconds: " + timer.getTimeRemaining());
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
+    }
+
     private void displayRune() {
         // Rune Image
         System.out.println("render rune");
-        ImageIcon runeImage = new ImageIcon("src/assets/rune.png");
-        Image image1 = runeImage.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        ImageIcon resizedRuneImage = new ImageIcon(image1);
-
-        this.runeLabel = new JLabel(resizedRuneImage);
-        runeLabel.setBounds(85, 480, 32, 32);
+        this.runeLabel = Textures.createImageLabels("rune",85, 480, 32, 32);
         this.buttonPanel.add(runeLabel);
 
         // Rune Collected Text
@@ -181,12 +204,63 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         this.buttonPanel.repaint();
     }
 
+    private void displayInventory() {
+        JLabel inventoryLabel = Textures.createImageLabels("inventory", 20, 480, 160, 234);
+        this.buttonPanel.setComponentZOrder(inventoryLabel, 1);
+        this.buttonPanel.add(inventoryLabel);
+    }
+
+    private void addEnchToBag(EnchantmentType type) {
+        String fileName;
+        switch(type) {
+            case Cloak:
+                fileName = "cloak";
+                break;
+            case Luring:
+                fileName = "lure";
+                break;
+            default:
+                fileName = "reveal";
+                break;
+        }
+
+        int  xPlace = collectedEnchLabels.size() % 3;
+        int xOffset = 52;
+        int yOffset = collectedEnchLabels.size() >= 3 ? 33 : 0;
+
+        JLabel enchLabel = Textures.createImageLabels(fileName, xOffset + 33 * xPlace, 570 + yOffset, 32, 32);
+        this.collectedEnchLabels.add(enchLabel);
+        this.buttonPanel.add(enchLabel);
+        this.buttonPanel.setComponentZOrder(enchLabel, 1);
+
+        this.buttonPanel.revalidate();
+        this.buttonPanel.repaint();
+    }
+
+    private void removeEnchFromBag(EnchantmentType type) {
+        for (JLabel runeLabel: this.collectedEnchLabels) {
+            if(runeLabel.getName().equals(type.name().toLowerCase())) {
+                this.buttonPanel.remove(runeLabel);
+                this.collectedEnchLabels.remove(runeLabel);
+
+                this.buttonPanel.revalidate();
+                this.buttonPanel.repaint();
+
+                return;
+            }
+        }
+    }
+
     public void subscribe (Player p) {
         p.addListener(this);
     }
 
     private void subscribe(Game game) {
         game.addListener(this);
+    }
+
+    private void subscribe(CountDownTimer timer) {
+        timer.addListener(this);
     }
 
     @Override
@@ -197,15 +271,41 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
         displayLives(num);
     }
 
+
+    @Override
+    public void onTimerEvent(CountDownTimer timer) {
+        updateTimer(timer);
+
+        if (timer.getTimeRemaining() <= 0) {
+            PageManager.getInstance().showGameOverPage();
+        }
+    }
+
+
+
     @Override
     public void onRuneEvent(boolean hasRune) {
         if(hasRune) {
             displayRune();
+            collectedRunes++;
+            if (collectedRunes == totalRunes) {
+                PageManager.getInstance().showWinGamePage();
+            }
         }
         else {
             removeRune();
         }
         this.panelHolder.setDoorOpen(hasRune);
+    }
+
+    @Override
+    public void onCollectEnch(EnchantmentType type) {
+        this.addEnchToBag(type);
+    }
+
+    @Override
+    public void onRemoveEnch(EnchantmentType type) {
+        this.removeEnchFromBag(type);
     }
 
     @Override
@@ -215,4 +315,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener {
             this.togglePauseImage();
         }
     }
+
+
 }

@@ -54,7 +54,11 @@ public class WizardGraphics extends EntityGraphics implements FactoryListener {
     }
 
     public void onDeletionEvent() {
+
         this.wizards.clear();
+    }
+    public void onDeletionEventOne(Wizard wizard) {
+        wizards.remove(wizard);  // Remove the specific wizard from the list
     }
 
     public void subscribe(MonsterFactory mf) {
