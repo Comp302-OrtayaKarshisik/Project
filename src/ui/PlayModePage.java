@@ -1,7 +1,6 @@
 package ui;
 
 import domain.Game;
-import domain.Textures;
 import domain.agent.Player;
 import domain.collectables.EnchantmentType;
 import domain.level.CountDownTimer;
@@ -23,10 +22,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     private JPanel objectChooserPanel;
 
     private PlayModeMenu buttonPanel;
-
-    private JLabel runeLabel;
-
-    private JLabel runeText;
 
     private JLabel timerLabel;
 

@@ -50,9 +50,9 @@ public class Hall {
 
     public void higlightRune() {
         int minX = Math.max(runeLocation.getX()-3, 0);
-        int maxX = Math.max(runeLocation.getX()-3, 13);
-        int minY = Math.max(runeLocation.getY()-3, 0);
-        int maxY = Math.max(runeLocation.getY()-3, 13);
+        int maxX = Math.min(runeLocation.getX(), 13);
+        int minY = Math.max((15-runeLocation.getY())-3, 0);
+        int maxY = Math.min((15-runeLocation.getY()), 13);
         int x = Game.random.nextInt(minX, maxX);
         int y = Game.random.nextInt(minY, maxY);
         for(GameListener gl: Game.getInstance().getListeners()) {

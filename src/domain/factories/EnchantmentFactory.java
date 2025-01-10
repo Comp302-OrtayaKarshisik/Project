@@ -71,7 +71,7 @@ public class EnchantmentFactory {
             Enchantment e = switch (type) {
                 case 0 -> new Enchantment(EnchantmentType.Reveal);
                 case 1 -> new Enchantment(EnchantmentType.Reveal);
-                case 2 -> new Enchantment(EnchantmentType.Luring);
+                case 2 -> new Enchantment(EnchantmentType.Reveal);
                 case 3 -> new Enchantment(EnchantmentType.Luring);
                 case 4 -> new Enchantment(EnchantmentType.Cloak);
                 default -> null;
