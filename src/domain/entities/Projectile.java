@@ -17,7 +17,6 @@ public class Projectile extends Entity {
     public Archer user;
 
     public Coordinate pos;
-    public Direction randomDirection;
     public int dx;
     public int dy;
     public boolean alive;

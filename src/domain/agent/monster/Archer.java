@@ -74,9 +74,27 @@ public class Archer extends Monster {
         }
     }
 
+    /**
+     * Shoots an arrow per 60 frame. Direction is explicitly determined or randomized based on attack range/player state.
+     * <p>
+     * Requires: <p>
+     * - Archer, Arrow, archerLocation, playerLocation, attackRange, attackFrame. <p>
+     * - `alive` to be a boolean indicating whether arrow is active or not. <p>
+     * <p>
+     * Modifies: <p>
+     * - Updates/determines arrow attributes such as direction > (dx, dy).
+     * - Updates arrow state if arrow is alive > arrow.update()
+     * - Until attackFrameLimit, attackFrame is incremented by 1 on each call to shootArrow().
+     * -
+     * <p>
+     * Effects: <p>
+     * - If attackFrame > attackFrameLimit: arrowActivationEvent is published to ArrowGraphics. <p>
+     * - Sets arrow attributes > arrow.set(...) <p>
+     */
+
     private void shootArrow() {
 
-        if (arrow == null || !arrow.alive) {
+        if (arrow == null) {
             arrow = new Arrow(this); // Initialize the arrow only when needed
             }
 
