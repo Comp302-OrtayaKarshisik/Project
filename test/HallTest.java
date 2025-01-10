@@ -5,6 +5,7 @@ import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,6 +37,7 @@ class HallTest {
      * Expect: player->bag->size changes to 1
      *
      */
+    @Test
     void testHandleChoseBox_enchantment() {
         // creating new enchantment
         Enchantment e = new Enchantment(EnchantmentType.Reveal);
@@ -53,16 +55,19 @@ class HallTest {
      * Expect: hall->tile is initialized to a new tile
      *
      */
+    @Test
     void testHandleChoseBox_placedObject() {
+        int testColInv = 15 - testColumn;
         // checking first to see it contains an object
         boolean isObject = game.getDungeon().
-                getCurrentHall().getGrid()[testRow][testColumn].getName().equals(ObjectType.CHEST_CLOSED.toString());
+                getCurrentHall().getGrid()[testRow][testColInv].getName().equals(ObjectType.CHEST_CLOSED.toString());
+        assertTrue(isObject);
 
         //checking now that it is an empty tile
-        game.getPlayer().setLocation(new Coordinate(testRow, testColumn-1));
-        game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), new Coordinate(testRow, testColumn));
-        boolean isEmpty = game.getDungeon().getCurrentHall().getGrid()[testRow][testColumn].getName().equals("aa");
-        assertTrue(isObject && isEmpty);
+        game.getPlayer().setLocation(new Coordinate(testRow, testColInv-1));
+        game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), new Coordinate(testRow, testColInv));
+        boolean isEmpty = game.getDungeon().getCurrentHall().getGrid()[testRow][testColInv].getName().equals("aa");
+        assertTrue(isEmpty);
     }
 
     /**
@@ -70,6 +75,7 @@ class HallTest {
      * Expect: player->hasRune is true
      *
      */
+    @Test
     void testHandleChoseBox_placedObjectWithRune() {
         Coordinate runeLocation = game.getDungeon().getCurrentHall().getRuneLocation();
 
