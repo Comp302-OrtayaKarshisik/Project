@@ -48,8 +48,6 @@ public class Projectile extends Entity {
             alive = false;
             return;
         }
-
-
         life--;
 
         if (life <= 0) {

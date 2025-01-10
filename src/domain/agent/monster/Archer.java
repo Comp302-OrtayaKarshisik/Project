@@ -101,7 +101,6 @@ public class Archer extends Monster {
                 int gcd = gcd(Math.abs(dx), Math.abs(dy));
                 dx /= gcd;
                 dy /= gcd;
-
                 arrow.set(initialarrowloc, dx, dy, true, this);
                 publishArrowActivationEvent();
                 attackFrame = 0;
