@@ -143,6 +143,9 @@ public class Player extends Agent {
             health--;
             publishEvent(health);
         }
+        if (health == 0) {
+           Game.getInstance().loseGame();
+        }
     }
 
     public void setHasRune(boolean hasRune) {

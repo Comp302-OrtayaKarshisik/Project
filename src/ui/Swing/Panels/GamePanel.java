@@ -241,6 +241,12 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         }, 2, TimeUnit.SECONDS);
     }
 
+    @Override
+    public void onGameWin() {}
+
+    @Override
+    public void onGameLose() {}
+
     private void subscribe(Game game) {
         game.addListener(this);
     }

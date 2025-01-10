@@ -51,7 +51,7 @@ class WinGamePage extends Page implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == playAgainButton) {
-            PageManager.getInstance().showNewBuildingModePage();
+            PageManager.getInstance().showBuildingModePage();
         }
 
         if (e.getSource() == exitButton) {

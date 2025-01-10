@@ -9,4 +9,8 @@ public interface GameListener {
 
     public abstract void onHighlightEvent(Coordinate coordinate);
 
+    public abstract void onGameWin();
+
+    public abstract void onGameLose();
+
 }

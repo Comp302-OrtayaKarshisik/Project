@@ -97,9 +97,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
     @Override
     public void onHealthEvent(int num) {
-        if (num == 0) {
-            PageManager.getInstance().showGameOverPage();
-        }
         this.buttonPanel.updateLives(num);
     }
 
@@ -135,7 +132,15 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     }
 
     @Override
-    public void onHighlightEvent(Coordinate coordinate) {
+    public void onHighlightEvent(Coordinate coordinate) {}
 
+    @Override
+    public void onGameWin() {
+        PageManager.getInstance().showGameOverPage();
+    }
+
+    @Override
+    public void onGameLose() {
+        PageManager.getInstance().showWinGamePage();
     }
 }
