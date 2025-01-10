@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class Bag {
 
+    private int currentSize = 0;
     private HashMap<EnchantmentType,Integer> enchantmentCounter;
 
     public Bag() {
@@ -23,9 +24,11 @@ public class Bag {
 
     public void removeEnchantment(EnchantmentType enchantment) {
         enchantmentCounter.put(enchantment, enchantmentCounter.get(enchantment)-1);
+        currentSize--;
     }
     public void addEnchantment(EnchantmentType enchantment) {
         enchantmentCounter.put(enchantment, enchantmentCounter.get(enchantment)+1);
+        currentSize++;
     }
 
     public HashMap<EnchantmentType, Integer> getEnchantmentCounter() {
@@ -33,5 +36,9 @@ public class Bag {
     }
     public void setEnchantmentCounter(HashMap<EnchantmentType, Integer> enchantmentCounter) {
         this.enchantmentCounter = enchantmentCounter;
+    }
+
+    public int getCurrentSize() {
+        return currentSize;
     }
 }

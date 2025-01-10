@@ -72,6 +72,23 @@ public class Hall {
         return c1.equals(this.runeLocation);
     }
 
+    /**
+     * Handles the next action when the user clicks inside the hall in play mode.
+     *
+     * Requires:
+     * - Game, Game->enchantments, Enchantment, Player, Coordinate, grid.
+     * - Coordinate object to be a valid coordinate inside the grid.
+     * -
+     * Modifies:
+     * - Modifies the grid by changing the tiles.
+     * - Modifies the Game by changing Game->enchantments.
+     * - Modifies Player->hasRune if the rune is found.
+     * -
+     * Effects:
+     * - If the player has chosen an enchantment, collectEnchantment function is called
+     * - If the player chooses an object, the object disappears and checked whether the rune is found.
+     */
+
     public void handleChosenBox(Player player, Coordinate c1) {
 
         // for enchantment logic
