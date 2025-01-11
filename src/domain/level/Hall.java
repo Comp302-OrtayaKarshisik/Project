@@ -8,6 +8,7 @@ import domain.collectables.Enchantment;
 import domain.factories.EnchantmentFactory;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
+import listeners.GameListener;
 import ui.Graphics.EnchantmentGraphics;
 
 import javax.xml.stream.Location;
@@ -46,19 +47,41 @@ public class Hall {
     public EnchantmentType type(int [][] xy) {return null;}
     public void increaseTime() {}
     public String typeOfCollectable() {return null;}
-    public void higlightRune() {}
+
+    public void higlightRune() {
+        int minX = Math.max(runeLocation.getX()-3, 0);
+        int maxX = Math.min(runeLocation.getX(), 13);
+        int minY = Math.max((15-runeLocation.getY())-3, 0);
+        int maxY = Math.min((15-runeLocation.getY()), 13);
+        int x = Game.random.nextInt(minX, maxX);
+        int y = Game.random.nextInt(minY, maxY);
+        for(GameListener gl: Game.getInstance().getListeners()) {
+            gl.onHighlightEvent(new Coordinate(x, y));
+        }
+    }
     public void removeHiglight() {}
     public void throwLure(Key key) {}
 
-    public int checkTimer() {return 0;}
-    // An ench factory will do this
-    public void createEnchantment() {}
-
-
-    public void fillHall(Object obj, int[][] loc) {}
     private boolean isRuneLocation(Coordinate c1) {
         return c1.equals(this.runeLocation);
     }
+
+    /**
+     * Handles the next action when the user clicks inside the hall in play mode.
+     *
+     * Requires:
+     * - Game, Game->enchantments, Enchantment, Player, Coordinate, grid.
+     * - Coordinate object to be a valid coordinate inside the grid.
+     * -
+     * Modifies:
+     * - Modifies the grid by changing the tiles.
+     * - Modifies the Game by changing Game->enchantments.
+     * - Modifies Player->hasRune if the rune is found.
+     * -
+     * Effects:
+     * - If the player has chosen an enchantment, collectEnchantment function is called
+     * - If the player chooses an object, the object disappears and checked whether the rune is found.
+     */
 
     public void handleChosenBox(Player player, Coordinate c1) {
 
@@ -90,29 +113,6 @@ public class Hall {
         }
     }
 
-    public CountDownTimer getTimer() {
-        return timer;
-    }
-
-    public List<Enchantment> getEnchantments() {
-        return enchantments;
-    }
-    public void setEnchantments(List<Enchantment> enchantments) {
-        this.enchantments = enchantments;
-    }
-
-    public int getObjectCapacity() {
-        return placedObjectCount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Coordinate getRuneLocation() {
-        return runeLocation;
-    }
-
     // Transfer grid  design from build mode to Hall
     public void transferGridDesign(GridDesign gridDesign) {
         if(gridDesign==null) return;
@@ -131,7 +131,6 @@ public class Hall {
                 }
             }
         }
-
         this.setNewRuneLocation();
     }
 
@@ -148,13 +147,16 @@ public class Hall {
         return runeLocations.get(randomRuneLoc);
     }
 
+
     public Tile[][] getGrid() {
         return grid;
     }
 
-    public void setGrid(Tile[][] grid) {
-        this.grid = grid;
+    public CountDownTimer getTimer() {
+        return timer;
     }
 
-
+    public Coordinate getRuneLocation() {
+        return runeLocation;
+    }
 }
