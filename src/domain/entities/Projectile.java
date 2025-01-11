@@ -6,14 +6,16 @@ import domain.agent.monster.Archer;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
+import java.io.Serializable;
+
 //user Archer olarak seçildi
 // Entity -> Projectile -> Arrow
 // Entity -> Agent -> Monster -> Archer
 // şeklinde hiyerarşiler oluşturabiliriz o zaman değişebilir.
 
-public class Projectile extends Entity {
+public class Projectile extends Entity implements Serializable {
 
-    public Archer user;
+    public Agent user;
     public Coordinate pos;
     public Direction randomDirection;
     public int dx;
@@ -25,7 +27,7 @@ public class Projectile extends Entity {
 
     public Projectile() {}
 
-    public void set(Coordinate pos, int dx, int dy, boolean alive, Archer user) {
+    public void set(Coordinate pos, int dx, int dy, boolean alive, Agent user) {
         this.pos = pos;
         this.dx = dx;
         this.dy = dy;

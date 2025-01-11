@@ -13,6 +13,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 //ProjectileGraphics classı açılabilir
@@ -23,13 +24,13 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
     private static ArrowGraphics instance;
 
     protected int size;
-    protected final LinkedList<Projectile> arrows;
+    protected final ArrayList<Projectile> arrows;
     private BufferedImage arrowImage;
 
 
     private ArrowGraphics(int size) {
         this.size = size;
-        this.arrows = new LinkedList<>();
+        this.arrows = new ArrayList<>();
         getDefaultImages();
     }
 
@@ -76,6 +77,8 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
     public void onArrowActivationEvent(Archer archer) {
             arrows.add(archer.arrow);}
 
-    public void onArrowDeactivationEvent(Archer archer) {
-        arrows.remove(archer.arrow);}
+    public ArrayList<Projectile> getArrows() {
+        return arrows;
+    }
+
 }

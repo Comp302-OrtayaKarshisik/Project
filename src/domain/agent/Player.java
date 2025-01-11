@@ -10,10 +10,10 @@ import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player extends Agent {
-
+public class Player extends Agent implements Serializable {
     private final int MAX_HEALTH = 3;
     private final int INVISIBILITY_DURATION = 5;
 

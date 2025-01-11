@@ -5,7 +5,9 @@ import domain.factories.EnchantmentFactory;
 import domain.level.CollisionChecker;
 import domain.util.Coordinate;
 
-public class Enchantment {
+import java.io.Serializable;
+
+public class Enchantment implements Serializable {
 
     private static final int ENCHANTMENT_DURATION_FRAME = 20 * 6; //how many times update is called before the ench is removed.
 

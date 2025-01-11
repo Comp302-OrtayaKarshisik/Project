@@ -12,11 +12,15 @@ import ui.Graphics.EnchantmentGraphics;
 
 import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.*;
 
-public class Hall {
+
+// mainmenu > load > set/open current hall and remaining halls with consistent game timers
+
+public class Hall implements Serializable {
 
     private CountDownTimer timer;
     private final String type;

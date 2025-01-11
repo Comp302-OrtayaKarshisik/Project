@@ -19,16 +19,16 @@ public class Dungeon {
 
         halls = new Hall[4];
 
-        halls[0] = new Hall(null,  gridDesigns[0].getPlacedObjectCount());
+        halls[0] = new Hall("earth",  gridDesigns[0].getPlacedObjectCount());
         halls[0].transferGridDesign(gridDesigns[0]);
 
-        halls[1] = new Hall("a", gridDesigns[1].getPlacedObjectCount());
+        halls[1] = new Hall("air", gridDesigns[1].getPlacedObjectCount());
         halls[1].transferGridDesign(gridDesigns[1]);
 
-        halls[2] = new Hall("a", gridDesigns[2].getPlacedObjectCount());
+        halls[2] = new Hall("water", gridDesigns[2].getPlacedObjectCount());
         halls[2].transferGridDesign(gridDesigns[2]);
 
-        halls[3] = new Hall("a", gridDesigns[3].getPlacedObjectCount());
+        halls[3] = new Hall("fire", gridDesigns[3].getPlacedObjectCount());
         halls[3].transferGridDesign(gridDesigns[3]);
 
         currentHall = 0;
@@ -37,9 +37,7 @@ public class Dungeon {
     public void nextHall() {
         if(currentHall == 3) {
             return;
-        }
-        currentHall++;
-    }
+        }currentHall++;}
 
     public Hall getCurrentHall() {
         return halls[currentHall];

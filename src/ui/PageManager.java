@@ -42,6 +42,8 @@ public class PageManager {
 	
 	public void showMainMenuPage() {showPage(new MainMenuPage());}
 
+	public void showGameSelectionPage() {showPage(new GameSelectionPage());}
+
 	public void showGameOverPage() {showPage(new GameOverPage());}
 
 	public void showWinGamePage() {showPage(new WinGamePage());}

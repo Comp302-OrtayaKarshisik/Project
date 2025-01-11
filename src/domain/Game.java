@@ -12,15 +12,28 @@ import domain.level.Dungeon;
 import domain.level.GridDesign;
 import listeners.GameListener;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Game {
 
+//Enchanntment factory > enchantment list string
+//Monster factory > monster list string
+
+//OBJECT: type > String/enum,  count: Integer, position: Integer
+//ENCH: type > String/enum,  count: Integer, position: Integer
+//CURRENT HALL: STRING
+//TIMER: INTEGER
+
+public class Game implements Serializable {
+
+    private String saveTime;
     public ISaveLoadAdapter saveLoad = new FileSaveLoadAdapter(); //REACH THIS ATTRIBUTE IN SAVELOAD EVENT HANDLING METHOD
     private ExecutorService executor;
     private List<GameListener> listeners;
@@ -34,6 +47,11 @@ public class Game {
     private KeyHandler keyHandler; // this field is for now
 
     private List<Agent> agents; // Holds set of agent monsters + players, removing and creating this may take some time
+
+    private List<Monster> monsters;
+
+
+
     private List<Enchantment> enchantments;
     private Dungeon dungeon;
 
@@ -43,6 +61,8 @@ public class Game {
         }
         return instance;
     }
+
+
 
     private Game() {
         executor =  Executors.newSingleThreadExecutor();
@@ -54,8 +74,21 @@ public class Game {
         enchantments = new LinkedList<>();
 
         agents = new LinkedList<>();
+        monsters = new LinkedList<>();
         agents.add(player);
         paused = false;
+    }
+
+    public void saveGame(String name) {
+
+        this.saveTime = getFormattedSaveTime();
+
+    }
+
+    // Method to format the save time in a readable way (e.g., "2025-01-11 12:30:45")
+    public String getFormattedSaveTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.now().format(formatter);  // Format date and time as string
     }
 
     public void startGame () {
@@ -217,6 +250,10 @@ public class Game {
 
     public List<Agent> getAgents() {
         return agents;
+    }
+
+    public List<Monster> getMonsters() {
+        return monsters;
     }
 
 }

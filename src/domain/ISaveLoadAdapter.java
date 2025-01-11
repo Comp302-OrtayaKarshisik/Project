@@ -3,9 +3,9 @@ package domain;
 public interface ISaveLoadAdapter {
 
 
-    void saveGame();
+    void saveGame(String date);
 
-    void loadGame();
+    void loadGame(Game game);
 
 
 }

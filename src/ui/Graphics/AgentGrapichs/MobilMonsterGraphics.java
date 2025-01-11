@@ -8,18 +8,28 @@ import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
-public abstract class MobilMonsterGraphics extends EntityGraphics implements FactoryListener {
+public class MobilMonsterGraphics extends EntityGraphics implements FactoryListener {
 
+    private static MobilMonsterGraphics instance;
     protected  BufferedImage rightPic, leftPic;
     protected int size;
     protected BufferedImage currentImg;
-    protected final LinkedList<Monster> monsters;
+
+    protected final ArrayList<Monster> monsters;
 
     public MobilMonsterGraphics(int size) {
         this.size = size;
-        this.monsters = new LinkedList<>();
+        this.monsters = new ArrayList<>();
+    }
+
+    public static MobilMonsterGraphics getInstance(int size) {
+        if (instance == null) {
+            instance = new MobilMonsterGraphics(size);
+        }
+        return instance;
     }
 
     public void draw(Graphics g) {
@@ -33,11 +43,20 @@ public abstract class MobilMonsterGraphics extends EntityGraphics implements Fac
         }
     }
 
+    @Override
+    public void onCreationEvent(Monster monster) {
+
+    }
+
     public void onDeletionEvent() {
         this.monsters.clear();
     }
 
     public void subscribe(MonsterFactory mf) {
         mf.addListener(this);
+    }
+
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
     }
 }

@@ -1,11 +1,12 @@
 package domain.level;
 import listeners.TimerListener;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 //each hall has a timer that counts down from 5 * objects placed in build mode.
-public class CountDownTimer {
+public class CountDownTimer implements Serializable {
     private Timer timer;
     private final float initialTimeRemaining;
     private float currentTimeRemaining;
@@ -29,6 +30,14 @@ public class CountDownTimer {
 
     public float getInitialTimeRemaining() {
         return initialTimeRemaining;
+    }
+
+    public float getCurrentTimeRemaining() {
+        return currentTimeRemaining;
+    }
+
+    public void setCurrentTimeRemaining(float currentTimeRemaining) {
+        this.currentTimeRemaining = currentTimeRemaining;
     }
 
     public void increaseTimeRemaining(float amount)

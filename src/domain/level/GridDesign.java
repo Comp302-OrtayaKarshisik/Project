@@ -2,7 +2,9 @@ package domain.level;
 
 import domain.objects.ObjectType;
 
-public class GridDesign {
+import java.io.Serializable;
+
+public class GridDesign implements Serializable {
     private ObjectType[][]  grid;
     private int minObjectLimit; //min num of objects needed to be placed in the hall during build mode.
     private int placedObjectCount = 0;
