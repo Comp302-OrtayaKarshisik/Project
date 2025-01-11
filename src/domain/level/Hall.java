@@ -138,6 +138,15 @@ public class Hall {
         int randomRuneLoc = Game.random.nextInt(runeLocations.size());
         this.runeLocation = runeLocations.get(randomRuneLoc);
     }
+    public void setSpecificRuneLocation(Coordinate randomRuneLoc) {
+        this.runeLocation = randomRuneLoc;
+    }
+
+    public Coordinate setNewRuneLocationstat() {
+        int randomRuneLoc = Game.random.nextInt(runeLocations.size());
+        return runeLocations.get(randomRuneLoc);
+    }
+
 
     public Tile[][] getGrid() {
         return grid;

@@ -21,6 +21,7 @@ public class WizardGraphics extends EntityGraphics implements FactoryListener {
 
     private WizardGraphics(int size) {
         this.size = size;
+        wizards = new LinkedList<>();
         getDefaultImages();
         this.subscribe(MonsterFactory.getInstance());
     }
