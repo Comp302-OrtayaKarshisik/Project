@@ -15,7 +15,6 @@ import domain.util.Direction;
 public class Projectile extends Entity {
 
     public Archer user;
-
     public Coordinate pos;
     public int dx;
     public int dy;
@@ -23,6 +22,11 @@ public class Projectile extends Entity {
     public final int speed = 1;
     private final int maxLife = 60;
     public int life;
+
+    public boolean targetPlayer;
+
+    public boolean updated;
+
 
     public Projectile() {}
 
@@ -54,13 +58,28 @@ public class Projectile extends Entity {
         }
     }
 
-
     public int getDx() {
         return dx;
     }
 
     public int getDy() {
         return dy;
+    }
+
+    public boolean isTargetPlayer() {
+        return targetPlayer;
+    }
+
+    public void setTargetPlayer(boolean targetPlayer) {
+        this.targetPlayer = targetPlayer;
+    }
+
+    public boolean isUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(boolean updated) {
+        this.updated = updated;
     }
 
 }

@@ -75,6 +75,16 @@ public class Archer extends Monster {
         }
     }
 
+    public int getAttackFrame() {
+        return attackFrame;
+    }
+
+    public void setAttackFrame(int attackFrame) {
+        this.attackFrame = attackFrame;
+    }
+
+
+
     /**
      * Shoots an arrow per 60 frame. Direction is explicitly determined or randomized based on attack range/player state.
      * <p>
@@ -93,19 +103,19 @@ public class Archer extends Monster {
      * - Sets arrow attributes > arrow.set(pos, dx, dy, alive, user) <p>
      */
 
-    private void shootArrow() {
+    public void shootArrow() {
 
         Coordinate archerloc = this.getLocation();
         Coordinate playerloc = Game.getInstance().getPlayer().getLocation();
         Coordinate initialarrowloc = new Coordinate(archerloc.getX(), archerloc.getY());
 
-        if (arrow.alive) {arrow.update();}
+        if (arrow.alive) {arrow.update();
+        arrow.setUpdated(true);} else{arrow.setUpdated(false);}
 
         if (attackFrame >= ATTACK_FRAME_LIMIT) {
 
             int dx = 0;
             int dy = 0;
-
 
             if (Coordinate.euclideanDistance(archerloc, playerloc) <= ATTACK_RANGE &&
                     !Game.getInstance().getPlayer().isInvisible()) {
@@ -117,6 +127,7 @@ public class Archer extends Monster {
                 dx /= gcd;
                 dy /= gcd;
                 arrow.set(initialarrowloc, dx, dy, true, this);
+                arrow.setTargetPlayer(true);
                 publishArrowActivationEvent();
                 attackFrame = 0;
             } else { // if player is not found in the attack range
@@ -129,6 +140,7 @@ public class Archer extends Monster {
 
                 }
                 arrow.set(initialarrowloc, dx, dy, true, this);
+                arrow.setTargetPlayer(false);
                 publishArrowActivationEvent();
                 attackFrame = 0;
             }
