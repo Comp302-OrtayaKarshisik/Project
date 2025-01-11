@@ -2,28 +2,27 @@ package domain.agent.monster.wizardStrategies;
 
 import domain.Game;
 import domain.agent.monster.Wizard;
+import domain.agent.monster.wizardStrategies.WizardBehaviorStrategy;
+import domain.level.CountDownTimer;
+import domain.util.Coordinate;
 
-import java.util.Timer;
-import java.util.TimerTask;
-public class RuneRelocationStrategy implements WizardBehaviorStrategy{
-    private Timer timer;
-
+public class RuneRelocationStrategy implements WizardBehaviorStrategy {
+    private long lastTeleportTime = System.currentTimeMillis();
     @Override
     public void execute(Wizard wizard) {
-        System.out.println("Wizard: Making the game more challenging by moving the rune every 3 seconds.");
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Game.getInstance().getDungeon().getCurrentHall().setNewRuneLocation();
-                System.out.println("Rune moved to a new location!");
-            }
-        }, 0, 3000);  // Move every 3 seconds
-    }
+        CountDownTimer timer = Game.getInstance().getDungeon().getCurrentHall().getTimer();
+        float currentTimeRemaining = timer.getTimeRemaining();
+        long currentSystemTime = System.currentTimeMillis();
+        if (currentSystemTime - lastTeleportTime >= 3000) {  // 3000 ms = 3 seconds
+            Coordinate currentRuneLocation = Game.getInstance().getDungeon().getCurrentHall().getRuneLocation();
+            Coordinate newRuneLocation;
 
-    public void stop() {
-        if (timer != null) {
-            timer.cancel();
+            do {
+                newRuneLocation=Game.getInstance().getDungeon().getCurrentHall().setNewRuneLocationstat();
+            } while (newRuneLocation.equals(currentRuneLocation));  // Ensure it's different from the current location
+            Game.getInstance().getDungeon().getCurrentHall().setSpecificRuneLocation(newRuneLocation);
+            System.out.println("Rune teleported to: (" + newRuneLocation.getX() + ", " + newRuneLocation.getY() + ")");
+            lastTeleportTime = currentSystemTime;
         }
     }
 }
