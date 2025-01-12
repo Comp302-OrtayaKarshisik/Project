@@ -47,6 +47,15 @@ public class MonsterFactory {
         listeners = new LinkedList<>();
     }
 
+    public void nextHall() {
+       publishNextHallEvent();
+
+       schedule.shutdownNow();
+       schedule = Executors.newSingleThreadScheduledExecutor();
+       currentTask = new MonsterCreationTask();
+       schedule.scheduleAtFixedRate(currentTask, 50, 8000, TimeUnit.MILLISECONDS);
+    }
+
     public void newGame() {
         publishNewGameEvent();
 
@@ -137,4 +146,7 @@ public class MonsterFactory {
         }
     }
 
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
+    }
 }
