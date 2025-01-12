@@ -158,6 +158,9 @@ public class Player extends Agent implements Serializable {
             health--;
             publishEvent(health);
         }
+        if (health == 0) {
+           Game.getInstance().loseGame();
+        }
     }
 
     public void setHasRune(boolean hasRune) {

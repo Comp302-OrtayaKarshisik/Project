@@ -5,6 +5,7 @@ import domain.Game;
 import domain.Textures;
 import domain.collectables.EnchantmentType;
 import domain.level.CountDownTimer;
+import ui.PageManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -160,7 +161,8 @@ public class PlayModeMenu extends JPanel implements MouseListener {
             Game.getInstance().togglePause();
         }
         if(x >= 85 && x <= 117 && y >= 150 && y <= 182) {
-
+            Game.getInstance().endGame();
+            PageManager.getInstance().showMainMenuPage();
         }
     }
 

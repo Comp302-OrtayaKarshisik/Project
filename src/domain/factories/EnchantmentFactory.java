@@ -96,8 +96,8 @@ public class EnchantmentFactory {
             int type = Game.random.nextInt(5);
             Enchantment e = switch (type) {
                 case 0 -> new Enchantment(EnchantmentType.Reveal);
-                case 1 -> new Enchantment(EnchantmentType.Reveal);
-                case 2 -> new Enchantment(EnchantmentType.Reveal);
+                case 1 -> new Enchantment(EnchantmentType.Time);
+                case 2 -> new Enchantment(EnchantmentType.Life);
                 case 3 -> new Enchantment(EnchantmentType.Luring);
                 case 4 -> new Enchantment(EnchantmentType.Cloak);
                 default -> null;

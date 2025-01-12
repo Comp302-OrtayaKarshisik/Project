@@ -183,6 +183,7 @@ public class Game implements Serializable {
         dungeon.getCurrentHall().getTimer().pause(); //stop the timer of the previous hall.
         // should just end at this point
         if(dungeon.getCurrentHallIndex() == 3) {
+            winGame();
             return;
         }
 
@@ -267,6 +268,18 @@ public class Game implements Serializable {
         } else {
             System.out.println("Monster not found!");
         }
+    }
+
+    private void winGame() {
+        endGame();
+        for (GameListener gl : listeners)
+            gl.onGameWin();
+    }
+
+    public void loseGame() {
+        endGame();
+        for (GameListener gl : listeners)
+            gl.onGameLose();
     }
 
     public boolean isPaused() {
