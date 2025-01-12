@@ -136,7 +136,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
     @Override
     public void onGameWin() {
-        PageManager.getInstance().showGameOverPage();
+        PageManager.getInstance().showWinGamePage();
     }
 
     @Override

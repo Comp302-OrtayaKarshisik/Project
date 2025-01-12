@@ -39,11 +39,28 @@ class WinGamePage extends Page implements ActionListener {
         buttonPanel.setBackground(Color.BLACK);
         buttonPanel.setOpaque(true);
 
+// Create the message label with custom font and color
+        JLabel messageLabel = new JLabel("You won the game!");
+        messageLabel.setFont(new Font("Gongster", Font.BOLD, 25));
+        messageLabel.setForeground(Color.WHITE);
+        messageLabel.setBackground(Color.BLACK);
+        messageLabel.setHorizontalAlignment(JLabel.CENTER);
+        messageLabel.setOpaque(true);
+
+// Add the message to a panel with padding to move it higher
+        JPanel messagePanel = new JPanel();
+        messagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        messagePanel.setBackground(Color.BLACK);
+        messagePanel.add(messageLabel);
+
+// Set the layout and add components
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(1000, 800));
         this.add(backgroundLabel, BorderLayout.NORTH);
         this.add(buttonPanel, BorderLayout.CENTER);
+        this.add(messagePanel, BorderLayout.SOUTH);
 
+// Add action listeners
         playAgainButton.addActionListener(this);
         exitButton.addActionListener(this);
     }
