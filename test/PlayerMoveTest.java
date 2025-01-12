@@ -97,53 +97,62 @@ class PlayerMoveTest{
         player.setLocation(new Coordinate(1,1));
 
         //player has to go up by 1
-        player.setDirection(Direction.UP);
+        keyHandler.goUp = true;
         player.move();
+        keyHandler.goUp = false;
         assertEquals(new Coordinate(1,2), player.getLocation());
 
         //player has to go down by 1
-        player.setDirection(Direction.DOWN);
+        keyHandler.goDown = true;
         player.move();
+        keyHandler.goDown = false;
         assertEquals(new Coordinate(1,1), player.getLocation());
 
         //player has to go left by 1
-        player.setDirection(Direction.LEFT);
+        keyHandler.goLeft = true;
         player.move();
+        keyHandler.goLeft = false;
         assertEquals(new Coordinate(0,1), player.getLocation());
 
         //player has to go right by 1
-        player.setDirection(Direction.RIGHT);
+        keyHandler.goRight = true;
         player.move();
+        keyHandler.goRight = false;
         assertEquals(new Coordinate(1,1), player.getLocation());
 
         //there is a box in the (5,10) player cant move in right direction
         player.setLocation(new Coordinate(4,10));
-        player.setDirection(Direction.RIGHT);
+        keyHandler.goRight = true;
         player.move();
+        keyHandler.goRight = false;
         assertEquals(new Coordinate(4,10),player.getLocation());
 
         //there is a box in the (5,10) player cant move in down direction
         player.setLocation(new Coordinate(5,11));
-        player.setDirection(Direction.DOWN);
+        keyHandler.goDown = true;
         player.move();
+        keyHandler.goDown = false;
         assertEquals(new Coordinate(5,11),player.getLocation());
 
         //there is a box in the (5,10) player cant move in up direction
         player.setLocation(new Coordinate(5,9));
-        player.setDirection(Direction.UP);
+        keyHandler.goUp = true;
         player.move();
+        keyHandler.goUp = false;
         assertEquals(new Coordinate(5,9),player.getLocation());
 
         //there is a box in the (5,10) player cant move in left direction
         player.setLocation(new Coordinate(6,10));
-        player.setDirection(Direction.LEFT);
+        keyHandler.goLeft = true;
         player.move();
+        keyHandler.goLeft = false;
         assertEquals(new Coordinate(6,10),player.getLocation());
 
         //from the setup there is a wizard at (10,2) so player shouldt move
         player.setLocation(new Coordinate(9,2));
-        player.setDirection(Direction.RIGHT);
+        keyHandler.goRight = true;
         player.move();
+        keyHandler.goRight = false;
         assertEquals(new Coordinate(9,2),player.getLocation());
     }
     /**
@@ -160,27 +169,31 @@ class PlayerMoveTest{
 
 
         assertFalse(player.isHasRune());
-        player.setDirection(Direction.DOWN);
+        keyHandler.goDown = true;
         player.move();
+        keyHandler.goDown = false;
         //Since player has no rune player should pass through the door, even the direction is down
         assertEquals(0,game.getDungeon().getCurrentHallIndex());
 
-        player.setDirection(Direction.LEFT);
+        keyHandler.goLeft = true;
         player.move();
+        keyHandler.goLeft = false;
         //Since player has no rune player should pass through the door, even the direction is down
         assertEquals(0,game.getDungeon().getCurrentHallIndex());
 
         // no need to show non-runed version for other directions,
 
         player.setHasRune(true);
-        player.setDirection(Direction.RIGHT);
+        keyHandler.goRight = true;
         player.move();
+        keyHandler.goRight = false;
         //Player has rune but direction is different
         assertEquals(0,game.getDungeon().getCurrentHallIndex());
 
 
-        player.setDirection(Direction.DOWN);
+        keyHandler.goDown = true;
         player.move();
+        keyHandler.goDown = false;
         //Player now can pass
         assertEquals(1,game.getDungeon().getCurrentHallIndex());
     }

@@ -58,10 +58,15 @@ public class Game {
         agents = new LinkedList<>();
         agents.add(player);
         paused = false;
+        //assert repOk();
     }
-
-
-
+    public boolean repOk() {
+        if (player == null) return false;
+        if(agents.isEmpty()|| agents.get(0) !=player)return false;
+        if(dungeon == null||dungeon.getCurrentHall()==null) return false;
+        if (paused&& !executor.isShutdown()) return false;
+        return true;
+    }
     public void startGame () {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
