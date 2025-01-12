@@ -25,14 +25,18 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
     private JLabel timerLabel;
 
-    public PlayModePage() {
+    public PlayModePage(boolean isNewGame) {
         super();
         initUI();
 
         this.subscribe(Game.getInstance());
         this.subscribe(Game.getInstance().getPlayer());
-
-        Game.getInstance().startGame();
+        if(isNewGame){
+            Game.getInstance().startGame();
+        }
+        else {
+            Game.getInstance().continueGame();
+        }
     }
 
     @Override
@@ -106,7 +110,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
         updateTimer(timer);
 
         if (timer.getTimeRemaining() <= 0) {
-            //PageManager.getInstance().showGameOverPage();
+            Game.getInstance().loseGame();
         }
     }
 
@@ -141,6 +145,6 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
 
     @Override
     public void onGameLose() {
-        PageManager.getInstance().showWinGamePage();
+        PageManager.getInstance().showGameOverPage();
     }
 }

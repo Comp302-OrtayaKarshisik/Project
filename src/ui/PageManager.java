@@ -58,11 +58,11 @@ public class PageManager {
 
 	public void showPlayModePage(GridDesign[] gridDesigns) {
 		Game.getInstance().initPlayMode(gridDesigns);
-		showPage(new PlayModePage());
+		showPage(new PlayModePage(true));
 	}
 
 	public void continuePlayModePage() {
-		showPage(new PlayModePage());
+		showPage(new PlayModePage(false));
 	}
 
     public void showFrame() {

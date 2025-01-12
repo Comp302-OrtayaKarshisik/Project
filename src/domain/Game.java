@@ -59,6 +59,10 @@ import java.util.concurrent.Executors;
 
 public class Game implements Serializable {
 
+    private long passedTimeEnch;
+    private long passedTimeMonster;
+    private boolean gameRestarted = false;
+
     private ExecutorService executor;
     private List<GameListener> listeners;
     public final static SecureRandom random = new SecureRandom();
@@ -110,6 +114,13 @@ public class Game implements Serializable {
 
         keyHandler = null;
 
+        this.passedTimeEnch = EnchantmentFactory.getInstance().getPassedTime();
+
+        this.passedTimeMonster = MonsterFactory.getInstance().getPassedTime();
+
+        for(Agent agent : agents) {
+            agent.prepareSaveGame();
+        }
         dungeon.prepareGameSave();
         player.prepareGameSave();
         GameSaveLoader.saveGame();
@@ -121,10 +132,18 @@ public class Game implements Serializable {
         for(Agent agent : agents) {
             agent.recreateGame();
         }
+        gameRestarted = true;
         this.listeners = new LinkedList<>();
         this.player.recreateGame();
         PlayerGraphics.getInstance(48).setPlayer(this.player);
         this.dungeon.recreateGame();
+    }
+
+    public void continueGame() {
+        EnchantmentFactory.getInstance().continueGame(enchantments, passedTimeEnch);
+        MonsterFactory.getInstance().continueGame(agents, passedTimeMonster);
+        ArrowGraphics.getInstance(48).onNewGameEvent();
+        executor.execute(new Update());
     }
 
     public void startGame () {
@@ -236,6 +255,10 @@ public class Game implements Serializable {
     private class Update implements Runnable {
         @Override
         public void run() {
+            if(gameRestarted) {
+                player.restartEvent();
+                gameRestarted = false;
+            }
             double currentTime;
             double frameInterval = (double) 1000000000 / 24; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
             double diff = 0; // represents the time passed between two consecutive frames

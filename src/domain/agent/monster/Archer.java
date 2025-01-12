@@ -40,8 +40,12 @@ public class Archer extends Monster {
         listeners.add(al);
     }
 
-    public void recreateGame() {
+    public void prepareSaveGame() {
         this.listeners = null;
+    }
+
+    public void recreateGame() {
+        this.listeners = new LinkedList<>();
     }
 
     public void publishArrowActivationEvent() {

@@ -201,7 +201,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
             int verticalSize = 16;
             for (int col = 0; col < verticalSize; col++) {
                 Tile gridObject = grid[row][col];
-                if(col != 15) continue;
                 if (gridObject != null && (gridObject.getName().equals("COLUMN") || gridObject.getName().equals("CHEST_FULL") || gridObject.getName().equals("CHEST_FULL_GOLD") || gridObject.getName().equals("CHEST_CLOSED"))) {
                     String objName = gridObject.getName().toLowerCase();
                     BufferedImage objectSprite = Textures.getSprite(objName);

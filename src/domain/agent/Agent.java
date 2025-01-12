@@ -53,4 +53,8 @@ public abstract class Agent extends Entity implements Serializable {
 
     }
 
+    public void prepareSaveGame() {
+
+    }
+
 }

@@ -1,11 +1,19 @@
 package domain.factories;
 
 import domain.Game;
+import domain.agent.Agent;
 import domain.agent.monster.Archer;
 import domain.agent.monster.Fighter;
 import domain.agent.monster.Monster;
 import domain.agent.monster.Wizard;
+import domain.collectables.Enchantment;
+import listeners.EnchantmentListener;
 import listeners.FactoryListener;
+import ui.Graphics.AgentGrapichs.ArcherGraphics;
+import ui.Graphics.AgentGrapichs.FighterGraphics;
+import ui.Graphics.AgentGrapichs.MobilMonsterGraphics;
+import ui.Graphics.AgentGrapichs.WizardGraphics;
+import ui.Graphics.EnchantmentGraphics;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -75,6 +83,18 @@ public class MonsterFactory {
         listeners.add(fl);
     }
 
+    public void continueGame(List<Agent> agents, Long passedTime) {
+        for (FactoryListener fl: listeners)
+            fl.onNewGameEvent();
+        for(Agent agent : agents) {
+            if(agent instanceof Monster) {
+                for (FactoryListener fl: listeners)
+                    fl.onCreationEvent((Monster) agent);
+            }
+        }
+        this.passedTime = passedTime;
+    }
+
     public void publishCreationEvent(Monster monster) {
         for (FactoryListener fl: listeners)
             fl.onCreationEvent(monster);
@@ -93,6 +113,10 @@ public class MonsterFactory {
     public void publishGameOverEvent() {
         for (FactoryListener fl: listeners)
             fl.onGameOverEvent();
+    }
+
+    public long getPassedTime() {
+        return passedTime;
     }
 
     private class MonsterCreationTask extends TimerTask {

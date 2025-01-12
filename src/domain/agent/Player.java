@@ -179,6 +179,21 @@ public class Player extends Agent implements Serializable {
         this.timer = new Timer();
     }
 
+    public void restartEvent() {
+        for (PlayerListener pl : listeners) {
+            pl.onHealthEvent(health);
+            pl.onRuneEvent(hasRune);
+            for (Map.Entry<EnchantmentType, Integer> entry : this.bag.getEnchantmentCounter().entrySet()) {
+                EnchantmentType enchantmentType = entry.getKey();
+                int count = entry.getValue();
+
+                for (int i = 0; i < count; i++) {
+                    pl.onCollectEnch(enchantmentType);
+                }
+            }
+        }
+    }
+
     public boolean isInvisible() {
         return invisible;
     }
