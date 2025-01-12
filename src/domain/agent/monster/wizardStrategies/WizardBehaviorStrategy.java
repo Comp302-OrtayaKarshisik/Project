@@ -2,6 +2,8 @@ package domain.agent.monster.wizardStrategies;
 
 import domain.agent.monster.Wizard;
 
+import java.io.Serializable;
+
 /**
  * Requires: The game must have a valid dungeon with an active timer and a valid current hall.
  * Modifies: This method modifies the current behavior of the wizard and makes it such that the wizard may  teleport the player or move the rune or stay idle and disappear.

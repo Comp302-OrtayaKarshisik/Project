@@ -7,7 +7,10 @@ import domain.agent.monster.Monster;
 import domain.agent.monster.Wizard;
 import listeners.FactoryListener;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +26,6 @@ public class MonsterFactory {
     private long stopTime;
     private long lastCreation;
     private long passedTime;
-    private ArrayList<Monster> monsters;
 
     public static MonsterFactory getInstance() {
         if (instance == null) {
@@ -106,16 +108,9 @@ public class MonsterFactory {
             };
 
             Game.getInstance().getAgents().add(w);
-            monsters.add(w);
-
             publishCreationEvent(w);
             lastCreation = System.currentTimeMillis();
         }
     }
-
-    public ArrayList<Monster> getMonsters() {
-        return monsters;
-    }
-
 
 }

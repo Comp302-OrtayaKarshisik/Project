@@ -113,7 +113,7 @@ public class Game implements Serializable {
         dungeon.prepareGameSave();
         player.prepareGameSave();
         GameSaveLoader.saveGame();
-        //endGame();
+        System.exit(0);
     }
 
     private void loadGame() {

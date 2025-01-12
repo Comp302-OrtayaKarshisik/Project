@@ -41,7 +41,7 @@ public class Hall implements Serializable {
         this.runeLocations = new ArrayList<Coordinate>();
         this.enchantments = new LinkedList<>();
         this.placedObjectCount = placedObjectCount;
-        this.grid = new Tile[64][64];
+        this.grid = new Tile[16][16];
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j <16; j++) {
                 grid[i][j] = new Tile("aa",new Coordinate(i,j));

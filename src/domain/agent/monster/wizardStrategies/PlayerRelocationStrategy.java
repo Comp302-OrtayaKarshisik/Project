@@ -5,8 +5,9 @@ import domain.agent.monster.Wizard;
 import domain.level.CollisionChecker;
 import domain.util.Coordinate;
 
+import java.io.Serializable;
 import java.util.Random;
-public class PlayerRelocationStrategy implements WizardBehaviorStrategy{
+public class PlayerRelocationStrategy implements WizardBehaviorStrategy, Serializable {
 
     @Override
     public void execute(Wizard wizard) {
