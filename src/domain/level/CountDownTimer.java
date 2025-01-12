@@ -72,7 +72,7 @@ public class CountDownTimer {
                 notifyListeners();
                 if(currentTimeRemaining <= 0)
                 {
-                  timer.shutdown();
+                  timer.shutdownNow();
                 }
             }
         }, 1000, 1000,TimeUnit.MILLISECONDS);
@@ -80,6 +80,11 @@ public class CountDownTimer {
 
     public void pause() //pauses the timer
     {
-        timer.shutdown();
+        timer.shutdownNow();
     }
+
+    public boolean isTerminated() {
+        return timer.isTerminated();
+    }
+
 }

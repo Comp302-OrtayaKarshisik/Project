@@ -23,6 +23,9 @@ public class MonsterFactory {
     private final List<FactoryListener> listeners;
     private static MonsterFactory instance;
     private MonsterCreationTask currentTask;
+
+
+
     private long stopTime;
     private long lastCreation;
     private long passedTime;
@@ -112,5 +115,10 @@ public class MonsterFactory {
             lastCreation = System.currentTimeMillis();
         }
     }
+
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
+    }
+
 
 }

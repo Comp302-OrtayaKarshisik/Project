@@ -60,6 +60,8 @@ public class Game {
         paused = false;
     }
 
+
+
     public void startGame () {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
@@ -231,6 +233,10 @@ public class Game {
 
     public Dungeon getDungeon(){
         return dungeon;
+    }
+
+    public ExecutorService getExecutor(){
+        return executor;
     }
 
 }

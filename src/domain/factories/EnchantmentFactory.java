@@ -32,6 +32,7 @@ public class EnchantmentFactory {
         listeners = new LinkedList<>();
     }
 
+
     public void newGame() {
         publishNewGameEvent();
 
@@ -116,5 +117,9 @@ public class EnchantmentFactory {
             for (EnchantmentListener efl: listeners) {efl.onCreationEvent(e);}
             lastCreation = System.currentTimeMillis();
         }
+    }
+
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
     }
 }
