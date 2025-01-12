@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 // A helper class for the dungeon
 // at this point
-public class CollisionChecker implements Serializable {
+public class CollisionChecker {
 
     private final int ROW_NUMBER = 16;
     private final int COL_NUMBER = 16;

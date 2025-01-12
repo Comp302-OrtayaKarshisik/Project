@@ -109,15 +109,12 @@ public class Game implements Serializable {
         listeners = null;
 
         keyHandler = null;
-        player = null;
 
-        agents = null; // Holds set of agent monsters + players, removing and creating this may take some time
-
-
-
-
-        dungeon = null;
+        agents = null;
+        dungeon.prepareGameSave();
+        player.prepareGameSave();
         FileSaveLoadAdapter.saveGame();
+        endGame();
     }
 
     public void startGame () {

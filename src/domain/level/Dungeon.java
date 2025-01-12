@@ -40,6 +40,13 @@ public class Dungeon implements Serializable {
             return;
         }currentHall++;}
 
+    public void prepareGameSave() {
+        this.collisionChecker = null;
+        for(int i = 0; i < 4; i++) {
+            halls[i].prepareGameSave();
+        }
+    }
+
     public Hall getCurrentHall() {
         return halls[currentHall];
     }

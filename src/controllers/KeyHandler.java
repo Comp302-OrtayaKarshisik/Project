@@ -9,6 +9,7 @@ import ui.Swing.Panels.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Serializable;
 
 
 // One change could be the latter pressed button will get the lead

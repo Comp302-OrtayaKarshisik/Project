@@ -30,6 +30,7 @@ public class Hall implements Serializable {
     private final int placedObjectCount; //initial timer value is 5 times this.
     private ArrayList<Coordinate> runeLocations;
     private Game game;
+    private double remainingTime;
 
     private Tile[][] grid;
 
@@ -151,6 +152,14 @@ public class Hall implements Serializable {
         return runeLocations.get(randomRuneLoc);
     }
 
+    public void prepareGameSave() {
+        this.remainingTime = this.timer.getTimeRemaining();
+        this.timer = null;
+    }
+
+    public double getRemainingTime() {
+        return remainingTime;
+    }
 
     public Tile[][] getGrid() {
         return grid;
