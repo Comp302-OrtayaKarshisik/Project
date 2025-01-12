@@ -47,6 +47,15 @@ public class EnchantmentFactory {
         schedule.close();
     }
 
+    public void nextHall() {
+        publishNextHallEvent();
+
+        schedule.shutdownNow();
+        schedule = Executors.newSingleThreadScheduledExecutor();
+        currentTask = new EnchantmentCreationTask();
+        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS);
+    }
+
     public void pauseCreation() {
         currentTask.cancel();
         schedule.shutdown();
@@ -116,5 +125,9 @@ public class EnchantmentFactory {
             for (EnchantmentListener efl: listeners) {efl.onCreationEvent(e);}
             lastCreation = System.currentTimeMillis();
         }
+    }
+
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
     }
 }

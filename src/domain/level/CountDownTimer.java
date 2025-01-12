@@ -1,4 +1,5 @@
 package domain.level;
+import domain.Game;
 import listeners.TimerListener;
 
 import java.util.LinkedList;
@@ -81,6 +82,7 @@ public class CountDownTimer {
                 if(currentTimeRemaining <= 0)
                 {
                   timer.shutdown();
+                  Game.getInstance().loseGame();
                 }
             }
         }, 1000, 1000,TimeUnit.MILLISECONDS);
@@ -89,5 +91,9 @@ public class CountDownTimer {
     public void pause() //pauses the timer
     {
         timer.shutdown();
+    }
+
+    public boolean isTerminated(){
+        return timer.isTerminated();
     }
 }

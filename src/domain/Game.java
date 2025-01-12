@@ -81,8 +81,6 @@ public class Game implements Serializable {
     }
 
     private Game() {
-        Agent.setGame(this);
-
         executor =  Executors.newSingleThreadExecutor();
         player = new Player();
 
@@ -195,8 +193,8 @@ public class Game implements Serializable {
 
         enchantments = new LinkedList<>();
 
-        MonsterFactory.getInstance().publishNextHallEvent();
-        EnchantmentFactory.getInstance().publishNextHallEvent();
+        MonsterFactory.getInstance().nextHall();
+        EnchantmentFactory.getInstance().nextHall();
     }
 
     public synchronized void togglePause() {
@@ -233,6 +231,8 @@ public class Game implements Serializable {
     public boolean isPlayerDead() {return true;}
     public Object getObject() {return null;}
 
+
+
     private class Update implements Runnable {
         @Override
         public void run() {
@@ -245,7 +245,7 @@ public class Game implements Serializable {
             //When ESC is pressed or when game is over
             //Handle in update method.
             //To restart the game just set boolen true and reexecuce
-            while (true) {
+            while (player.getHealth() > 0) {
                 if (!paused) {
                     currentTime = System.nanoTime();
                     diff += (currentTime - lastTime)/frameInterval;
@@ -258,6 +258,7 @@ public class Game implements Serializable {
                     }
                 }
             }
+            loseGame();
         }
     }
 
@@ -317,5 +318,7 @@ public class Game implements Serializable {
     public Dungeon getDungeon(){
         return dungeon;
     }
-
+    public ExecutorService getExecutor(){
+        return executor;
+    }
 }
