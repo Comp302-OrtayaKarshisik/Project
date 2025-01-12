@@ -4,6 +4,7 @@ import domain.agent.Player;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
 import domain.level.GridDesign;
+import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import org.junit.jupiter.api.Test;
 
@@ -75,26 +76,27 @@ class PlayerTest{
     @Test
     void moveTest() {
 
-        Player player = new Player();
         Game game = Game.getInstance();
+        Player player = new Player();
         KeyHandler keyHandler = new KeyHandler();
-        GridDesign[] designs = new GridDesign[4];
-        designs[0] = new GridDesign(16,16,2);
-        designs[1] = new GridDesign(16,16,3);
-        designs[2] = new GridDesign(16,16,3);
-        designs[3] = new GridDesign(16,16,3);
-        game.getDungeon().loadDesigns(designs);
+        // setting up random locations to test
+        int testRow = Game.random.nextInt(2,14);
+        int testColumn = Game.random.nextInt(2, 14);
 
+        // setting up the grid for play mode
+        GridDesign[] gridDesigns = new GridDesign[4];
+        for(int i = 0; i < 4; i++) {
+            gridDesigns[i] = new GridDesign( 16, 16, 2);
+            gridDesigns[i].placeObject(testRow, testColumn, ObjectType.CHEST_CLOSED);
+            gridDesigns[i].placeObject(15-testRow, 15-testColumn, ObjectType.CHEST_CLOSED);
+        }
+        game.initPlayMode(gridDesigns);
         game.setKeyHandler(keyHandler);
-
         //Assert player starts at the correct direction
         assertEquals(new Coordinate(0,0),player.getLocation());
-
         keyHandler.goUp = true;
         player.move();
         assertEquals(new Coordinate(0,1),player.getLocation());
-
-
 
     }
 
