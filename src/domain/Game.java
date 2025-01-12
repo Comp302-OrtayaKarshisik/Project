@@ -98,7 +98,7 @@ public class Game implements Serializable {
     public boolean repOk() {
         if (player == null) return false;
         if(agents.isEmpty()|| agents.get(0) !=player)return false;
-        if(dungeon == null||dungeon.getCurrentHall()==null) return false;
+        if(dungeon == null) return false; // ||dungeon.getCurrentHall()==null
         if (paused&& !executor.isShutdown()) return false;
         return true;
     }

@@ -40,10 +40,24 @@ public class Player extends Agent implements Serializable {
         PlayerGraphics.getInstance(48).setPlayer(this);
     }
 
-    // else statement is empty for now
-    // also luring gem and highlight mostly changes
-    // other objects thus other methods will help it
-    // for now
+    /**
+     * Requires:
+     *  - enchantment != null
+     *
+     * Modifies:
+     *  - If enchantment is Life or Time, modifies player health or hall time without considering the bag.
+     *  - If enchantment is Cloak, Reveal, or Lure, removes the enchantment from the bag
+     *    and triggers the corresponding effect (invisibility, highlightRune, lureUsed).
+     *
+     * Effects:
+     *  - Life: calls increaseHealth().
+     *  - Time: adds 5 seconds to the current hall’s timer.
+     *  - Cloak: calls gainInvisibility().
+     *  - Reveal: calls highlightRune() in the current hall.
+     *  - Lure: calls lureUsed(...) on all Fighter agents.
+     *  - If the enchantment was removed from the bag, notifies PlayerListeners
+     *    via onRemoveEnch(enchantmentType).
+     */
     public void useEnchantment(EnchantmentType enchantment) {
         if(enchantment == EnchantmentType.Life || enchantment == EnchantmentType.Time) {
             if (enchantment == EnchantmentType.Life) {increaseHealth();}
