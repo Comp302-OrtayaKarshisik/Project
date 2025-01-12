@@ -10,9 +10,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class WizardGraphics extends EntityGraphics implements FactoryListener {
+public class WizardGraphics extends EntityGraphics implements FactoryListener, Serializable {
 
     private static WizardGraphics instance;
     protected int size;

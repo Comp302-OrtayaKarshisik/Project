@@ -5,6 +5,8 @@ import domain.agent.Agent;
 import domain.collectables.Enchantment;
 import domain.util.Coordinate;
 
+import java.io.Serializable;
+
 // A helper class for the dungeon
 // at this point
 public class CollisionChecker {

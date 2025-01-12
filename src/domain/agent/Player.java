@@ -2,28 +2,27 @@ package domain.agent;
 
 import domain.Game;
 import domain.agent.monster.Fighter;
-import domain.agent.monster.Monster;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
-import domain.level.Hall;
 import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player extends Agent {
+public class Player extends Agent implements Serializable {
 
-    private final int MAX_HEALTH = 5;
-    private final int INVISIBILITY_DURATION = 5;
+    private final static int MAX_HEALTH = 5;
+    private final static int INVISIBILITY_DURATION = 5;
 
-    private final List<PlayerListener> listeners;
+    private List<PlayerListener> listeners;
     private int health;
     private final Bag bag;
     private boolean hasRune;
     private boolean invisible;
-    private final Timer timer; // This methods is for now;
+    private Timer timer; // This methods is for now;
     private Coordinate doorCoordinate;
 
     public Player() {
@@ -58,6 +57,7 @@ public class Player extends Agent {
      *    via onRemoveEnch(enchantmentType).
      */
     public void useEnchantment(EnchantmentType enchantment) {
+        System.out.println(enchantment);
         if(enchantment == EnchantmentType.Life || enchantment == EnchantmentType.Time) {
             if (enchantment == EnchantmentType.Life) {increaseHealth();}
             else {Game.getInstance().getDungeon().getCurrentHall().getTimer().increaseTimeRemaining(5);}
@@ -65,18 +65,37 @@ public class Player extends Agent {
         else {
             if (bag.containsEnchantment(enchantment)) {
                 bag.removeEnchantment(enchantment);
-                if (enchantment == EnchantmentType.Cloak) {gainInvisibility();}
-                else if (enchantment== EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
-                else {
-                    Coordinate c;
-                    for (Agent m : Game.getInstance().getAgents()) {
-                        if (m instanceof Fighter) {
-                            ((Fighter) m).lureUsed(new Coordinate(5, 5));
-                        }
-                    }
+                if (enchantment == EnchantmentType.Cloak) {
+                    gainInvisibility();
+                    for (PlayerListener pl : listeners)
+                        pl.onRemoveEnch(enchantment);
                 }
-                for (PlayerListener pl : listeners)
-                    pl.onRemoveEnch(enchantment);
+                else if (enchantment== EnchantmentType.Reveal) {
+                    Game.getInstance().getDungeon().getCurrentHall().higlightRune();
+                    for (PlayerListener pl : listeners)
+                        pl.onRemoveEnch(enchantment);
+                }
+                else {
+
+                    Coordinate c = switch (Game.getInstance().getKeyHandler().runeThrowDirection) {
+                        case UP -> new Coordinate(location.getX(),location.getY() + 1);
+                        case DOWN -> new Coordinate(location.getX(),location.getY() - 1);
+                        case LEFT -> new Coordinate(location.getX() - 1,location.getY());
+                        case RIGHT -> new Coordinate(location.getX() + 1,location.getY());
+                        default -> null;
+                    };
+
+                    if(Game.getInstance().getDungeon().getCollisionChecker().checkTileEmpty(c)){
+                        for (Agent m : Game.getInstance().getAgents()) {
+                            if (m instanceof Fighter) {
+                                ((Fighter) m).lureUsed(c);
+                            }
+                        }
+                        for (PlayerListener pl : listeners)
+                            pl.onRemoveEnch(enchantment);
+                    }
+                    bag.addEnchantment(enchantment);
+                }
             }
         }
 
@@ -93,6 +112,18 @@ public class Player extends Agent {
             pl.onCollectEnch(enchantment.getType());
     }
 
+    /**
+     * @requires Game, Game->keyHandler, Game -> Dungeon, Dungeon -> CollisionChecker
+     *           location has to be non-null and valid.
+     *           Direction enum must contain UP, Down, Left, Right values.
+     * @modifies Modifies the direction of the character
+     *           Modifies the location of the character
+     *           Modifies the game state by changing the current hall
+     * @effects Changes the character's direction based on the keyboard input
+     *          Moves in the character to the direction if the move is valid.
+     *          If the character has rune, and reaches the door then transitions to next
+     *          hall and updates the location
+     */
     public void move () {
 
         if (Game.getInstance().getKeyHandler().goUp)
@@ -157,15 +188,37 @@ public class Player extends Agent {
             health--;
             publishEvent(health);
         }
-        if (health == 0) {
-           Game.getInstance().loseGame();
-        }
     }
 
     public void setHasRune(boolean hasRune) {
         this.hasRune = hasRune;
         for (PlayerListener pl : listeners)
             pl.onRuneEvent(hasRune);
+    }
+
+    public void prepareGameSave() {
+        this.listeners = null;
+        this.timer = null;
+    }
+
+    public void recreateGame() {
+        this.listeners = new LinkedList<>();
+        this.timer = new Timer();
+    }
+
+    public void restartEvent() {
+        for (PlayerListener pl : listeners) {
+            pl.onHealthEvent(health);
+            pl.onRuneEvent(hasRune);
+            for (Map.Entry<EnchantmentType, Integer> entry : this.bag.getEnchantmentCounter().entrySet()) {
+                EnchantmentType enchantmentType = entry.getKey();
+                int count = entry.getValue();
+
+                for (int i = 0; i < count; i++) {
+                    pl.onCollectEnch(enchantmentType);
+                }
+            }
+        }
     }
 
     public boolean isInvisible() {

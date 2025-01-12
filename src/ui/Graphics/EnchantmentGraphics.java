@@ -23,7 +23,7 @@ public class EnchantmentGraphics extends EntityGraphics implements EnchantmentLi
     public EnchantmentGraphics(int size){
         initalizeSpriteMap();
         this.size = size;
-
+        this.enchantments = new LinkedList<>();
         this.subscribe(EnchantmentFactory.getInstance());
     }
 

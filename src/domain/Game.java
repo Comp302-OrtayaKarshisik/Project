@@ -49,14 +49,19 @@ import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.ArrowGraphics;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Game {
+public class Game implements Serializable {
+
+    private long passedTimeEnch;
+    private long passedTimeMonster;
+    private boolean gameRestarted = false;
 
     private ExecutorService executor;
     private List<GameListener> listeners;
@@ -80,8 +85,6 @@ public class Game {
     }
 
     private Game() {
-        Agent.setGame(this);
-
         executor =  Executors.newSingleThreadExecutor();
         player = new Player();
 
@@ -101,6 +104,46 @@ public class Game {
         if (paused&& !executor.isShutdown()) return false;
         return true;
     }
+
+    public void saveGame() {
+        executor = null;
+
+        listeners = null;
+
+        keyHandler = null;
+
+        this.passedTimeEnch = EnchantmentFactory.getInstance().getPassedTime();
+
+        this.passedTimeMonster = MonsterFactory.getInstance().getPassedTime();
+
+        for(Agent agent : agents) {
+            agent.prepareSaveGame();
+        }
+        dungeon.prepareGameSave();
+        player.prepareGameSave();
+        GameSaveLoader.saveGame();
+        System.exit(0);
+    }
+
+    private void loadGame() {
+        executor = Executors.newSingleThreadExecutor();
+        for(Agent agent : agents) {
+            agent.recreateGame();
+        }
+        gameRestarted = true;
+        this.listeners = new LinkedList<>();
+        this.player.recreateGame();
+        PlayerGraphics.getInstance(48).setPlayer(this.player);
+        this.dungeon.recreateGame();
+    }
+
+    public void continueGame() {
+        EnchantmentFactory.getInstance().continueGame(enchantments, passedTimeEnch);
+        MonsterFactory.getInstance().continueGame(agents, passedTimeMonster);
+        ArrowGraphics.getInstance(48).onNewGameEvent();
+        executor.execute(new Update());
+    }
+
     public void startGame () {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
@@ -148,6 +191,11 @@ public class Game {
         dungeon.getCurrentHall().getTimer().start();
     }
 
+    public static void initLoadedGame(Game game) {
+        instance = game;
+        game.loadGame();
+    }
+
     public void nextHall() {
         dungeon.getCurrentHall().getTimer().pause(); //stop the timer of the previous hall.
         // should just end at this point
@@ -164,8 +212,8 @@ public class Game {
 
         enchantments = new LinkedList<>();
 
-        MonsterFactory.getInstance().publishNextHallEvent();
-        EnchantmentFactory.getInstance().publishNextHallEvent();
+        MonsterFactory.getInstance().nextHall();
+        EnchantmentFactory.getInstance().nextHall();
     }
 
     public synchronized void togglePause() {
@@ -202,9 +250,15 @@ public class Game {
     public boolean isPlayerDead() {return true;}
     public Object getObject() {return null;}
 
+
+
     private class Update implements Runnable {
         @Override
         public void run() {
+            if(gameRestarted) {
+                player.restartEvent();
+                gameRestarted = false;
+            }
             double currentTime;
             double frameInterval = (double) 1000000000 / 24; // 1 billion nano second is equal to 1 secon, 1/FPS = diff between per frame
             double diff = 0; // represents the time passed between two consecutive frames
@@ -214,7 +268,7 @@ public class Game {
             //When ESC is pressed or when game is over
             //Handle in update method.
             //To restart the game just set boolen true and reexecuce
-            while (true) {
+            while (player.getHealth() > 0) {
                 if (!paused) {
                     currentTime = System.nanoTime();
                     diff += (currentTime - lastTime)/frameInterval;
@@ -227,6 +281,7 @@ public class Game {
                     }
                 }
             }
+            loseGame();
         }
     }
 
@@ -286,5 +341,7 @@ public class Game {
     public Dungeon getDungeon(){
         return dungeon;
     }
-
+    public ExecutorService getExecutor(){
+        return executor;
+    }
 }

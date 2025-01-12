@@ -13,11 +13,15 @@ import ui.Graphics.EnchantmentGraphics;
 
 import javax.xml.stream.Location;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.*;
 
-public class Hall {
+
+// mainmenu > load > set/open current hall and remaining halls with consistent game timers
+
+public class Hall implements Serializable {
 
     private CountDownTimer timer;
     private final String type;
@@ -26,6 +30,7 @@ public class Hall {
     private final int placedObjectCount; //initial timer value is 5 times this.
     private ArrayList<Coordinate> runeLocations;
     private Game game;
+    private double remainingTime;
 
     private Tile[][] grid;
 
@@ -36,7 +41,7 @@ public class Hall {
         this.runeLocations = new ArrayList<Coordinate>();
         this.enchantments = new LinkedList<>();
         this.placedObjectCount = placedObjectCount;
-        this.grid = new Tile[64][64];
+        this.grid = new Tile[16][16];
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j <16; j++) {
                 grid[i][j] = new Tile("aa",new Coordinate(i,j));
@@ -147,6 +152,18 @@ public class Hall {
         return runeLocations.get(randomRuneLoc);
     }
 
+    public void recreateGame() {
+        this.timer = new CountDownTimer((int) remainingTime);
+    }
+
+    public void prepareGameSave() {
+        this.remainingTime = this.timer.getTimeRemaining();
+        this.timer = null;
+    }
+
+    public double getRemainingTime() {
+        return remainingTime;
+    }
 
     public Tile[][] getGrid() {
         return grid;

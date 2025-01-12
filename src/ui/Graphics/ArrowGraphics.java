@@ -1,5 +1,6 @@
 package ui.Graphics;
 
+import domain.Game;
 import domain.agent.monster.Archer;
 import domain.agent.monster.Monster;
 import domain.entities.Arrow;

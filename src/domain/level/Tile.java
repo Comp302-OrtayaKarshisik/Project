@@ -3,8 +3,9 @@ package domain.level;
 import domain.util.Coordinate;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Tile {
+public class Tile implements Serializable {
 	
 	private BufferedImage image;
 	private boolean collision;

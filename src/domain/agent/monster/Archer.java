@@ -11,10 +11,9 @@ import ui.Graphics.ArrowGraphics;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class Archer extends Monster {
-
-
     private LinkedList<ArcherListener> listeners;
     private static final int ATTACK_RANGE = 4;
     private static final int MOVE_FRAME_LIMIT = 20;
@@ -24,8 +23,11 @@ public class Archer extends Monster {
     private int attackFrame;
     public Projectile arrow;
 
+
+
     public Archer() {
         super();
+        setType("archer");
         listeners = new LinkedList<>();
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
@@ -36,6 +38,14 @@ public class Archer extends Monster {
 
     public void addListener(ArcherListener al) {
         listeners.add(al);
+    }
+
+    public void prepareSaveGame() {
+        this.listeners = null;
+    }
+
+    public void recreateGame() {
+        this.listeners = new LinkedList<>();
     }
 
     public void publishArrowActivationEvent() {

@@ -3,9 +3,10 @@ package domain.agent;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Bag {
+public class Bag implements Serializable {
 
     private int currentSize = 0;
     private HashMap<EnchantmentType,Integer> enchantmentCounter;

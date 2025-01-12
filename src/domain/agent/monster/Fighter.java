@@ -17,6 +17,7 @@ public class Fighter extends Monster  {
 
     public Fighter() {
         super();
+        setType("fighter");
         this.lured = false;
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
@@ -60,18 +61,26 @@ public class Fighter extends Monster  {
             // wont work if the monster stuck between
             // two crates, one is left of the monster,
             // other one is blow
-            for (Direction direction : Direction.values()) {
-                setDirection(direction);
+            int dx = lureLoc.getX() - getLocation().getX();
+            int dy = lureLoc.getY() - getLocation().getY();
 
-                if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
-                    switch (getDirection()) {
-                        case UP -> getLocation().setY(getLocation().getY() + 1);
-                        case DOWN -> getLocation().setY(getLocation().getY() - 1);
-                        case RIGHT -> getLocation().setX(getLocation().getX() + 1);
-                        case LEFT -> getLocation().setX(getLocation().getX() - 1);
-                    }
+            // Move in the direction of the lure
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 0) setDirection(Direction.RIGHT);
+                else setDirection(Direction.LEFT);
+            } else {
+                if (dy > 0) setDirection(Direction.UP);
+                else setDirection(Direction.DOWN);
+            }
+
+            // Check for valid move before proceeding
+            if (Game.getInstance().getDungeon().getCollisionChecker().validMove(this)) {
+                switch (getDirection()) {
+                    case UP -> getLocation().setY(getLocation().getY() + 1);
+                    case DOWN -> getLocation().setY(getLocation().getY() - 1);
+                    case RIGHT -> getLocation().setX(getLocation().getX() + 1);
+                    case LEFT -> getLocation().setX(getLocation().getX() - 1);
                 }
-                break;
             }
         }
     }

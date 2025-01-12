@@ -9,6 +9,7 @@ import ui.Swing.Panels.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Serializable;
 
 
 // One change could be the latter pressed button will get the lead
@@ -51,25 +52,35 @@ public class KeyHandler implements KeyListener {
             Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Cloak);
             protectionUsed = true;
         }
-        if (key == KeyEvent.VK_B && !lureUsed) {
-            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Luring);
+        if (key == KeyEvent.VK_B) {
             lureUsed = true;
+        }
+
+        if (key == KeyEvent.VK_W && lureUsed) {
+            runeThrowDirection = Direction.UP;
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Luring);
+        }
+
+        if (key == KeyEvent.VK_A && lureUsed) {
+            runeThrowDirection = Direction.LEFT;
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Luring);
+        }
+
+        if (key == KeyEvent.VK_S && lureUsed) {
+            runeThrowDirection = Direction.DOWN;
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Luring);
+        }
+
+        if (key == KeyEvent.VK_D && lureUsed) {
+            runeThrowDirection = Direction.RIGHT;
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Luring);
         }
 
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        //For non action keys (HOME,ESC,arrows esd)
+    public void keyTyped(KeyEvent e) {}
 
-        int key = e.getKeyCode(); // Keys are actually integer coded
-
-
-        if (key == KeyEvent.VK_W) runeThrowDirection = Direction.UP;
-        if (key == KeyEvent.VK_A) runeThrowDirection = Direction.LEFT;
-        if (key == KeyEvent.VK_S) runeThrowDirection = Direction.DOWN;
-        if (key == KeyEvent.VK_D) runeThrowDirection = Direction.RIGHT;
-    }
     @Override
     public void keyReleased(KeyEvent e) {
         //For any key releasing
@@ -86,11 +97,9 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_R) revealUsed = false;
         if (key == KeyEvent.VK_P) protectionUsed = false;
 
-        if (key == KeyEvent.VK_W || key == KeyEvent.VK_A || key == KeyEvent.VK_S || key == KeyEvent.VK_D) {
-            runeThrowDirection = null;
+        if (key == KeyEvent.VK_A || key == KeyEvent.VK_W||key == KeyEvent.VK_S||key == KeyEvent.VK_D) {
             lureUsed = false;
         }
-
     }
 }
 

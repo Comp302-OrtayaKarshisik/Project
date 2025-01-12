@@ -285,7 +285,6 @@ class HallPanel extends JPanel implements MouseListener {
     }
 
     private void drawPlacedObjects(Graphics g, GridDesign hall) {
-        System.out.println("Drawing objects");
         ObjectType[][] grid = hall.getGrid();
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {

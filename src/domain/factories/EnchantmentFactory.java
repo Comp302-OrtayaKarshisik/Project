@@ -5,6 +5,7 @@ import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
 import domain.util.Coordinate;
 import listeners.EnchantmentListener;
+import ui.Graphics.EnchantmentGraphics;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,10 +35,20 @@ public class EnchantmentFactory {
 
     public void newGame() {
         publishNewGameEvent();
-
         schedule = Executors.newSingleThreadScheduledExecutor();
         currentTask = new EnchantmentCreationTask();
         schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS); // repeat with period of 8
+    }
+
+    public void continueGame(List<Enchantment> enchantments, Long passedTime) {
+        EnchantmentGraphics.getInstance(48);
+        for(Enchantment ench : enchantments) {
+            for (EnchantmentListener efl: listeners) {
+                efl.onCreationEvent(ench);
+            }
+        }
+
+         this.passedTime = passedTime;
     }
 
     public void gameOver() {
@@ -45,6 +56,15 @@ public class EnchantmentFactory {
 
         currentTask.cancel();
         schedule.close();
+    }
+
+    public void nextHall() {
+        publishNextHallEvent();
+
+        schedule.shutdownNow();
+        schedule = Executors.newSingleThreadScheduledExecutor();
+        currentTask = new EnchantmentCreationTask();
+        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS);
     }
 
     public void pauseCreation() {
@@ -90,6 +110,10 @@ public class EnchantmentFactory {
         }
     }
 
+    public long getPassedTime() {
+        return passedTime;
+    }
+
     private class EnchantmentCreationTask extends TimerTask {
         @Override
         public void run() {
@@ -116,5 +140,9 @@ public class EnchantmentFactory {
             for (EnchantmentListener efl: listeners) {efl.onCreationEvent(e);}
             lastCreation = System.currentTimeMillis();
         }
+    }
+
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
     }
 }

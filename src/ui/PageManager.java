@@ -1,6 +1,7 @@
 package ui;
 
 import domain.Game;
+import domain.GameSaveLoader;
 import domain.level.GridDesign;
 
 import javax.swing.JFrame;
@@ -42,6 +43,11 @@ public class PageManager {
 	
 	public void showMainMenuPage() {showPage(new MainMenuPage());}
 
+	public void showGameSelectionPage() {
+		int games = GameSaveLoader.getInstance().readGameSaves();
+		showPage(new GameSelectionPage(games));
+	}
+
 	public void showGameOverPage() {showPage(new GameOverPage());}
 
 	public void showWinGamePage() {showPage(new WinGamePage());}
@@ -52,7 +58,11 @@ public class PageManager {
 
 	public void showPlayModePage(GridDesign[] gridDesigns) {
 		Game.getInstance().initPlayMode(gridDesigns);
-		showPage(new PlayModePage());
+		showPage(new PlayModePage(true));
+	}
+
+	public void continuePlayModePage() {
+		showPage(new PlayModePage(false));
 	}
 
     public void showFrame() {
