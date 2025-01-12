@@ -1,4 +1,38 @@
 package domain;
+/**GAME CLASS OVERVIEW
+ * Game class represents our adventure game. It manages several things:
+ * An instance of player
+ * Monster agents that are controlled by the system
+ * The collectibles that we call enchantments
+ * The 4 dungeon halls that the player has to go through
+ * It also contains the game loop which is responsible for the updating the state of the game.
+ * It follows a singleton pattern.
+ */
+/**Representation Invariant
+ * It ensures several things:
+ * That the player instance is not null
+ * The list of agents has the player as their first element
+ * The dungeon must have at least one hall loaded
+ * The pause state and game's state must be consistent with each other
+ * The executor service must not be shut down unless the game is over.
+ */
+// Abstraction Function (AF):
+//   AF(r) = The game instance G where:
+//      - G.player = the player instance with properties:
+//         - health = r.player.getHealth()
+//         - location = r.player.getLocation()
+//      - G.agents = list of all active agents (including player and monsters):
+//         - G.agents[0] = r.player (the player must always be the first agent)
+//         - G.agents[1..n] = monsters agents
+//      - G.enchantments = list of collectible enchantments available in the current hall:
+//         - Each enchantment `e` in `r.enchantments` has a `remainingFrame` indicating duration.
+//      - G.dungeon = the dungeon `r.dungeon` containing a sequence of halls:
+//         - r.dungeon.getCurrentHall() = the active hall with:
+//           - remainingTime = the remaining time in the current hall.
+//           - layout = grid layout for the hall (`GridDesign`)
+//      - G.paused = true if the game is paused (no state updates occur).
+//      - G.listeners = the list of subscribed listeners for game events.
+//      - G.executor = the background thread pool managing game loop.
 
 
 import controllers.KeyHandler;
@@ -58,8 +92,15 @@ public class Game {
         agents = new LinkedList<>();
         agents.add(player);
         paused = false;
+        assert repOk();
     }
-
+    public boolean repOk() {
+        if (player == null) return false;
+        if(agents.isEmpty()|| agents.get(0) !=player)return false;
+        if(dungeon == null||dungeon.getCurrentHall()==null) return false;
+        if (paused&& !executor.isShutdown()) return false;
+        return true;
+    }
     public void startGame () {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
