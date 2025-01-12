@@ -21,6 +21,7 @@ import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
 import ui.Graphics.EnchantmentGraphics;
+import ui.Graphics.SwordGraphics;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -63,6 +64,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private final WizardGraphics wizardGraphics;
     private final EnchantmentGraphics enchantmentGraphics;
     private final ArrowGraphics arrowGraphics;
+    private final SwordGraphics swordGraphics;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -83,6 +85,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         wizardGraphics = WizardGraphics.getInstance(48);
         enchantmentGraphics = EnchantmentGraphics.getInstance(48);
         arrowGraphics = ArrowGraphics.getInstance(48);
+        swordGraphics = SwordGraphics.getInstance(48);
 
         game = Game.getInstance();
 
@@ -125,6 +128,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         fighterGraphics.draw(g2);
         archerGraphics.draw(g2);
         arrowGraphics.draw(g2);
+        swordGraphics.draw(g2);
         wizardGraphics.draw(g2);
         enchantmentGraphics.draw(g2);
 

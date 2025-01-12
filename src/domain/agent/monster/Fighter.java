@@ -4,6 +4,11 @@ import domain.Game;
 import domain.agent.Player;
 import domain.util.Coordinate;
 import domain.util.Direction;
+import listeners.FighterListener;
+import ui.Graphics.SwordGraphics;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Fighter extends Monster  {
 
@@ -15,11 +20,17 @@ public class Fighter extends Monster  {
     private boolean lured;
     private Coordinate lureLoc;
 
+    private LinkedList<FighterListener> listeners;
+    public int swordLife;
+
     public Fighter() {
         super();
         this.lured = false;
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
+
+        listeners = new LinkedList<>();
+        SwordGraphics.getInstance(48).subscribe(this);
     }
 
     public void move() {
@@ -81,6 +92,8 @@ public class Fighter extends Monster  {
         // Ordering of these methods and other will matter.
         if (checkPlayerAdj(Game.getInstance().getPlayer()) &&
                 !Game.getInstance().getPlayer().isInvisible() && attackFrame >= ATTACK_FRAME_LIMIT) {
+            publishFireEvent();
+            swordLife = 30;
             Game.getInstance().getPlayer().reduceHealth();
             attackFrame = 0;
         }
@@ -98,5 +111,12 @@ public class Fighter extends Monster  {
 
         return (dy == 0  && dx == 1) || (dy == 1 && dx == 0);
     }
+
+    public void publishFireEvent() {
+        for (FighterListener al : listeners)
+            al.onFireEvent(this);}
+    public void addListener(FighterListener fl) {listeners.add(fl);}
+
+
 
 }
