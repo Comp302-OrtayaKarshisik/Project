@@ -40,7 +40,12 @@ public class MonsterFactory {
     }
 
     public void nextHall() {
-        newGame();
+       publishNextHallEvent();
+
+       schedule.shutdownNow();
+       schedule = Executors.newSingleThreadScheduledExecutor();
+       currentTask = new MonsterCreationTask();
+       schedule.scheduleAtFixedRate(currentTask, 50, 8000, TimeUnit.MILLISECONDS);
     }
 
     public void newGame() {
@@ -115,5 +120,9 @@ public class MonsterFactory {
             publishCreationEvent(w);
             lastCreation = System.currentTimeMillis();
         }
+    }
+
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
     }
 }

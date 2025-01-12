@@ -80,8 +80,6 @@ public class Game {
     }
 
     private Game() {
-        Agent.setGame(this);
-
         executor =  Executors.newSingleThreadExecutor();
         player = new Player();
 
@@ -152,6 +150,7 @@ public class Game {
         dungeon.getCurrentHall().getTimer().pause(); //stop the timer of the previous hall.
         // should just end at this point
         if(dungeon.getCurrentHallIndex() == 3) {
+            winGame();
             return;
         }
 
@@ -201,6 +200,8 @@ public class Game {
     public boolean isPlayerDead() {return true;}
     public Object getObject() {return null;}
 
+
+
     private class Update implements Runnable {
         @Override
         public void run() {
@@ -226,6 +227,7 @@ public class Game {
                     }
                 }
             }
+            loseGame();
         }
     }
 
@@ -236,6 +238,18 @@ public class Game {
         } else {
             System.out.println("Monster not found!");
         }
+    }
+
+    private void winGame() {
+        endGame();
+        for (GameListener gl : listeners)
+            gl.onGameWin();
+    }
+
+    public void loseGame() {
+        endGame();
+        for (GameListener gl : listeners)
+            gl.onGameLose();
     }
 
     public boolean isPaused() {
@@ -272,5 +286,8 @@ public class Game {
 
     public Dungeon getDungeon(){
         return dungeon;
+    }
+    public ExecutorService getExecutor(){
+        return executor;
     }
 }

@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
 public class EnchantmentFactory {
     private ScheduledExecutorService schedule;
     private static EnchantmentFactory instance;
@@ -49,7 +48,12 @@ public class EnchantmentFactory {
     }
 
     public void nextHall() {
-        newGame();
+        publishNextHallEvent();
+
+        schedule.shutdownNow();
+        schedule = Executors.newSingleThreadScheduledExecutor();
+        currentTask = new EnchantmentCreationTask();
+        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS);
     }
 
     public void pauseCreation() {
@@ -101,8 +105,8 @@ public class EnchantmentFactory {
             int type = Game.random.nextInt(5);
             Enchantment e = switch (type) {
                 case 0 -> new Enchantment(EnchantmentType.Reveal);
-                case 1 -> new Enchantment(EnchantmentType.Life);
-                case 2 -> new Enchantment(EnchantmentType.Time);
+                case 1 -> new Enchantment(EnchantmentType.Time);
+                case 2 -> new Enchantment(EnchantmentType.Life);
                 case 3 -> new Enchantment(EnchantmentType.Luring);
                 case 4 -> new Enchantment(EnchantmentType.Cloak);
                 default -> null;
@@ -121,5 +125,9 @@ public class EnchantmentFactory {
             for (EnchantmentListener efl: listeners) {efl.onCreationEvent(e);}
             lastCreation = System.currentTimeMillis();
         }
+    }
+
+    public ScheduledExecutorService getSchedule(){
+        return schedule;
     }
 }

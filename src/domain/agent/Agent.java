@@ -10,7 +10,6 @@ public abstract class Agent extends Entity {
     // Agents need a lot of fields from the game
     // This fields may change later
     // depending on what we actually want;
-    protected static Game game; //To make access faster
     protected Direction direction;
     protected Coordinate location;
     protected final Direction[] DIRECTIONS = Direction.values();
@@ -33,9 +32,4 @@ public abstract class Agent extends Entity {
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
-
-    public static void setGame(Game game) {
-        Agent.game = game;
-    }
-
 }

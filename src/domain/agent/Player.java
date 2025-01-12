@@ -56,6 +56,7 @@ public class Player extends Agent {
      *    via onRemoveEnch(enchantmentType).
      */
     public void useEnchantment(EnchantmentType enchantment) {
+        System.out.println(enchantment);
         if(enchantment == EnchantmentType.Life || enchantment == EnchantmentType.Time) {
             if (enchantment == EnchantmentType.Life) {increaseHealth();}
             else {Game.getInstance().getDungeon().getCurrentHall().getTimer().increaseTimeRemaining(5);}
@@ -63,18 +64,37 @@ public class Player extends Agent {
         else {
             if (bag.containsEnchantment(enchantment)) {
                 bag.removeEnchantment(enchantment);
-                if (enchantment == EnchantmentType.Cloak) {gainInvisibility();}
-                else if (enchantment== EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
-                else {
-                    Coordinate c;
-                    for (Agent m : Game.getInstance().getAgents()) {
-                        if (m instanceof Fighter) {
-                            ((Fighter) m).lureUsed(new Coordinate(5, 5));
-                        }
-                    }
+                if (enchantment == EnchantmentType.Cloak) {
+                    gainInvisibility();
+                    for (PlayerListener pl : listeners)
+                        pl.onRemoveEnch(enchantment);
                 }
-                for (PlayerListener pl : listeners)
-                    pl.onRemoveEnch(enchantment);
+                else if (enchantment== EnchantmentType.Reveal) {
+                    Game.getInstance().getDungeon().getCurrentHall().higlightRune();
+                    for (PlayerListener pl : listeners)
+                        pl.onRemoveEnch(enchantment);
+                }
+                else {
+
+                    Coordinate c = switch (Game.getInstance().getKeyHandler().runeThrowDirection) {
+                        case UP -> new Coordinate(location.getX(),location.getY() + 1);
+                        case DOWN -> new Coordinate(location.getX(),location.getY() - 1);
+                        case LEFT -> new Coordinate(location.getX() - 1,location.getY());
+                        case RIGHT -> new Coordinate(location.getX() + 1,location.getY());
+                        default -> null;
+                    };
+
+                    if(Game.getInstance().getDungeon().getCollisionChecker().checkTileEmpty(c)){
+                        for (Agent m : Game.getInstance().getAgents()) {
+                            if (m instanceof Fighter) {
+                                ((Fighter) m).lureUsed(c);
+                            }
+                        }
+                        for (PlayerListener pl : listeners)
+                            pl.onRemoveEnch(enchantment);
+                    }
+                    bag.addEnchantment(enchantment);
+                }
             }
         }
 
