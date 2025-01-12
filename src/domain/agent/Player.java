@@ -171,6 +171,11 @@ public class Player extends Agent implements Serializable {
         this.timer = null;
     }
 
+    public void recreateGame() {
+        this.listeners = new LinkedList<>();
+        this.timer = new Timer();
+    }
+
     public boolean isInvisible() {
         return invisible;
     }

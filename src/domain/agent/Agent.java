@@ -49,4 +49,8 @@ public abstract class Agent extends Entity implements Serializable {
         this.type = name;
     }
 
+    public void recreateGame() {
+
+    }
+
 }

@@ -40,6 +40,10 @@ public class Archer extends Monster {
         listeners.add(al);
     }
 
+    public void recreateGame() {
+        this.listeners = null;
+    }
+
     public void publishArrowActivationEvent() {
         for (ArcherListener al : listeners)
             al.onArrowActivationEvent(this);

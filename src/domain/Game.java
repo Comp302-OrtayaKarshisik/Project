@@ -46,10 +46,12 @@ import domain.level.Dungeon;
 import domain.level.GridDesign;
 import domain.util.Coordinate;
 import listeners.GameListener;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.ArrowGraphics;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -108,11 +110,21 @@ public class Game implements Serializable {
 
         keyHandler = null;
 
-        agents = null;
         dungeon.prepareGameSave();
         player.prepareGameSave();
         GameSaveLoader.saveGame();
-        endGame();
+        //endGame();
+    }
+
+    private void loadGame() {
+        executor = Executors.newSingleThreadExecutor();
+        for(Agent agent : agents) {
+            agent.recreateGame();
+        }
+        this.listeners = new LinkedList<>();
+        this.player.recreateGame();
+        PlayerGraphics.getInstance(48).setPlayer(this.player);
+        this.dungeon.recreateGame();
     }
 
     public void startGame () {
@@ -160,6 +172,11 @@ public class Game implements Serializable {
     public void initPlayMode(GridDesign[] gridDesigns) {
         dungeon.loadDesigns(gridDesigns);
         dungeon.getCurrentHall().getTimer().start();
+    }
+
+    public static void initLoadedGame(Game game) {
+        instance = game;
+        game.loadGame();
     }
 
     public void nextHall() {

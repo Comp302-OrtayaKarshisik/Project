@@ -152,6 +152,10 @@ public class Hall implements Serializable {
         return runeLocations.get(randomRuneLoc);
     }
 
+    public void recreateGame() {
+        this.timer = new CountDownTimer((int) remainingTime);
+    }
+
     public void prepareGameSave() {
         this.remainingTime = this.timer.getTimeRemaining();
         this.timer = null;

@@ -10,8 +10,17 @@ import java.text.SimpleDateFormat;
 public class GameSaveLoader {
     
     private File[] savedFiles;
+
+    public static GameSaveLoader instance;
+
+    public static GameSaveLoader getInstance() {
+        if (instance == null) {
+            instance = new GameSaveLoader();
+        }
+        return instance;
+    }
     
-    public GameSaveLoader() {
+    private GameSaveLoader() {
     }
 
     public static void saveGame() {
@@ -39,12 +48,14 @@ public class GameSaveLoader {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(savedFile))) {
                 Game loadedGame = (Game) ois.readObject();
                 System.out.println("Game loaded successfully from " + savedFile.getName());
+                Game.initLoadedGame(loadedGame);
 
                 // Use the loaded game object as needed
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println("Failed to load game from " + savedFile.getName());
                 e.printStackTrace();
             }
+
         }
 
         public int readGameSaves() {
