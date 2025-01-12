@@ -13,6 +13,7 @@ public class Wizard extends Monster{
     private WizardBehaviorStrategy currentBehavior;
 
     public Wizard() {
+        setType("wizard");
         System.out.println("Wizard created.");
     }
 

@@ -6,7 +6,9 @@ import domain.agent.monster.wizardStrategies.WizardBehaviorStrategy;
 import domain.level.CountDownTimer;
 import domain.util.Coordinate;
 
-public class RuneRelocationStrategy implements WizardBehaviorStrategy {
+import java.io.Serializable;
+
+public class RuneRelocationStrategy implements WizardBehaviorStrategy, Serializable {
     private long lastTeleportTime = System.currentTimeMillis();
     @Override
     public void execute(Wizard wizard) {

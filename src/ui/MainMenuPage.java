@@ -10,6 +10,7 @@ public class MainMenuPage extends Page implements ActionListener{
 	
     private JButton startButton;
     private JButton helpButton;
+    private JButton loadButton;
     private ImageIcon icon;
     private HelpScreen helpScreen;
 
@@ -40,12 +41,17 @@ public class MainMenuPage extends Page implements ActionListener{
         startButton.setFont(new Font("Gongster",Font.BOLD,25));
         helpButton = new JButton("Help");
         helpButton.setFont(new Font("Gongster",Font.BOLD,25));
+        loadButton = new JButton("Load Game");
+        loadButton.setFont(new Font("Gongster",Font.BOLD,25));
         startButton.setBackground(new Color(101, 67, 33));
         helpButton.setBackground(new Color(101, 67, 33));
+        loadButton.setBackground(new Color(101, 67, 33));
         startButton.setForeground(Color.BLACK);
         helpButton.setForeground(Color.black);
+        loadButton.setForeground(Color.BLACK);
         buttonPanel.add(startButton);
         buttonPanel.add(helpButton);
+        buttonPanel.add(loadButton);
         buttonPanel.setBackground(Color.BLACK);
         buttonPanel.setOpaque(true);
         // Create the main frame
@@ -56,22 +62,27 @@ public class MainMenuPage extends Page implements ActionListener{
 
         startButton.addActionListener(this);
         helpButton.addActionListener(this);
+        loadButton.addActionListener(this);
     }
     
     
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==startButton) {
+        if(e.getSource() == startButton) {
             //open build mode
         	
             PageManager.getInstance().showBuildingModePage();
         }
 
-        if(e.getSource()==helpButton){
+        if(e.getSource() == helpButton){
             //open view help
             helpScreen.setVisible(true);
 
+        }
+
+        if(e.getSource() == loadButton) {
+            PageManager.getInstance().showGameSelectionPage();
         }
     }
 }

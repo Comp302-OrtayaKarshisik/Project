@@ -1,6 +1,8 @@
 package domain.util;
 
-public class Coordinate {
+import java.io.Serializable;
+
+public class Coordinate implements Serializable {
 
     private int x; // x coordinate
     private int y; // y coordinate

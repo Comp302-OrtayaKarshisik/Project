@@ -49,14 +49,15 @@ import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.ArrowGraphics;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Game {
+public class Game implements Serializable {
 
     private ExecutorService executor;
     private List<GameListener> listeners;
@@ -99,6 +100,31 @@ public class Game {
         if (paused&& !executor.isShutdown()) return false;
         return true;
     }
+
+    public void saveGame() {
+        executor = null;
+
+        listeners = null;
+
+        keyHandler = null;
+
+        dungeon.prepareGameSave();
+        player.prepareGameSave();
+        GameSaveLoader.saveGame();
+        System.exit(0);
+    }
+
+    private void loadGame() {
+        executor = Executors.newSingleThreadExecutor();
+        for(Agent agent : agents) {
+            agent.recreateGame();
+        }
+        this.listeners = new LinkedList<>();
+        this.player.recreateGame();
+        PlayerGraphics.getInstance(48).setPlayer(this.player);
+        this.dungeon.recreateGame();
+    }
+
     public void startGame () {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
@@ -144,6 +170,11 @@ public class Game {
     public void initPlayMode(GridDesign[] gridDesigns) {
         dungeon.loadDesigns(gridDesigns);
         dungeon.getCurrentHall().getTimer().start();
+    }
+
+    public static void initLoadedGame(Game game) {
+        instance = game;
+        game.loadGame();
     }
 
     public void nextHall() {

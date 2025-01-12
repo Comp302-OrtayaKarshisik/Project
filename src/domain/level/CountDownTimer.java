@@ -36,6 +36,14 @@ public class CountDownTimer {
         return initialTimeRemaining;
     }
 
+    public float getCurrentTimeRemaining() {
+        return currentTimeRemaining;
+    }
+
+    public void setCurrentTimeRemaining(float currentTimeRemaining) {
+        this.currentTimeRemaining = currentTimeRemaining;
+    }
+
     public void increaseTimeRemaining(float amount)
     {
         currentTimeRemaining += amount;

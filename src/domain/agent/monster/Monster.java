@@ -4,7 +4,9 @@ import domain.Game;
 import domain.agent.Agent;
 import domain.util.Coordinate;
 
-public abstract class Monster extends Agent {
+import java.io.Serializable;
+
+public abstract class Monster extends Agent implements Serializable {
 
     public Monster() {
         super();

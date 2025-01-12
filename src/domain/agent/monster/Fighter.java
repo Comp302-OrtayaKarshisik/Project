@@ -17,6 +17,7 @@ public class Fighter extends Monster  {
 
     public Fighter() {
         super();
+        setType("fighter");
         this.lured = false;
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;

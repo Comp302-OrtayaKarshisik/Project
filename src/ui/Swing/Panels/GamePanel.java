@@ -162,6 +162,28 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         String helpText = "Press H for Help";
         textWidth = g2.getFontMetrics().stringWidth(helpText);
         g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
+
+
+        g2.setFont(new Font("Gongster", Font.BOLD, 35));
+
+        String saveButtonText = "Save Game and Exit";
+        textWidth = g2.getFontMetrics().stringWidth(saveButtonText);
+
+        g2.setColor(new Color(200, 200, 200));
+
+        g2.setStroke(new BasicStroke(2));
+
+        g2.drawRoundRect((width-textWidth)/2-10, height/2 + 213, 355, 50, 10, 10);
+        g2.setColor(new Color(101/2, 67/2, 16));
+        g2.fillRoundRect((width-textWidth)/2-10, height/2 + 213, 355, 50, 10, 10);
+
+        g2.setColor(Color.WHITE);
+        System.out.println((width-textWidth)/2-10);
+        /*
+        if(hoverSaveLoad) {
+        }
+         */
+        g2.drawString(saveButtonText, (width-textWidth)/2, (height/2) + 250);
     }
 
     private void highlightRune(Graphics g) {
@@ -179,8 +201,9 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
             int verticalSize = 16;
             for (int col = 0; col < verticalSize; col++) {
                 Tile gridObject = grid[row][col];
-                if (gridObject != null && (gridObject.getName() == "COLUMN" || gridObject.getName() == "CHEST_FULL" || gridObject.getName() == "CHEST_FULL_GOLD" || gridObject.getName() == "CHEST_CLOSED")) {
-                    String objName = grid[row][col].getName().toLowerCase();
+                if(col != 15) continue;
+                if (gridObject != null && (gridObject.getName().equals("COLUMN") || gridObject.getName().equals("CHEST_FULL") || gridObject.getName().equals("CHEST_FULL_GOLD") || gridObject.getName().equals("CHEST_CLOSED"))) {
+                    String objName = gridObject.getName().toLowerCase();
                     BufferedImage objectSprite = Textures.getSprite(objName);
                     int h = 32;
                     int w = 32;
@@ -204,11 +227,20 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int x = e.getX() / baseTileSize;
-        int y = 15 - (e.getY() / baseTileSize);
-        System.out.println("clicked at x: " + x + " y: " + y);
-        Coordinate chosenC = new Coordinate(x, y);
-        game.handleChosenBox(game.getPlayer(), chosenC);
+        if(!game.isPaused()) {
+            int x = e.getX() / baseTileSize;
+            int y = 15 - (e.getY() / baseTileSize);
+            System.out.println("clicked at x: " + x + " y: " + y);
+            Coordinate chosenC = new Coordinate(x, y);
+            game.handleChosenBox(game.getPlayer(), chosenC);
+        }
+        else {
+            int x = e.getX();
+            int y = e.getY();
+            if(x >= 207 && x <=  207 + 355 && y >= height/2 + 213 && y <= height/2 + 263) {
+                Game.getInstance().saveGame();
+            }
+        }
     }
 
     @Override

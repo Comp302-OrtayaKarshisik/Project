@@ -9,19 +9,20 @@ import domain.util.Direction;
 import listeners.PlayerListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player extends Agent {
+public class Player extends Agent implements Serializable {
 
     private final static int MAX_HEALTH = 5;
     private final static int INVISIBILITY_DURATION = 5;
 
-    private final List<PlayerListener> listeners;
+    private List<PlayerListener> listeners;
     private int health;
     private final Bag bag;
     private boolean hasRune;
     private boolean invisible;
-    private final Timer timer; // This methods is for now;
+    private Timer timer; // This methods is for now;
     private Coordinate doorCoordinate;
 
     public Player() {
@@ -193,6 +194,16 @@ public class Player extends Agent {
         this.hasRune = hasRune;
         for (PlayerListener pl : listeners)
             pl.onRuneEvent(hasRune);
+    }
+
+    public void prepareGameSave() {
+        this.listeners = null;
+        this.timer = null;
+    }
+
+    public void recreateGame() {
+        this.listeners = new LinkedList<>();
+        this.timer = new Timer();
     }
 
     public boolean isInvisible() {
