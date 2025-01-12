@@ -8,10 +8,11 @@ import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class MobilMonsterGraphics extends EntityGraphics implements FactoryListener {
+public class MobilMonsterGraphics extends EntityGraphics implements FactoryListener, Serializable {
 
     private static MobilMonsterGraphics instance;
     protected  BufferedImage rightPic, leftPic;

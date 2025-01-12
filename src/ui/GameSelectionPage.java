@@ -1,72 +1,82 @@
+
 package ui;
 
-import domain.FileSaveLoadAdapter;
-import domain.ISaveLoadAdapter;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+public class GameSelectionPage extends Page implements ActionListener{
 
-public class GameSelectionPage extends Page {
-    private BufferedImage backgroundImage;
+    private JButton startButton;
+    private JButton helpButton;
+    private JButton loadButton;
+    private ImageIcon icon;
+    private ArrayList<JButton> gamesList;
 
-    private ArrayList<String> savedGameTimes;
+    GameSelectionPage() {
+        // Add the background image
 
-    private ISaveLoadAdapter saveLoad;
-
-    public GameSelectionPage() {
-        setLayout(new BorderLayout());
-        this.setOpaque(false);
-        this.savedGameTimes = new ArrayList<>();
-        this.saveLoad = new FileSaveLoadAdapter();
+        super();
         initUI();
+
+
     }
 
-    @Override
     protected void initUI() {
 
 
-        //buttonları name vermemiz lazım identifier atayarak
+        icon = new ImageIcon("src/assets/LOGO.png");
+        JLabel backgroundLabel = new JLabel(icon);
+        backgroundLabel.setHorizontalAlignment(JLabel.CENTER);
+        backgroundLabel.setVerticalAlignment(JLabel.TOP);
+        backgroundLabel.setBackground(Color.black);
+        backgroundLabel.setOpaque(true);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        Dimension buttonSize = new Dimension(200, 40);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 20)); // Buttons centered with some space
+        startButton = new JButton("Start Game");
+        startButton.setFont(new Font("Gongster",Font.BOLD,25));
+        helpButton = new JButton("Help");
+        helpButton.setFont(new Font("Gongster",Font.BOLD,25));
+        loadButton = new JButton("Load Game");
+        loadButton.setFont(new Font("Gongster",Font.BOLD,25));
+        startButton.setBackground(new Color(101, 67, 33));
+        helpButton.setBackground(new Color(101, 67, 33));
+        loadButton.setBackground(new Color(101, 67, 33));
+        startButton.setForeground(Color.BLACK);
+        helpButton.setForeground(Color.black);
+        loadButton.setForeground(Color.BLACK);
+        buttonPanel.add(startButton);
+        buttonPanel.add(helpButton);
+        buttonPanel.add(loadButton);
+        buttonPanel.setBackground(Color.BLACK);
+        buttonPanel.setOpaque(true);
+        // Create the main frame
+        this.setLayout(new BorderLayout());
+        this.setPreferredSize(new Dimension(1000, 800));
+        this.add(backgroundLabel, BorderLayout.NORTH); // Add image at the top
+        this.add(buttonPanel, BorderLayout.CENTER); // Add buttons at the bottom
 
-        /*for (String identifier : savedGameIdentifiers) {
-            JButton button = new JButton(identifier);
-            button.setPreferredSize(buttonSize);
-            button.setMaximumSize(buttonSize);
-            button.setMinimumSize(buttonSize);
-            button.setForeground(Color.WHITE); // White text color
-            button.setFocusPainted(true); // Remove focus border
-            button.setBorderPainted(true); // Remove border
-            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center horizontally
-            button.setBorder(new EmptyBorder(10, 10, 10, 10));
-            button.setFont(button.getFont().deriveFont(Font.BOLD, 18f)); // Set text to bold
-
-            button.addActionListener(e -> {
-
-                saveLoad.loadGame();
-
-            });
-
-
-            buttonPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add some space between buttons
-            buttonPanel.add(button);
-        }*/
-
-
-        JScrollPane scrollPane = new JScrollPane(buttonPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Always show vertical scroll bar
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.setBorder(null);
-
-
-        this.add(scrollPane, BorderLayout.CENTER);
+        startButton.addActionListener(this);
+        helpButton.addActionListener(this);
+        loadButton.addActionListener(this);
     }
 
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == startButton) {
+
+            PageManager.getInstance().showBuildingModePage();
+        }
+
+
+        if(e.getSource() == loadButton) {
+            PageManager.getInstance().showGameSelectionPage();
+        }
+    }
 }
+

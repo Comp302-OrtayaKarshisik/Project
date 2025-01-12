@@ -2,9 +2,10 @@ package domain.level;
 
 import domain.factories.MonsterFactory;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Dungeon {
+public class Dungeon implements Serializable {
 
     private GridDesign[] gridDesigns;
     private int currentHall;

@@ -9,27 +9,19 @@ import domain.Textures;
 
 import listeners.GameListener;
 
-import domain.level.GridDesign;
-import domain.level.Hall;
 import domain.level.Tile;
 import domain.util.Coordinate;
-import ui.Graphics.AgentGrapichs.*;
 import ui.Graphics.ArrowGraphics;
-import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
 import ui.Graphics.EnchantmentGraphics;
-import ui.Graphics.TileSetImageGetter;
-import ui.PlayModePage;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 // In the next generations of the game KeyListener will
 // be replaced by KeyBindings
@@ -52,6 +44,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     private int verticalSquares = 16; // how many squares in the y direction
     private int height = verticalSquares * (scalingFactor * baseTileSize); // vertical pixels
+
+    private boolean hoverSaveLoad = false;
 
     KeyHandler keyHandler = new KeyHandler();
 
@@ -153,6 +147,28 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         String helpText = "Press H for Help";
         textWidth = g2.getFontMetrics().stringWidth(helpText);
         g2.drawString(helpText, (width - textWidth) / 2, (height / 2) + 60);
+
+
+        g2.setFont(new Font("Gongster", Font.BOLD, 35));
+
+        String saveButtonText = "Save Game and Exit";
+        textWidth = g2.getFontMetrics().stringWidth(saveButtonText);
+
+        g2.setColor(new Color(200, 200, 200));
+
+        g2.setStroke(new BasicStroke(2));
+
+        g2.drawRoundRect((width-textWidth)/2-10, height/2 + 213, 355, 50, 10, 10);
+        g2.setColor(new Color(101/2, 67/2, 16));
+        g2.fillRoundRect((width-textWidth)/2-10, height/2 + 213, 355, 50, 10, 10);
+
+        g2.setColor(Color.WHITE);
+        System.out.println((width-textWidth)/2-10);
+        /*
+        if(hoverSaveLoad) {
+        }
+         */
+        g2.drawString(saveButtonText, (width-textWidth)/2, (height/2) + 250);
     }
 
     // for drawing hall object from build mode
@@ -188,11 +204,20 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int x = e.getX() / baseTileSize;
-        int y = 15 - (e.getY() / baseTileSize);
-        System.out.println("clicked at x: " + x + " y: " + y);
-        Coordinate chosenC = new Coordinate(x, y);
-        game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+        if(!game.isPaused()) {
+            int x = e.getX() / baseTileSize;
+            int y = 15 - (e.getY() / baseTileSize);
+            System.out.println("clicked at x: " + x + " y: " + y);
+            Coordinate chosenC = new Coordinate(x, y);
+            game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+        }
+        else {
+            int x = e.getX();
+            int y = e.getY();
+            if(x >= 207 && x <=  207 + 355 && y >= height/2 + 213 && y <= height/2 + 263) {
+                Game.getInstance().saveGame();
+            }
+        }
     }
 
     @Override
@@ -202,6 +227,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     @Override
     public void mouseReleased(MouseEvent e) {
     }
+
 
     @Override
     public void mouseEntered(MouseEvent e) {

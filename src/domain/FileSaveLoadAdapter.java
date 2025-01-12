@@ -15,36 +15,41 @@ import ui.Graphics.ArrowGraphics;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 //I guess we need to resubscribe listeners after loading game state. !!!!!!1
 //Hashmap.keyset() , Hashmap.values() kullanılabilir.
 
-public class FileSaveLoadAdapter implements ISaveLoadAdapter {
-    Game game;
-    public FileSaveLoadAdapter() { // CALL THIS CONSTRUCTOR SOMEWHERE
-        this.game = Game.getInstance();
-    }
+public class FileSaveLoadAdapter {
 
-    @Override
-    public void saveGame(String date) {
+
+    public static void saveGame() {
+        String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+
+        Game game = Game.getInstance();
+
+        File saveDirectory = new File("gameSaves");
+        if (!saveDirectory.exists()) {
+            saveDirectory.mkdirs(); // Create the directory if it doesn't exist
+        }
 
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(("src/gameSaves/gameSave" + date +".dat")));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(("gameSaves/gameSave" + date +".dat")));
 
-                oos.writeObject(game);
+            oos.writeObject(game);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-        @Override
-        public void loadGame (Game newgame) {
+        public static void loadGame (Game newgame) {
             try {
+                Game game = Game.getInstance();
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream("save.dat"));
 
                 //Read the DataStorage object
