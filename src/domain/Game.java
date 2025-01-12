@@ -213,7 +213,7 @@ public class Game {
             //When ESC is pressed or when game is over
             //Handle in update method.
             //To restart the game just set boolen true and reexecuce
-            while (true) {
+            while (player.getHealth() > 0) {
                 if (!paused) {
                     currentTime = System.nanoTime();
                     diff += (currentTime - lastTime)/frameInterval;
