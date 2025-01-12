@@ -163,8 +163,8 @@ public class Game {
 
         enchantments = new LinkedList<>();
 
-        MonsterFactory.getInstance().publishNextHallEvent();
-        EnchantmentFactory.getInstance().publishNextHallEvent();
+        MonsterFactory.getInstance().nextHall();
+        EnchantmentFactory.getInstance().nextHall();
     }
 
     public synchronized void togglePause() {
@@ -273,5 +273,4 @@ public class Game {
     public Dungeon getDungeon(){
         return dungeon;
     }
-
 }

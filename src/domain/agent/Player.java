@@ -15,8 +15,8 @@ import java.util.*;
 
 public class Player extends Agent {
 
-    private final int MAX_HEALTH = 5;
-    private final int INVISIBILITY_DURATION = 5;
+    private final static int MAX_HEALTH = 5;
+    private final static int INVISIBILITY_DURATION = 5;
 
     private final List<PlayerListener> listeners;
     private int health;

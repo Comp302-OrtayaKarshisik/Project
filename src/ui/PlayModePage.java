@@ -109,7 +109,7 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
         updateTimer(timer);
 
         if (timer.getTimeRemaining() <= 0) {
-            //PageManager.getInstance().showGameOverPage();
+            PageManager.getInstance().showGameOverPage();
         }
     }
 

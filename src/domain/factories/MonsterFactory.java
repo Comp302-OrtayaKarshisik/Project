@@ -39,6 +39,10 @@ public class MonsterFactory {
         listeners = new LinkedList<>();
     }
 
+    public void nextHall() {
+        newGame();
+    }
+
     public void newGame() {
         publishNewGameEvent();
 
@@ -112,5 +116,4 @@ public class MonsterFactory {
             lastCreation = System.currentTimeMillis();
         }
     }
-
 }
