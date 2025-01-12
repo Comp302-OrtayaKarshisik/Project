@@ -46,15 +46,9 @@ public class PageManager {
 
 	public void showWinGamePage() {showPage(new WinGamePage());}
 	
-    public void showBuildingModePage() { 
-    	
-    	BuildingModeHandler bmh = BuildingModeHandler.getInstance();
-    	showPage(new BuildModePage(bmh)); }
-
-	public void showNewBuildingModePage() {
-
+    public void showBuildingModePage() {
 		BuildingModeHandler bmh = BuildingModeHandler.recreateBuildingModeHandler();
-		showPage(new BuildModePage(bmh)); }
+    	showPage(new BuildModePage(bmh)); }
 
 	public void showPlayModePage(GridDesign[] gridDesigns) {
 		Game.getInstance().initPlayMode(gridDesigns);
