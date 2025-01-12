@@ -46,14 +46,12 @@ import domain.level.Dungeon;
 import domain.level.GridDesign;
 import domain.util.Coordinate;
 import listeners.GameListener;
-import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.ArrowGraphics;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -113,7 +111,7 @@ public class Game implements Serializable {
         agents = null;
         dungeon.prepareGameSave();
         player.prepareGameSave();
-        FileSaveLoadAdapter.saveGame();
+        GameSaveLoader.saveGame();
         endGame();
     }
 
