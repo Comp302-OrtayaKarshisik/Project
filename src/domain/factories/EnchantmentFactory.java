@@ -3,6 +3,7 @@ package domain.factories;
 import domain.Game;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
+import domain.util.Coordinate;
 import listeners.EnchantmentListener;
 
 import java.util.LinkedList;
@@ -26,11 +27,24 @@ public class EnchantmentFactory {
         }
         return instance;
     }
+
     private EnchantmentFactory(){
         listeners = new LinkedList<>();
+    }
+
+    public void newGame() {
+        publishNewGameEvent();
+
         schedule = Executors.newSingleThreadScheduledExecutor();
         currentTask = new EnchantmentCreationTask();
-        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS);
+        schedule.scheduleAtFixedRate(currentTask, 50, 12000, TimeUnit.MILLISECONDS); // repeat with period of 8
+    }
+
+    public void gameOver() {
+        publishGameOverEvent();
+
+        currentTask.cancel();
+        schedule.close();
     }
 
     public void pauseCreation() {
@@ -64,18 +78,38 @@ public class EnchantmentFactory {
         }
     }
 
+    public void publishNewGameEvent() {
+        for (EnchantmentListener efl: listeners) {
+            efl.onNewGameEvent();
+        }
+    }
+
+    public void publishGameOverEvent() {
+        for (EnchantmentListener efl: listeners) {
+            efl.onGameOverEvent();
+        }
+    }
+
     private class EnchantmentCreationTask extends TimerTask {
         @Override
         public void run() {
             int type = Game.random.nextInt(5);
             Enchantment e = switch (type) {
                 case 0 -> new Enchantment(EnchantmentType.Reveal);
-                case 1 -> new Enchantment(EnchantmentType.Life);
-                case 2 -> new Enchantment(EnchantmentType.Luring);
-                case 3 -> new Enchantment(EnchantmentType.Time);
+                case 1 -> new Enchantment(EnchantmentType.Reveal);
+                case 2 -> new Enchantment(EnchantmentType.Reveal);
+                case 3 -> new Enchantment(EnchantmentType.Luring);
                 case 4 -> new Enchantment(EnchantmentType.Cloak);
                 default -> null;
             };
+
+            Coordinate c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
+            while (!Game.getInstance().getDungeon().getCollisionChecker().checkTileEmpty(c)) //ensure spawned on empty tile.
+            {
+                c = new Coordinate(Game.random.nextInt(16),Game.random.nextInt(16));
+            }
+            e.setLocation(c);
+
             System.out.println("Enchantment created at x: " + e.getLocation().getX() + " y: " + e.getLocation().getY());
 
             Game.getInstance().getEnchantments().add(e);

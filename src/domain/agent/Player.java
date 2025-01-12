@@ -9,12 +9,14 @@ import domain.level.Hall;
 import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
+import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class Player extends Agent implements Serializable {
-    private final int MAX_HEALTH = 3;
+
+    private final int MAX_HEALTH = 5;
     private final int INVISIBILITY_DURATION = 5;
 
     private final List<PlayerListener> listeners;
@@ -35,23 +37,24 @@ public class Player extends Agent implements Serializable {
         doorCoordinate = new Coordinate(9, 0);
         timer = new Timer();
         setDirection(Direction.STOP);
+        PlayerGraphics.getInstance(48).setPlayer(this);
     }
 
     // else statement is empty for now
     // also luring gem and highlight mostly changes
     // other objects thus other methods will help it
     // for now
-    public void useEnchantment(Enchantment enchantment) {
-        if(enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
-            if (enchantment.getType() == EnchantmentType.Life) {increaseHealth();}
+    public void useEnchantment(EnchantmentType enchantment) {
+        if(enchantment == EnchantmentType.Life || enchantment == EnchantmentType.Time) {
+            if (enchantment == EnchantmentType.Life) {increaseHealth();}
             else {Game.getInstance().getDungeon().getCurrentHall().getTimer().increaseTimeRemaining(5);}
         }
         else {
             if (bag.containsEnchantment(enchantment)) {
                 bag.removeEnchantment(enchantment);
-                if (enchantment.getType() == EnchantmentType.Cloak) {gainInvisibility();}
-                else if (enchantment.getType() == EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
-                else { // sikintili
+                if (enchantment == EnchantmentType.Cloak) {gainInvisibility();}
+                else if (enchantment== EnchantmentType.Reveal) {Game.getInstance().getDungeon().getCurrentHall().higlightRune();}
+                else {
                     Coordinate c;
                     for (Agent m : Game.getInstance().getAgents()) {
                         if (m instanceof Fighter) {
@@ -60,7 +63,7 @@ public class Player extends Agent implements Serializable {
                     }
                 }
                 for (PlayerListener pl : listeners)
-                    pl.onRemoveEnch(enchantment.getType());
+                    pl.onRemoveEnch(enchantment);
             }
         }
 
@@ -68,10 +71,11 @@ public class Player extends Agent implements Serializable {
 
     public void collectEnchantment(Enchantment enchantment) {
         if (enchantment.getType() == EnchantmentType.Life || enchantment.getType() == EnchantmentType.Time) {
-            useEnchantment(enchantment);
+            useEnchantment(enchantment.getType());
             return;
         }
-        bag.addEnchantment(enchantment);
+        bag.addEnchantment(enchantment.getType());
+
         for (PlayerListener pl : listeners)
             pl.onCollectEnch(enchantment.getType());
     }
@@ -128,10 +132,6 @@ public class Player extends Agent implements Serializable {
         }, INVISIBILITY_DURATION * 1000);
     }
 
-    public void collectRune() {
-        hasRune = true;
-    }
-
     public void increaseHealth() {
         if (health < MAX_HEALTH) {
             health++;
@@ -140,24 +140,10 @@ public class Player extends Agent implements Serializable {
     }
 
     public void reduceHealth() {
-        health--;
-        publishEvent(health);
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public Bag getBag() {
-        return bag;
-    }
-
-    public boolean isHasRune() {
-        return hasRune;
+        if(!invisible){
+            health--;
+            publishEvent(health);
+        }
     }
 
     public void setHasRune(boolean hasRune) {
@@ -170,8 +156,15 @@ public class Player extends Agent implements Serializable {
         return invisible;
     }
 
-    public void setInvisible(boolean invisible) {
-        this.invisible = invisible;
+    public int getHealth(){
+        return health;
     }
 
+    public Bag getBag(){
+        return bag;
+    }
+
+    public boolean isHasRune() {
+        return hasRune;
+    }
 }

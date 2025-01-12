@@ -122,7 +122,7 @@ public class Archer extends Monster {
         }
         attackFrame++;}
 
-        private int gcd ( int a, int b){
+        private int gcd (int a, int b){
             return b == 0 ? a : gcd(b, a % b);
         }
 

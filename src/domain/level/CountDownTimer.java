@@ -1,13 +1,16 @@
 package domain.level;
 import listeners.TimerListener;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 //each hall has a timer that counts down from 5 * objects placed in build mode.
-public class CountDownTimer implements Serializable {
-    private Timer timer;
+public class CountDownTimer {
+    private ScheduledExecutorService timer;
     private final float initialTimeRemaining;
     private float currentTimeRemaining;
     private List<TimerListener> listeners;
@@ -68,7 +71,8 @@ public class CountDownTimer implements Serializable {
     public void start() //starts the timer and reduces 1 every second.
     {
         notifyListeners();
-        timer = new Timer();
+        timer = Executors.newSingleThreadScheduledExecutor();
+
 
         timer.scheduleAtFixedRate(new java.util.TimerTask() {
             public void run() {
@@ -76,14 +80,14 @@ public class CountDownTimer implements Serializable {
                 notifyListeners();
                 if(currentTimeRemaining <= 0)
                 {
-                    timer.cancel();
+                  timer.shutdown();
                 }
             }
-        }, 1000, 1000);
+        }, 1000, 1000,TimeUnit.MILLISECONDS);
     }
 
     public void pause() //pauses the timer
     {
-        timer.cancel();
+        timer.shutdown();
     }
 }

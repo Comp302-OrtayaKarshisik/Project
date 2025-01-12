@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public class Bag implements Serializable {
 
+    private int currentSize = 0;
     private HashMap<EnchantmentType,Integer> enchantmentCounter;
 
     public Bag() {
@@ -15,24 +16,30 @@ public class Bag implements Serializable {
         enchantmentCounter.put(EnchantmentType.Reveal, 0);
         enchantmentCounter.put(EnchantmentType.Luring, 0);
         enchantmentCounter.put(EnchantmentType.Cloak, 0);
-
     }
 
-    public boolean containsEnchantment(Enchantment enchantment) {
-        return enchantmentCounter.get(enchantment.getType()) != 0;
+    public boolean containsEnchantment(EnchantmentType enchantment) {
+        return enchantmentCounter.get(enchantment) != 0;
     }
 
-    public void removeEnchantment(Enchantment enchantment) {
-        enchantmentCounter.put(enchantment.getType(), enchantmentCounter.get(enchantment.getType())-1);
+    public void removeEnchantment(EnchantmentType enchantment) {
+        enchantmentCounter.put(enchantment, enchantmentCounter.get(enchantment)-1);
+        currentSize--;
     }
-    public void addEnchantment(Enchantment enchantment) {
-        enchantmentCounter.put(enchantment.getType(), enchantmentCounter.get(enchantment.getType())+1);
+    public void addEnchantment(EnchantmentType enchantment) {
+        enchantmentCounter.put(enchantment, enchantmentCounter.get(enchantment)+1);
+        currentSize++;
     }
 
     public HashMap<EnchantmentType, Integer> getEnchantmentCounter() {
         return enchantmentCounter;
     }
+
     public void setEnchantmentCounter(HashMap<EnchantmentType, Integer> enchantmentCounter) {
         this.enchantmentCounter = enchantmentCounter;
+    }
+
+    public int getCurrentSize() {
+        return currentSize;
     }
 }

@@ -13,9 +13,6 @@ public abstract class Monster extends Agent implements Serializable {
         super.setLocation(new Coordinate(Game.random.nextInt(16), Game.random.nextInt(16)));
     }
 
-
-
-
 }
 
 

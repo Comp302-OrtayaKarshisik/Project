@@ -8,29 +8,17 @@ import ui.Graphics.EntityGraphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class MobilMonsterGraphics extends EntityGraphics implements FactoryListener, Serializable {
+public abstract class MobilMonsterGraphics extends EntityGraphics implements FactoryListener {
 
-    private static MobilMonsterGraphics instance;
     protected  BufferedImage rightPic, leftPic;
     protected int size;
     protected BufferedImage currentImg;
-
-    protected final ArrayList<Monster> monsters;
+    protected LinkedList<Monster> monsters;
 
     public MobilMonsterGraphics(int size) {
         this.size = size;
-        this.monsters = new ArrayList<>();
-    }
-
-    public static MobilMonsterGraphics getInstance(int size) {
-        if (instance == null) {
-            instance = new MobilMonsterGraphics(size);
-        }
-        return instance;
     }
 
     public void draw(Graphics g) {
@@ -45,8 +33,13 @@ public class MobilMonsterGraphics extends EntityGraphics implements FactoryListe
     }
 
     @Override
-    public void onCreationEvent(Monster monster) {
+    public void onNewGameEvent(){
+        this.monsters = new LinkedList<>();
+    }
 
+    @Override
+    public void onGameOverEvent(){
+        this.monsters = null;
     }
 
     public void onDeletionEvent() {
@@ -55,9 +48,5 @@ public class MobilMonsterGraphics extends EntityGraphics implements FactoryListe
 
     public void subscribe(MonsterFactory mf) {
         mf.addListener(this);
-    }
-
-    public ArrayList<Monster> getMonsters() {
-        return monsters;
     }
 }

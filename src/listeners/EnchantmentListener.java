@@ -8,4 +8,9 @@ public interface EnchantmentListener {
     public abstract void onRemovalEvent(Enchantment enchantment);
 
     public abstract void onClearEvent();
+
+    public abstract void onNewGameEvent();
+
+    public abstract void onGameOverEvent();
+
 }

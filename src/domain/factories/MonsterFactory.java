@@ -25,7 +25,6 @@ public class MonsterFactory {
     private long passedTime;
     private ArrayList<Monster> monsters;
 
-
     public static MonsterFactory getInstance() {
         if (instance == null) {
             instance = new MonsterFactory();
@@ -33,12 +32,24 @@ public class MonsterFactory {
         return instance;
     }
 
-    private MonsterFactory(){
+    private MonsterFactory() {
         //Adds a reference to the monster list in the game
         listeners = new LinkedList<>();
+    }
+
+    public void newGame() {
+        publishNewGameEvent();
+
         schedule = Executors.newSingleThreadScheduledExecutor();
         currentTask = new MonsterCreationTask();
         schedule.scheduleAtFixedRate(currentTask, 50, 8000, TimeUnit.MILLISECONDS);        // repeat with period of 8
+    }
+
+    public void gameOver() {
+        publishGameOverEvent();
+
+        currentTask.cancel();
+        schedule.close();
     }
 
     public void pauseCreation() {
@@ -70,6 +81,16 @@ public class MonsterFactory {
     public void publishNextHallEvent() {
         for (FactoryListener fl: listeners)
             fl.onDeletionEvent();
+    }
+
+    public void publishNewGameEvent() {
+        for (FactoryListener fl: listeners)
+            fl.onNewGameEvent();
+    }
+
+    public void publishGameOverEvent() {
+        for (FactoryListener fl: listeners)
+            fl.onGameOverEvent();
     }
 
     private class MonsterCreationTask extends TimerTask {

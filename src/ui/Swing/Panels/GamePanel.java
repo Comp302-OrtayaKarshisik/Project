@@ -9,9 +9,13 @@ import domain.Textures;
 
 import listeners.GameListener;
 
+import domain.level.GridDesign;
+import domain.level.Hall;
 import domain.level.Tile;
 import domain.util.Coordinate;
+import ui.Graphics.AgentGrapichs.*;
 import ui.Graphics.ArrowGraphics;
+import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
@@ -22,6 +26,10 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // In the next generations of the game KeyListener will
 // be replaced by KeyBindings
@@ -45,7 +53,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private int verticalSquares = 16; // how many squares in the y direction
     private int height = verticalSquares * (scalingFactor * baseTileSize); // vertical pixels
 
-    private boolean hoverSaveLoad = false;
+    private Coordinate highlightCoordinate;
 
     KeyHandler keyHandler = new KeyHandler();
 
@@ -55,6 +63,9 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     private final WizardGraphics wizardGraphics;
     private final EnchantmentGraphics enchantmentGraphics;
     private final ArrowGraphics arrowGraphics;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     private Game game;
 
 
@@ -65,13 +76,15 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         this.addKeyListener(keyHandler); // Key listener to handle key presses
         this.setFocusable(true); // All eyes on me
         addMouseListener(this);
-        game = Game.getInstance();
-        playerGraphics = PlayerGraphics.getInstance(48, game.getPlayer());
+
+        playerGraphics = PlayerGraphics.getInstance(48);
         fighterGraphics = FighterGraphics.getInstance(48);
         archerGraphics = ArcherGraphics.getInstance(48);
         wizardGraphics = WizardGraphics.getInstance(48);
         enchantmentGraphics = EnchantmentGraphics.getInstance(48);
         arrowGraphics = ArrowGraphics.getInstance(48);
+
+        game = Game.getInstance();
 
         game.setKeyHandler(keyHandler);
         subscribe(game);
@@ -114,6 +127,8 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         arrowGraphics.draw(g2);
         wizardGraphics.draw(g2);
         enchantmentGraphics.draw(g2);
+
+        this.highlightRune(g);
 
         } else {
             drawPauseScreen(g2);
@@ -171,6 +186,13 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         g2.drawString(saveButtonText, (width-textWidth)/2, (height/2) + 250);
     }
 
+    private void highlightRune(Graphics g) {
+        if(highlightCoordinate != null) {
+            g.setColor(new Color(255, 255, 255, 64));
+            g.fillRect(highlightCoordinate.getX() * baseTileSize, highlightCoordinate.getY() * baseTileSize, baseTileSize*4, baseTileSize*4);
+        }
+    }
+
     // for drawing hall object from build mode
     private void drawObjects(Graphics g) {
         Tile[][] grid = game.getDungeon().getCurrentHall().getGrid();
@@ -209,7 +231,7 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
             int y = 15 - (e.getY() / baseTileSize);
             System.out.println("clicked at x: " + x + " y: " + y);
             Coordinate chosenC = new Coordinate(x, y);
-            game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), chosenC);
+            game.handleChosenBox(game.getPlayer(), chosenC);
         }
         else {
             int x = e.getX();
@@ -228,7 +250,6 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     public void mouseReleased(MouseEvent e) {
     }
 
-
     @Override
     public void mouseEntered(MouseEvent e) {
     }
@@ -240,6 +261,15 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
     @Override
     public void onGameEvent(Game game) {
         repaint();
+    }
+
+    @Override
+    public void onHighlightEvent(Coordinate coordinate) {
+        this.highlightCoordinate = coordinate;
+         // wait 2 seconds
+        scheduler.schedule(() -> {
+            this.highlightCoordinate = null;
+        }, 2, TimeUnit.SECONDS);
     }
 
     private void subscribe(Game game) {

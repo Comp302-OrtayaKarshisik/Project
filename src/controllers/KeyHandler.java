@@ -1,6 +1,8 @@
 package controllers;
 
 import domain.Game;
+import domain.collectables.Enchantment;
+import domain.collectables.EnchantmentType;
 import domain.util.Direction;
 import ui.HelpScreen;
 import ui.Swing.Panels.GamePanel;
@@ -34,11 +36,26 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_RIGHT) goRight = true;
         if (key == KeyEvent.VK_ESCAPE) options = true;
         if (key == KeyEvent.VK_ESCAPE) Game.getInstance().togglePause();
+
         if (Game.getInstance().isPaused() && (key == KeyEvent.VK_H)) {
             if (!helpScreen.isVisible()) {
                 helpScreen.setVisible(true);
             }
         }
+
+        if (key == KeyEvent.VK_R && !revealUsed) {
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Reveal);
+            revealUsed = true;
+        }
+        if (key == KeyEvent.VK_P && !protectionUsed) {
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Cloak);
+            protectionUsed = true;
+        }
+        if (key == KeyEvent.VK_B && !lureUsed) {
+            Game.getInstance().getPlayer().useEnchantment(EnchantmentType.Luring);
+            lureUsed = true;
+        }
+
     }
 
     @Override
@@ -47,9 +64,6 @@ public class KeyHandler implements KeyListener {
 
         int key = e.getKeyCode(); // Keys are actually integer coded
 
-        if (key == KeyEvent.VK_R) revealUsed = true;
-        if (key == KeyEvent.VK_P) protectionUsed = true;
-        if (key == KeyEvent.VK_B) lureUsed = true;
 
         if (key == KeyEvent.VK_W) runeThrowDirection = Direction.UP;
         if (key == KeyEvent.VK_A) runeThrowDirection = Direction.LEFT;
@@ -72,25 +86,11 @@ public class KeyHandler implements KeyListener {
         if (key == KeyEvent.VK_R) revealUsed = false;
         if (key == KeyEvent.VK_P) protectionUsed = false;
 
-        if (key == KeyEvent.VK_W) {
+        if (key == KeyEvent.VK_W || key == KeyEvent.VK_A || key == KeyEvent.VK_S || key == KeyEvent.VK_D) {
             runeThrowDirection = null;
             lureUsed = false;
         }
 
-        if (key == KeyEvent.VK_A) {
-            runeThrowDirection = null;
-            lureUsed = false;
-        }
-
-        if (key == KeyEvent.VK_S) {
-            runeThrowDirection = null;
-            lureUsed = false;
-        }
-
-        if (key == KeyEvent.VK_D) {
-            runeThrowDirection = null;
-            lureUsed = false;
-        }
     }
 }
 

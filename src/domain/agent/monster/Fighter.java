@@ -2,7 +2,6 @@ package domain.agent.monster;
 
 import domain.Game;
 import domain.agent.Player;
-import domain.level.CollisionChecker;
 import domain.util.Coordinate;
 import domain.util.Direction;
 
@@ -101,19 +100,4 @@ public class Fighter extends Monster  {
         return (dy == 0  && dx == 1) || (dy == 1 && dx == 0);
     }
 
-    public boolean isLured() {
-        return lured;
-    }
-
-    public void setLured(boolean lured) {
-        this.lured = lured;
-    }
-
-    public Coordinate getLureLoc() {
-        return lureLoc;
-    }
-
-    public void setLureLoc(Coordinate lureLoc) {
-        this.lureLoc = lureLoc;
-    }
 }

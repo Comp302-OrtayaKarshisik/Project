@@ -64,10 +64,10 @@ public class FileSaveLoadAdapter {
 
                     //PLAYER STATS: Position, Time remaining(single countdown timer), Number of lives remaining
 
-                    newgame.getPlayer().setHealth(oldgame.getPlayer().getHealth());
+                    //newgame.getPlayer().setHealth(oldgame.getPlayer().getHealth());
                     newgame.getPlayer().setHasRune(oldgame.getPlayer().isHasRune());
                     newgame.getPlayer().setLocation(oldgame.getPlayer().getLocation());
-                    newgame.getPlayer().setInvisible(oldgame.getPlayer().isInvisible());
+                    //newgame.getPlayer().setInvisible(oldgame.getPlayer().isInvisible());
 
 
                     newgame.getDungeon().getCurrentHall().getTimer().getCurrentTimeRemaining();
@@ -76,12 +76,8 @@ public class FileSaveLoadAdapter {
                     newgame.getPlayer().getBag().getEnchantmentCounter();
 
                     //MONSTER STATS: Type, Count, Position
-                    ArrayList<Monster> currentMonsters = MobilMonsterGraphics.getInstance(48).getMonsters();
+                    //ArrayList<Monster> currentMonsters = MobilMonsterGraphics.getInstance(48).getMonsters();
 
-                    for (Monster m : currentMonsters) {
-                        m.getType();
-                        m.getLocation();
-                    }
 
                     /*ds.playerLocX = game.getPlayer().getLocation().getX();
                     ds.playerLocY = game.getPlayer().getLocation().getY();
