@@ -106,16 +106,12 @@ public class MonsterFactory {
             };
 
             Game.getInstance().getAgents().add(w);
-            monsters.add(w);
 
             publishCreationEvent(w);
             lastCreation = System.currentTimeMillis();
         }
     }
 
-    public ArrayList<Monster> getMonsters() {
-        return monsters;
-    }
 
 
 }
