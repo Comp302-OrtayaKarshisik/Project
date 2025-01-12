@@ -2,10 +2,8 @@ package domain.agent;
 
 import domain.Game;
 import domain.agent.monster.Fighter;
-import domain.agent.monster.Monster;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
-import domain.level.Hall;
 import domain.util.Coordinate;
 import domain.util.Direction;
 import listeners.PlayerListener;
@@ -93,6 +91,18 @@ public class Player extends Agent {
             pl.onCollectEnch(enchantment.getType());
     }
 
+    /**
+     * @requires Game, Game->keyHandler, Game -> Dungeon, Dungeon -> CollisionChecker
+     *           location has to be non-null and valid.
+     *           Direction enum must contain UP, Down, Left, Right values.
+     * @modifies Modifies the direction of the character
+     *           Modifies the location of the character
+     *           Modifies the game state by changing the current hall
+     * @effects Changes the character's direction based on the keyboard input
+     *          Moves in the character to the direction if the move is valid.
+     *          If the character has rune, and reaches the door then transitions to next
+     *          hall and updates the location
+     */
     public void move () {
 
         if (Game.getInstance().getKeyHandler().goUp)

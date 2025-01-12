@@ -1,7 +1,7 @@
 package ui.Listeners;
 
 import domain.agent.monster.Monster;
-import domain.Factories.MonsterFactory;
+import domain.factories.MonsterFactory;
 
 public interface MonsterFactoryListener {
 
