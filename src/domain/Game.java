@@ -49,6 +49,10 @@ import listeners.GameListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 import ui.Graphics.ArrowGraphics;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -166,6 +170,17 @@ public class Game implements Serializable {
         ArrowGraphics.getInstance(48).onGameOverEvent();
 
         instance = null;
+    }
+    public void playSound(String path) {
+        try {
+            File audioFile = new File(path);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // A method which will be used for the time passage of the game.
