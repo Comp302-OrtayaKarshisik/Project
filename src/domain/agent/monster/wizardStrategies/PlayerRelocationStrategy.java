@@ -5,6 +5,10 @@ import domain.agent.monster.Wizard;
 import domain.level.CollisionChecker;
 import domain.util.Coordinate;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Random;
 public class PlayerRelocationStrategy implements WizardBehaviorStrategy, Serializable {
@@ -24,6 +28,9 @@ public class PlayerRelocationStrategy implements WizardBehaviorStrategy, Seriali
         } while (!collisionChecker.checkTileEmpty(randomLocation));  // Keep generating until we find an empty location
         // Set the player’s new location
         Game.getInstance().getPlayer().setLocation(randomLocation);
+        Game.getInstance().playSound("src/assets/teleport.wav");
+
+
         System.out.println("Player teleported to: " + randomLocation.getX() + ", " + randomLocation.getY());
 
         wizard.disappear();

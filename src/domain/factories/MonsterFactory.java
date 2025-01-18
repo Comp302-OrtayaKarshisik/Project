@@ -107,6 +107,8 @@ public class MonsterFactory {
     public void publishCreationEvent(Monster monster) {
         for (FactoryListener fl: listeners)
             fl.onCreationEvent(monster);
+        Game.getInstance().playSound("src/assets/monster-spawn.wav");
+
     }
 
     public void publishNextHallEvent() {

@@ -9,6 +9,10 @@ import listeners.ArcherListener;
 import listeners.FactoryListener;
 import ui.Graphics.ArrowGraphics;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -125,6 +129,8 @@ public class Archer extends Monster {
 
                 arrow.set(initialarrowloc, dx, dy, true, this);
                 publishArrowActivationEvent();
+                Game.getInstance().playSound("src/assets/arrow-sound.wav");
+
                 attackFrame = 0;
             }
         }

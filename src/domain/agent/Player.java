@@ -9,6 +9,10 @@ import domain.util.Direction;
 import listeners.PlayerListener;
 import ui.Graphics.AgentGrapichs.PlayerGraphics;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.io.Serializable;
 import java.util.*;
 
@@ -110,6 +114,7 @@ public class Player extends Agent implements Serializable {
 
         for (PlayerListener pl : listeners)
             pl.onCollectEnch(enchantment.getType());
+        Game.getInstance().playSound("src/assets/collect.wav");
     }
 
     /**

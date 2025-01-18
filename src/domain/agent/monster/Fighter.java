@@ -4,7 +4,10 @@ import domain.Game;
 import domain.agent.Player;
 import domain.util.Coordinate;
 import domain.util.Direction;
-
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 public class Fighter extends Monster  {
 
     private static final int MOVE_FRAME_LIMIT = 20;
@@ -91,6 +94,7 @@ public class Fighter extends Monster  {
         if (checkPlayerAdj(Game.getInstance().getPlayer()) &&
                 !Game.getInstance().getPlayer().isInvisible() && attackFrame >= ATTACK_FRAME_LIMIT) {
             Game.getInstance().getPlayer().reduceHealth();
+            Game.getInstance().playSound("src/assets/fighter-sound.wav");
             attackFrame = 0;
         }
         attackFrame++;

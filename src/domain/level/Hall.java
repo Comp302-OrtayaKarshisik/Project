@@ -111,8 +111,11 @@ public class Hall implements Serializable {
 
         if (Coordinate.manhattanDistance(game.getPlayer().getLocation(), c1) <= 1) {
             grid[c1.getX()][c1.getY()] = new Tile("aa",new Coordinate(c1.getX(), c1.getY()));
+            Game.getInstance().playSound("src/assets/chest-sound.wav");
+
             if(isRuneLocation(c1)) {
                 System.out.println("found rune");
+                Game.getInstance().playSound("src/assets/rune-found.wav");
                 player.setHasRune(true);
             }
         }
