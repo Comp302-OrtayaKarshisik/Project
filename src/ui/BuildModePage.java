@@ -20,98 +20,81 @@ import java.io.File;
 
 
 public class BuildModePage extends Page implements ActionListener {
-	
-	
-	private BuildingModeHandler buildingModeHandler; 
 
-    private HallPanelHolder hallPanelHolder;
+	private BuildingModeHandler buildingModeHandler;
 
-    private HallPanel hallPanel;
-    
-    private JPanel objectChooserPanel;
-    
     private JPanel buttonPanel;
-    
+
     private JButton exitButton;
-    
+
     private JButton contButton;
     
     private JButton[] buttons;
-    
-    private int pageNum;
-        
-    private JLabel titleLabel = new JLabel("BUILD MODE");
-    
-    private JTextArea infoTextArea;
-    //private JButton btnNewButton_1;
-    //private JButton btnNewButton_2;
+
+    private double scaleFactor = 0.86;
+
+    private JPanel[] hallPanels;
+
+    private JPanel objectChooserPanel;
 
     public BuildModePage(BuildingModeHandler buildingModeHandler) {
     	super();
-    	this.buildingModeHandler = buildingModeHandler;
-    	initUI();
-    }
 
-    public  BuildingModeHandler getBuildingModeHandler() {
-        return buildingModeHandler;
+        this.hallPanels = new JPanel[4];
+        this.buildingModeHandler = buildingModeHandler;
+
+    	initUI();
     }
     
     protected void initUI() {
-    	
+
+        this.setPreferredSize(new Dimension((int)(1115*scaleFactor), (int)(931*scaleFactor)));
+        this.setBackground(Color.BLACK);
+        this.setDoubleBuffered(true);
+        this.setFocusable(true);
+        this.setLayout(null);
+
+
+        this.objectChooserPanel = new JPanel();
+        this.objectChooserPanel.setBounds(746, 188, 123, 470);
+        this.objectChooserPanel.setLayout(new BoxLayout(objectChooserPanel, BoxLayout.Y_AXIS));
+        this.objectChooserPanel.setOpaque(false);
+        this.add(objectChooserPanel);
+
     	exitButton = new JButton("Exit");
         contButton = new JButton("Continue");
-    	
-        this.setLayout(new BorderLayout(0, 0));
-        
-        ImageIcon hallIcon = new ImageIcon("src/assets/hall.png");
 
-        //hall panel
-        this.hallPanel = new HallPanel(this.buildingModeHandler);
-        //this.hallPanel.setBorder(BorderFactory.createLineBorder(new Color(40, 20, 30), 3));
-        this.hallPanel.setBackground(Color.LIGHT_GRAY);
-
-        //hall panel Holder
-        this.hallPanelHolder = new HallPanelHolder(hallPanel);
-        this.add(hallPanelHolder, BorderLayout.CENTER);
-
-
-        
-        //Object chooser panel
-        this.objectChooserPanel = new JPanel();
-        this.objectChooserPanel.setPreferredSize(new Dimension(150, 600));
-        this.objectChooserPanel.setLayout(new BoxLayout(objectChooserPanel, BoxLayout.Y_AXIS));
-        this.objectChooserPanel.setBackground(Color.GRAY);
-        this.add(objectChooserPanel, BorderLayout.EAST);
-        
-        
-        
-        this.objectChooserPanel.add(titleLabel);
-        titleLabel.setAlignmentY(Component.TOP_ALIGNMENT);
 
         buttonPanel = new JPanel();
-        this.objectChooserPanel.add(buttonPanel);
         buttonPanel.setLayout(new GridLayout(0, 1));
 
         //dynamically create object buttons
         createObjectButtons("src/assets/build_mode_assets");
 
-        buttonPanel.add(contButton);
-        buttonPanel.add(exitButton);
+
+        for(int i = 0; i < 4; i++) {
+            this.hallPanels[i] = new HallPanel(this.buildingModeHandler, i);
+            this.hallPanels[i].setFocusable(true);
+            this.hallPanels[i].requestFocusInWindow();
+            this.hallPanels[i].setOpaque(false);
+            this.hallPanels[i].setSize(hallPanels[i].getPreferredSize());
+            this.add(hallPanels[i]);
+        }
+
+        hallPanels[0].setLocation(421, 97);
+        hallPanels[1].setLocation(91, 97);
+        hallPanels[2].setLocation(91, 451);
+        hallPanels[3].setLocation(421, 451);
         
-        // Info text area
-        
-        infoTextArea = new JTextArea(5, 20);
-        infoTextArea.setBackground(Color.GRAY);
-        infoTextArea.setEditable(false);
-        infoTextArea.setLineWrap(true);
-        JScrollPane scrollPane = new JScrollPane(infoTextArea);
-        scrollPane.setViewportView(infoTextArea);
-        objectChooserPanel.add(scrollPane, BorderLayout.SOUTH);
-        infoTextArea.append("Hall 1\n");
+    }
 
-        initializeChoiceListeners();
-
-
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
+        g.drawImage(floor,0, 0,(int)(1115*scaleFactor), (int)(931*scaleFactor), null);
+        BufferedImage buildM = Textures.getSprite("buildmode");
+        g.drawImage(buildM,0, 0,(int)(1115*scaleFactor), (int)(931*scaleFactor), null);
     }
 
     private void createObjectButtons(String folderPath){
@@ -134,7 +117,6 @@ public class BuildModePage extends Page implements ActionListener {
             }
 
             JButton objButton = new JButton();
-            objButton.setBackground(Color.LIGHT_GRAY);
             objButton.setAlignmentY(Component.TOP_ALIGNMENT);
             objButton.setIcon(new ImageIcon(file.getAbsolutePath()));
             objButton.setContentAreaFilled(false); // Remove background color
@@ -145,34 +127,10 @@ public class BuildModePage extends Page implements ActionListener {
             // Add the same action listener to all object buttons
             objButton.addActionListener(this);
 
-            objectChooserPanel.add(objButton);
+            this.objectChooserPanel.add(objButton);
         }
-
-
-
     }
-    
-    private void drawObjectImage() {
-    	//buildingModeHandler.placeObject();
-    }
-    
-    public void regenerate() {
-    	
-    }
-    
-    public void highlightTile(Coordinate c) {
-    	
-    }
-    
-    
-    
 
-    
-    
-    private void initializeChoiceListeners(){
-        exitButton.addActionListener(this);
-        contButton.addActionListener(this);
-      }
     
 
     @Override
@@ -181,16 +139,6 @@ public class BuildModePage extends Page implements ActionListener {
     	if(e.getSource()==exitButton){
             System.out.println("Exit button clicked.");
             PageManager.getInstance().showMainMenuPage();
-        }
-    	else if(e.getSource()==contButton){
-            System.out.println("Thank you next.");
-            boolean isLastHall = buildingModeHandler.goNextHall();
-            if(isLastHall) {
-                contButton.setText("Start Game");
-            }
-            int currentHall = buildingModeHandler.getCurrentGameHall() + 1;
-            infoTextArea.setText("Hall " +currentHall);
-            hallPanel.repaint();
         }
         else
         {
@@ -206,17 +154,18 @@ public class BuildModePage extends Page implements ActionListener {
                 }
         }
 
-    } 
+    }
  }
 
 class HallPanel extends JPanel implements MouseListener {
 
-    public final int tileSize = 48;
+    public final int tileSizeX = 18;
+    public final int tileSizeY = 15;
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 16;
 
-    final int screenWidth = tileSize * maxScreenCol;
-    final int screenHeight = tileSize * maxScreenRow;
+    final int screenWidth = tileSizeX * maxScreenCol;
+    final int screenHeight = tileSizeY * maxScreenRow;
     
     //private final double scale = 1.3;
    
@@ -226,13 +175,17 @@ class HallPanel extends JPanel implements MouseListener {
     private int hoveredRow = -1;
     private int hoveredCol = -1;
 
-    public HallPanel(BuildingModeHandler buildingModeHandler) {
+    private int hallNumber;
+
+    public HallPanel(BuildingModeHandler buildingModeHandler, int hallNumber) {
         this.buildingModeHandler = buildingModeHandler;
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
         addMouseListener(this);
+
+        this.hallNumber = hallNumber;
 
         //highlighting hovered tiles.
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -241,8 +194,8 @@ class HallPanel extends JPanel implements MouseListener {
                 int x = e.getX();
                 int y = e.getY();
 
-                int newHoveredCol = x / tileSize;
-                int newHoveredRow = y / tileSize;
+                int newHoveredCol = x / tileSizeX;
+                int newHoveredRow = y / tileSizeY;
 
                 //only highlight when the mouse is within hall borders.
                 if (x >= 0 && x < screenWidth && y >= 0 && y < screenHeight &&
@@ -271,14 +224,14 @@ class HallPanel extends JPanel implements MouseListener {
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Ensures the panel is properly rendered
-        GridDesign currentHall = buildingModeHandler.getCurrentHall();
+        GridDesign currentHall = buildingModeHandler.getHall(hallNumber);
         if(currentHall != null) {
             drawPlacedObjects(g,currentHall);
         }
         if (hoveredRow >= 0 && hoveredCol >= 0 && hoveredRow < maxScreenRow && hoveredCol < maxScreenCol) {
             Color prevColor = g.getColor();
             g.setColor(new Color(255, 255, 255, 64)); //transparent white (highlight color.)
-            g.fillRect(hoveredCol * tileSize, hoveredRow * tileSize, tileSize, tileSize);
+            g.fillRect(hoveredCol * tileSizeX, hoveredRow * tileSizeY, tileSizeX, tileSizeY);
             g.setColor(prevColor); //back to original color.
         }
 
@@ -293,36 +246,38 @@ class HallPanel extends JPanel implements MouseListener {
                     String objName = grid[row][col].toString().toLowerCase();
                     BufferedImage objectSprite = Textures.getSprite(objName);
 
-                    int h = 32;
-                    int w = 32;
+                    int h = 20;
+                    int w = 20;
 
                     // different size for column
                     if(objName.equals("column")) {
-                        h = 56;
-                        w = 28;
+                        h = 28;
+                        w = 14;
+                    }
+                    else if(objName.equals("skull") || objName.equals("pot")) {
+                        h = 12;
+                        w = 12;
                     }
 
                     //int scaledWidth = (int) (w * scale);
                     //int scaledHeight = (int) (h * scale);
                     
-                    int offsetX = (tileSize - w) / 2;
-                    int offsetY = (tileSize - h) / 2;
-                    g. drawImage(objectSprite, row*tileSize+offsetX, col*tileSize+offsetY, w, h, null);
+                    int offsetX = (tileSizeX - w) / 2;
+                    int offsetY = (tileSizeY- h) / 2;
+                    g. drawImage(objectSprite, row*tileSizeX+offsetX, col*tileSizeY+offsetY, w, h, null);
                 }
             }
         }
     }
 
-
-
 	@Override
 	public void mousePressed(MouseEvent e) {
-        int row = e.getX() / tileSize;
-        int col = e.getY() / tileSize;
+        int row = e.getX() / tileSizeX;
+        int col = e.getY() / tileSizeY;
         System.out.println ("Clicked at" + col + ", " + row);
 
         if(SwingUtilities.isRightMouseButton(e)) {
-            if(buildingModeHandler.isObjectPresent(row,col)) {
+            if(buildingModeHandler.isObjectPresent(row,col, hallNumber)) {
                 JPopupMenu menu = new JPopupMenu();
                 JMenuItem removeItem = new JMenuItem("Remove Object");
                 removeItem.addActionListener(e1 -> {
@@ -339,29 +294,20 @@ class HallPanel extends JPanel implements MouseListener {
             return;
         }
 
-        boolean placed = buildingModeHandler.placeObjectAt(row,col);
+        boolean placed = buildingModeHandler.placeObjectAt(row,col, hallNumber);
         if(placed) {
             repaint();
         }
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    public void mouseReleased(MouseEvent e) {}
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
     public void mouseExited(MouseEvent e) {

@@ -27,7 +27,7 @@ public class BuildingModeHandler {
 		this.game = Game.getInstance();
 		Textures.createSprites();
 		for(int i = 0; i < gridDesigns.length; i++){
-			gridDesigns[i] = new GridDesign(16,16,limits[i]);
+			gridDesigns[i] = new GridDesign(16,16,2);
 		}
 
 	}
@@ -45,9 +45,7 @@ public class BuildingModeHandler {
 		}
 
 
-	public GridDesign getCurrentHall(){
-		return gridDesigns[currentGameHall];
-	}
+
 
 	public void setSelectedObject(ObjectType object) {
 		this.selectedObject = object;
@@ -72,9 +70,9 @@ public class BuildingModeHandler {
 	 *    placeObject() method will return false and not be placed.
 	 *  - Returns true if placement is successful, false otherwise.
 	 */
-	public  boolean placeObjectAt(int row, int col) {
+	public  boolean placeObjectAt(int row, int col, int currentDesign) {
 		if(selectedObject == null) return false;
-		GridDesign currentHall = gridDesigns[currentGameHall];
+		GridDesign currentHall = gridDesigns[currentDesign];
         return currentHall.placeObject(row,col,selectedObject);
 	}
 
@@ -98,10 +96,6 @@ public class BuildingModeHandler {
 		return false;
 	}
 
-	public int getCurrentGameHall() {
-		return currentGameHall;
-	}
-
 	public boolean removeObjectAt(int row, int col){
 		GridDesign currentHall = gridDesigns[currentGameHall];
 		return currentHall.removeObject(row, col);
@@ -116,10 +110,12 @@ public class BuildingModeHandler {
 		return true;
 	}
 
+	public GridDesign getHall(int hallNumber) {
+		return gridDesigns[hallNumber];
+	}
 
-
-	public boolean isObjectPresent (int row, int col) {
-		GridDesign currentHall = getCurrentHall();
+	public boolean isObjectPresent (int row, int col, int hallNumber) {
+		GridDesign currentHall = getHall(hallNumber);
 		return currentHall.isObjectPresent(row,col);
 	}
 

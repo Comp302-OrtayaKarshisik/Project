@@ -16,6 +16,8 @@ public class HallPanelHolder extends JPanel {
     public final int tileNumber = 16;
     private JPanel externalPanel;
     private boolean isDoorOpen = false;
+    private int currentHall = 0;
+    private boolean isBuildMode = true;
 
     public HallPanelHolder(JPanel externalPanel) {
         this.setPreferredSize(new Dimension(850, 850));
@@ -24,7 +26,7 @@ public class HallPanelHolder extends JPanel {
         this.setFocusable(true);
         this.setLayout(null);
 
-        externalPanel.setLocation(39, 41);
+        externalPanel.setLocation(140, 164);
         externalPanel.setSize(externalPanel.getPreferredSize());
 
         externalPanel.setFocusable(true);
@@ -40,21 +42,31 @@ public class HallPanelHolder extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawHallStructure(g);
+        if(isBuildMode) {
+            drawBuildMode(g);
+        }
+        else {
+            drawHallStructure(g);
+        }
+    }
+
+    private void drawBuildMode(Graphics g) {
+        BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
+        g.drawImage(floor,0, 0,850, 850, null);
+        BufferedImage buildM = Textures.getSprite("buildmode");
+        g.drawImage(buildM,0, 0,850, 850, null);
     }
 
     private void drawHallStructure(Graphics g) {
-        
+
         BufferedImage horizontalWall = TileSetImageGetter.getInstance().getImage(0, 0);
         BufferedImage verticalWall = Textures.getSprite("verticalWall");
 
         BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
         g.drawImage(floor,0, 0,850, 850, null);
 
-
-        drawHorizontalWalls(g, horizontalWall);
-        drawVerticalWalls(g, verticalWall);
-
+        BufferedImage hall = Textures.getSprite("hearth");
+        g.drawImage(hall, 119, 110, 618, 685, null);
         if(isDoorOpen) {
             BufferedImage doorOpen = Textures.getSprite("dooropen");
             this.drawDoorOpen(g, doorOpen);
@@ -65,32 +77,22 @@ public class HallPanelHolder extends JPanel {
 
     }
 
-    public void drawHorizontalWalls(Graphics g, BufferedImage horizontalWall) {
-        int start = 30;
-        for (int row = 0; row < tileNumber; row++){
-            g.drawImage(horizontalWall,row*tileSize + start,-5,tileSize,tileSize,null);
-            if(row != 9){
-                g.drawImage(horizontalWall,row*tileSize + start,789,tileSize,tileSize,null);
-            }
-        }
-        int offset = start + 15;
-        g.drawImage(horizontalWall,(tileNumber -1)*tileSize + offset,-5,tileSize,tileSize,null);
-        g.drawImage(horizontalWall,(tileNumber-1)*tileSize + offset,789,tileSize,tileSize,null);
-    }
-
-    public void drawVerticalWalls(Graphics g, BufferedImage verticalWall) {
-        int start = 15;
-        for (int col = 0; col < (764/88); col++){
-            g.drawImage(verticalWall,31,col*88 + start, 6,88,null);
-            g.drawImage(verticalWall,807,col*88 + start, 6,88,null);
-        }
-        int offset = start + 20;
-        g.drawImage(verticalWall,31,7*88+70 + offset, 6,88,null);
-        g.drawImage(verticalWall,807,7*88+70 + offset, 6,88,null);
-    }
 
     private void drawDoor(Graphics g, BufferedImage door){
-        g.drawImage(door, 462,789, tileSize+50, tileSize, null);
+        switch (currentHall) {
+            case 1:
+                g.drawImage(door, 180,727, 130, 51, null);
+                break;
+            case 2:
+                g.drawImage(door, 180,727, 130, 51, null);
+                break;
+            case 3:
+                g.drawImage(door, 180,727, 130, 51, null);
+                break;
+            default:
+                g.drawImage(door, 180,724, 130, 52, null);
+                break;
+        }
     }
 
     private void drawDoorOpen(Graphics g, BufferedImage doorOpen) {
