@@ -36,7 +36,7 @@ public class EnchantmentGraphics extends EntityGraphics implements EnchantmentLi
 
     public void draw(Graphics g) {
         for (Enchantment enchantment: enchantments) {
-            g.drawImage(enchantmentImages.get(enchantment.getType()), enchantment.getLocation().getX()*48,(15 - enchantment.getLocation().getY())*48 , size, size,null);
+            g.drawImage(enchantmentImages.get(enchantment.getType()), enchantment.getLocation().getX()*36,(15 - enchantment.getLocation().getY())*36 , size, size,null);
         }
     }
 

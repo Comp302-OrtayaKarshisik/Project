@@ -41,7 +41,7 @@ public class EnchantmentFactory {
     }
 
     public void continueGame(List<Enchantment> enchantments, Long passedTime) {
-        EnchantmentGraphics.getInstance(48);
+        EnchantmentGraphics.getInstance(36);
         for(Enchantment ench : enchantments) {
             for (EnchantmentListener efl: listeners) {
                 efl.onCreationEvent(ench);

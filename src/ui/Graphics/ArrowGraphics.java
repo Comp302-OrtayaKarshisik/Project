@@ -54,8 +54,8 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
 
             double angle = Math.atan2(-arrow.getDy(), arrow.getDx());
             Graphics2D g2d = (Graphics2D) g;
-            int x = arrow.pos.getX() * 48;
-            int y = (15 - arrow.pos.getY()) * 48;
+            int x = arrow.pos.getX() * 36;
+            int y = (15 - arrow.pos.getY()) * 36;
 
             // Save current transform
             AffineTransform oldTransform = g2d.getTransform();

@@ -1,6 +1,7 @@
 package domain.level;
 
 import domain.factories.MonsterFactory;
+import domain.util.Coordinate;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -11,6 +12,12 @@ public class Dungeon implements Serializable {
     private int currentHall;
     private CollisionChecker collisionChecker;
     private Hall[] halls;
+    private Coordinate[] doorCoordinates = {
+            new Coordinate(3, 0),
+            new Coordinate(8, 0),
+            new Coordinate(11, 0),
+            new Coordinate(8, 0)
+    };
 
     public Dungeon() {
         collisionChecker = new CollisionChecker(this);
@@ -88,6 +95,10 @@ public class Dungeon implements Serializable {
 
     public void setHalls(Hall[] halls){
         this.halls = halls;
+    }
+
+    public Coordinate getDoorCoordinate() {
+        return doorCoordinates[currentHall];
     }
 
 }

@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 public class GamePanel extends JPanel implements MouseListener, GameListener {
 
     // Screen settings each ca
-    private final int baseTileSize = 48; // Objects will be 64x64
+    private final int baseTileSize = 36; // Objects will be 64x64
     //private double scale = 1.4;
 
     private int scalingFactor = 1; // Going to be an input for different resolutions etc
@@ -77,12 +77,12 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
         this.setFocusable(true); // All eyes on me
         addMouseListener(this);
 
-        playerGraphics = PlayerGraphics.getInstance(48);
-        fighterGraphics = FighterGraphics.getInstance(48);
-        archerGraphics = ArcherGraphics.getInstance(48);
-        wizardGraphics = WizardGraphics.getInstance(48);
-        enchantmentGraphics = EnchantmentGraphics.getInstance(48);
-        arrowGraphics = ArrowGraphics.getInstance(48);
+        playerGraphics = PlayerGraphics.getInstance(36);
+        fighterGraphics = FighterGraphics.getInstance(36);
+        archerGraphics = ArcherGraphics.getInstance(36);
+        wizardGraphics = WizardGraphics.getInstance(36);
+        enchantmentGraphics = EnchantmentGraphics.getInstance(36);
+        arrowGraphics = ArrowGraphics.getInstance(36);
 
         game = Game.getInstance();
 
@@ -201,17 +201,23 @@ public class GamePanel extends JPanel implements MouseListener, GameListener {
             int verticalSize = 16;
             for (int col = 0; col < verticalSize; col++) {
                 Tile gridObject = grid[row][col];
-                if (gridObject != null && (gridObject.getName().equals("COLUMN") || gridObject.getName().equals("CHEST_FULL") || gridObject.getName().equals("CHEST_FULL_GOLD") || gridObject.getName().equals("CHEST_CLOSED"))) {
+                if (gridObject != null && !gridObject.getName().equals("aa")) {
                     String objName = gridObject.getName().toLowerCase();
                     BufferedImage objectSprite = Textures.getSprite(objName);
-                    int h = 32;
-                    int w = 32;
+                    int h = 36;
+                    int w = 36;
 
                     // different size for column
                     if(objName.equals("column")) {
                         h = 56;
                         w = 28;
                     }
+
+                    if(objName.equals("chest_closed") || objName.equals("chest_full_gold") || objName.equals("chest_full")) {
+                        h = 26;
+                        w = 26;
+                    }
+
                     //int scaledWidth = (int) (w * scale);
                     //int scaledHeight = (int) (h * scale);
 
