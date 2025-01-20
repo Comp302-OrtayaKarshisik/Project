@@ -109,6 +109,7 @@ public class BuildingModeHandler {
 			fillWithObjectRandomly(chestFullCount, i , ObjectType.CHEST_FULL_GOLD);
 			fillWithObjectRandomly(boxCount, i , ObjectType.BOX);
 		}
+		notifyListeners();
 	}
 
 	private void fillWithObjectRandomly(int count, int hallIndex, ObjectType type) {
@@ -121,13 +122,13 @@ public class BuildingModeHandler {
 			}
 			gridDesigns[hallIndex].placeObject(row, column, type);
 		}
-		notifyListeners();
 	}
 
 	public boolean removeObjectAt(int row, int col, int currentDesign){
 		GridDesign currentHall = gridDesigns[currentDesign];
+		boolean res =  currentHall.removeObject(row, col);
 		notifyListeners();
-		return currentHall.removeObject(row, col);
+		return res;
 	}
 
 	public boolean areAllHallsComplete() {

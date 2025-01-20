@@ -40,6 +40,8 @@ public class BuildModePage extends Page implements ActionListener, BuildModeList
     public BuildModePage(BuildingModeHandler buildingModeHandler) {
         super();
 
+        buildingModeHandler.addListener(this);
+
         this.hallPanels = new JPanel[4];
         this.buildingModeHandler = buildingModeHandler;
 
@@ -122,9 +124,16 @@ public class BuildModePage extends Page implements ActionListener, BuildModeList
         BufferedImage buildM = Textures.getSprite("buildmode");
         g.drawImage(buildM,0, 0,(int)(1115*scaleFactor), (int)(931*scaleFactor), null);
 
-        g.setColor(Color.BLACK); // Change to a contrasting color
-        g.setFont(new Font("Arial", Font.BOLD, 18)); // Set a readable font
-        g.drawString("Remaining Object: " + buildingModeHandler.getRemainingObject(0), 91, 450);
+        remainingCountText(g);
+    }
+
+    private void remainingCountText(Graphics g) {
+        g.setColor(new Color(164, 167, 182));
+        g.setFont(new Font("Arial",Font.BOLD,12));
+        g.drawString("Remaining Object: " + buildingModeHandler.getRemainingObject(0), 602, 388);
+        g.drawString("Remaining Object: " + buildingModeHandler.getRemainingObject(1), 275, 388);
+        g.drawString("Remaining Object: " + buildingModeHandler.getRemainingObject(2), 275, 745);
+        g.drawString("Remaining Object: " + buildingModeHandler.getRemainingObject(3), 602, 745);
     }
 
     private void createObjectButtons(String folderPath){
@@ -206,7 +215,8 @@ public class BuildModePage extends Page implements ActionListener, BuildModeList
 
     @Override
     public void onObjectPlacementOrRemovalEvent() {
-        repaint();
+        this.revalidate();
+        this.repaint();
     }
 
     class HallPanel extends JPanel implements MouseListener {
