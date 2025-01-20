@@ -2,16 +2,19 @@ package controllers;
 import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
+import listeners.BuildModeListener;
 import ui.BuildModePage;
 import domain.*;
 import ui.PageManager;
 
+import java.util.List;
+
 //singleton pattern is used
 
 public class BuildingModeHandler {
-	
+
 	private static BuildingModeHandler instance;
-	
+
 	private Game game;
 
 	private int gameHallCount = 4;
@@ -22,26 +25,28 @@ public class BuildingModeHandler {
 
 	private ObjectType selectedObject;
 
+	private List<BuildModeListener> listeners;
+
 	private BuildingModeHandler() {
 		this.game = Game.getInstance();
 		Textures.createSprites();
 		for(int i = 0; i < gridDesigns.length; i++){
 			gridDesigns[i] = new GridDesign(16,16,limits[i]);
 		}
-
+		listeners = new java.util.ArrayList<>();
 	}
 
 	public static BuildingModeHandler recreateBuildingModeHandler() {
 		instance = new BuildingModeHandler();
 		return instance;
 	}
-	
-	 public static BuildingModeHandler getInstance() {
-			if (instance == null) {
-				instance = new BuildingModeHandler();
-			}
-			return instance;
+
+	public static BuildingModeHandler getInstance() {
+		if (instance == null) {
+			instance = new BuildingModeHandler();
 		}
+		return instance;
+	}
 
 
 	public void setSelectedObject(ObjectType object) {
@@ -69,7 +74,12 @@ public class BuildingModeHandler {
 	public  boolean placeObjectAt(int row, int col, int currentDesign) {
 		if(selectedObject == null) return false;
 		GridDesign currentHall = gridDesigns[currentDesign];
-        return currentHall.placeObject(row,col,selectedObject);
+		if (currentHall.placeObject(row,col,selectedObject))
+		{
+			notifyListeners();
+			return true;
+		}
+		return false;
 	}
 
 	// Goes to next hall and returns if that hall is last or not.
@@ -111,10 +121,12 @@ public class BuildingModeHandler {
 			}
 			gridDesigns[hallIndex].placeObject(row, column, type);
 		}
+		notifyListeners();
 	}
 
 	public boolean removeObjectAt(int row, int col, int currentDesign){
 		GridDesign currentHall = gridDesigns[currentDesign];
+		notifyListeners();
 		return currentHall.removeObject(row, col);
 	}
 
@@ -134,6 +146,16 @@ public class BuildingModeHandler {
 	public boolean isObjectPresent (int row, int col, int hallNumber) {
 		GridDesign currentHall = getHall(hallNumber);
 		return currentHall.isObjectPresent(row,col);
+	}
+
+	private void notifyListeners() {
+		for(BuildModeListener listener : listeners) {
+			listener.onObjectPlacementOrRemovalEvent();
+		}
+	}
+
+	public void addListener(BuildModeListener listener) {
+		listeners.add(listener);
 	}
 
 	/*
@@ -159,8 +181,8 @@ public class BuildingModeHandler {
 	public void initializePlayMode() {
 		
 	}*/
-	
-	
-	
-	
+
+
+
+
 }
