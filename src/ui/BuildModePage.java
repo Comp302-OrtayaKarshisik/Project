@@ -23,13 +23,11 @@ public class BuildModePage extends Page implements ActionListener {
 
 	private BuildingModeHandler buildingModeHandler;
 
-    private JPanel buttonPanel;
-
     private JButton exitButton;
 
+    private JButton fillButton;
+
     private JButton contButton;
-    
-    private JButton[] buttons;
 
     private double scaleFactor = 0.86;
 
@@ -48,7 +46,7 @@ public class BuildModePage extends Page implements ActionListener {
     
     protected void initUI() {
 
-        this.setPreferredSize(new Dimension((int)(1115*scaleFactor), (int)(931*scaleFactor)));
+        this.setPreferredSize(new Dimension((int)(1235*scaleFactor), (int)(931*scaleFactor)));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
@@ -57,20 +55,46 @@ public class BuildModePage extends Page implements ActionListener {
 
         this.objectChooserPanel = new JPanel();
         this.objectChooserPanel.setBounds(746, 188, 123, 470);
-        this.objectChooserPanel.setLayout(new BoxLayout(objectChooserPanel, BoxLayout.Y_AXIS));
+        this.objectChooserPanel.setLayout(new GridLayout(0, 2, 5, 5)); // 0 rows, 2 columns, 5px horizontal and vertical gap
         this.objectChooserPanel.setOpaque(false);
         this.add(objectChooserPanel);
 
-    	exitButton = new JButton("Exit");
-        contButton = new JButton("Continue");
+        contButton = new JButton("Start Game");
+        contButton.setFont(new Font("Gongster",Font.BOLD,20));
+        contButton.setBackground(new Color(123, 87, 126));;
+        contButton.setForeground(Color.BLACK);
+        contButton.setOpaque(true);
+        contButton.setBounds(898, 330, 150, 40);
+        contButton.addActionListener(this);
+        contButton.setFocusable(true);
+        this.add(contButton);
 
 
-        buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(0, 1));
+        fillButton = new JButton("Fill Random");
+        fillButton.setFont(new Font("Gongster",Font.BOLD,20));
+        fillButton.setBackground(new Color(123, 87, 126));;
+        fillButton.setForeground(Color.BLACK);
+        fillButton.setOpaque(true);
+        fillButton.setBounds(898, 400, 150, 40);
+        fillButton.addActionListener(this);
+        fillButton.setFocusable(true);
+        this.add(fillButton);
+
+        ImageIcon exitImage = new ImageIcon("src/assets/exit.png");
+        Image image1 = exitImage.getImage().getScaledInstance(30, 28, Image.SCALE_SMOOTH);
+        ImageIcon resizedExitImage = new ImageIcon(image1);
+        exitButton = new JButton(resizedExitImage);
+        exitButton.setOpaque(true);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setBorderPainted(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setBounds(730, 74, 150, 40);
+        exitButton.addActionListener(this);
+        exitButton.setFocusable(true);
+        this.add(exitButton);
 
         //dynamically create object buttons
         createObjectButtons("src/assets/build_mode_assets");
-
 
         for(int i = 0; i < 4; i++) {
             this.hallPanels[i] = new HallPanel(this.buildingModeHandler, i);
@@ -92,19 +116,25 @@ public class BuildModePage extends Page implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         BufferedImage floor = TileSetImageGetter.getInstance().getFloorImage();
-        g.drawImage(floor,0, 0,(int)(1115*scaleFactor), (int)(931*scaleFactor), null);
+        g.drawImage(floor,0, 0,(int)(1265*scaleFactor), (int)(931*scaleFactor), null);
         BufferedImage buildM = Textures.getSprite("buildmode");
         g.drawImage(buildM,0, 0,(int)(1115*scaleFactor), (int)(931*scaleFactor), null);
+
+        g.setColor(Color.BLACK); // Change to a contrasting color
+        g.setFont(new Font("Arial", Font.BOLD, 18)); // Set a readable font
+        g.drawString("Remaining Object: " + buildingModeHandler.getRemainingObject(0), 91, 450);
     }
 
     private void createObjectButtons(String folderPath){
         File folder = new File(folderPath);
         File[] files = folder.listFiles();
 
+        int[] imageScaleArr = {-1, -1, -1, -1, 24, 24, 24, 16, 16, 16};
+        int index = 0;
         for (File file : files)
         {
             String fileName = file.getName();
-            String baseName = fileName.substring(0, fileName.lastIndexOf("."));
+            String baseName = fileName.substring(2, fileName.lastIndexOf("."));
             String enumName = baseName.toUpperCase(); // Assuming ObjectType names match file names in uppercase
 
             ObjectType objectType = null;
@@ -118,16 +148,24 @@ public class BuildModePage extends Page implements ActionListener {
 
             JButton objButton = new JButton();
             objButton.setAlignmentY(Component.TOP_ALIGNMENT);
-            objButton.setIcon(new ImageIcon(file.getAbsolutePath()));
+
+            ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+            Image originalImage = icon.getImage();
+            Image scaledImage = originalImage.getScaledInstance(
+                    imageScaleArr[index] == -1 ? icon.getIconWidth() : imageScaleArr[index],
+                    imageScaleArr[index] == -1 ? icon.getIconHeight() : imageScaleArr[index],
+                    Image.SCALE_DEFAULT
+            );
+            objButton.setIcon(new ImageIcon(scaledImage));
+
             objButton.setContentAreaFilled(false); // Remove background color
             objButton.setBorderPainted(false);    // Remove the border
 
-            // Set the action command to the enum name so we know which object was selected
             objButton.setActionCommand(enumName);
-            // Add the same action listener to all object buttons
             objButton.addActionListener(this);
 
             this.objectChooserPanel.add(objButton);
+            index++;
         }
     }
 
@@ -136,9 +174,16 @@ public class BuildModePage extends Page implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
     	
-    	if(e.getSource()==exitButton){
-            System.out.println("Exit button clicked.");
+    	if(e.getSource() == exitButton){
             PageManager.getInstance().showMainMenuPage();
+        }
+        else if (e.getSource() == contButton) {
+            buildingModeHandler.startGame();
+        }
+
+        else if (e.getSource() == fillButton) {
+            buildingModeHandler.fillHallsRandomly();
+            repaint();
         }
         else
         {
@@ -281,7 +326,7 @@ class HallPanel extends JPanel implements MouseListener {
                 JPopupMenu menu = new JPopupMenu();
                 JMenuItem removeItem = new JMenuItem("Remove Object");
                 removeItem.addActionListener(e1 -> {
-                    boolean removed = buildingModeHandler.removeObjectAt(row, col);
+                    boolean removed = buildingModeHandler.removeObjectAt(row, col, hallNumber);
                     if (removed) {
                         System.out.println("Object removed.");
                         repaint();

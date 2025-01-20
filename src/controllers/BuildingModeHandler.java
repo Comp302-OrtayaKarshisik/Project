@@ -18,16 +18,15 @@ public class BuildingModeHandler {
 
 	private GridDesign[] gridDesigns = new GridDesign[gameHallCount];
 
-	private int currentGameHall = 0;
+	public final int[] limits = {6, 9, 13, 17};
 
 	private ObjectType selectedObject;
 
 	private BuildingModeHandler() {
-		int[] limits = {6, 9, 13, 17};
 		this.game = Game.getInstance();
 		Textures.createSprites();
 		for(int i = 0; i < gridDesigns.length; i++){
-			gridDesigns[i] = new GridDesign(16,16,2);
+			gridDesigns[i] = new GridDesign(16,16,limits[i]);
 		}
 
 	}
@@ -45,16 +44,13 @@ public class BuildingModeHandler {
 		}
 
 
-
-
 	public void setSelectedObject(ObjectType object) {
 		this.selectedObject = object;
 	}
+
 	public ObjectType getSelectedObject(){
 		return this.selectedObject;
 	}
-
-
 
 	/**
 	 * Requires:
@@ -77,27 +73,48 @@ public class BuildingModeHandler {
 	}
 
 	// Goes to next hall and returns if that hall is last or not.
-	public boolean goNextHall() {
-		GridDesign currentHall = gridDesigns[currentGameHall];
-		if(!currentHall.isPlacementComplete())
-		{
-			System.out.println("You need to place at least " + (currentHall.getMinObjectLimit() - currentHall.getPlacedObjectCount()) + " more objects.");
-			return false;
-		}
-		if(currentGameHall == gameHallCount - 2){
-			currentGameHall += 1;
-			System.out.println("Last hall.");
-			return true;
-		}
-		if(currentGameHall == gameHallCount -1) {
+	public void startGame() {
+		if(areAllHallsComplete())
 			PageManager.getInstance().showPlayModePage(gridDesigns);
-		}
-		currentGameHall += 1;
-		return false;
 	}
 
-	public boolean removeObjectAt(int row, int col){
-		GridDesign currentHall = gridDesigns[currentGameHall];
+	public int getRemainingObject(int hallIndex) {
+		int remaining = limits[hallIndex] - gridDesigns[hallIndex].getPlacedObjectCount();
+		return Math.max(0, remaining);
+	}
+
+	public void fillHallsRandomly() {
+		for(int i = 0; i < 4; i++) {
+			int limit = limits[i] - gridDesigns[i].getPlacedObjectCount();
+			if (limit <= 0) {
+				continue;
+			}
+			int doubleBoxCount = Game.random.nextInt(limit/3 + 1);
+			int chestCount = Game.random.nextInt(limit/3 + 1);
+			int chestFullCount = Game.random.nextInt(limit/3 + 1);
+			int boxCount = limit - doubleBoxCount - chestCount - chestFullCount;
+
+			fillWithObjectRandomly(doubleBoxCount, i , ObjectType.DOUBLE_BOX);
+			fillWithObjectRandomly(chestCount, i , ObjectType.CHEST_CLOSED);
+			fillWithObjectRandomly(chestFullCount, i , ObjectType.CHEST_FULL_GOLD);
+			fillWithObjectRandomly(boxCount, i , ObjectType.BOX);
+		}
+	}
+
+	private void fillWithObjectRandomly(int count, int hallIndex, ObjectType type) {
+		for(int i = 0; i < count; i++) {
+			int row = Game.random.nextInt(1, 15);
+			int column = Game.random.nextInt(1, 15);
+			while(isObjectPresent(row, column, hallIndex)) {
+				row = Game.random.nextInt(1, 15);
+				column = Game.random.nextInt(1, 15);
+			}
+			gridDesigns[hallIndex].placeObject(row, column, type);
+		}
+	}
+
+	public boolean removeObjectAt(int row, int col, int currentDesign){
+		GridDesign currentHall = gridDesigns[currentDesign];
 		return currentHall.removeObject(row, col);
 	}
 
