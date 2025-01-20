@@ -2,9 +2,12 @@ package controllers;
 import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
+import listeners.BuildModeListener;
 import ui.BuildModePage;
 import domain.*;
 import ui.PageManager;
+
+import java.util.List;
 
 //singleton pattern is used
 
@@ -22,6 +25,8 @@ public class BuildingModeHandler {
 
 	private ObjectType selectedObject;
 
+	private List<BuildModeListener> listeners;
+
 	private BuildingModeHandler() {
 		int[] limits = {6, 9, 13, 17};
 		this.game = Game.getInstance();
@@ -29,6 +34,7 @@ public class BuildingModeHandler {
 		for(int i = 0; i < gridDesigns.length; i++){
 			gridDesigns[i] = new GridDesign(16,16,limits[i]);
 		}
+		listeners = new java.util.ArrayList<>();
 
 	}
 
@@ -44,6 +50,15 @@ public class BuildingModeHandler {
 			return instance;
 		}
 
+	private void notifyListeners() {
+		for(BuildModeListener listener : listeners) {
+			listener.onObjectPlacementOrRemovalEvent(getCurrentGameHall() + 1, getCurrentHall().getPlacedObjectCount(), getCurrentHall().getMinObjectLimit());
+		}
+	}
+
+	public void addListener(BuildModeListener listener) {
+		listeners.add(listener);
+	}
 
 	public GridDesign getCurrentHall(){
 		return gridDesigns[currentGameHall];
@@ -75,7 +90,12 @@ public class BuildingModeHandler {
 	public  boolean placeObjectAt(int row, int col) {
 		if(selectedObject == null) return false;
 		GridDesign currentHall = gridDesigns[currentGameHall];
-        return currentHall.placeObject(row,col,selectedObject);
+        if (currentHall.placeObject(row,col,selectedObject))
+		{
+			notifyListeners();
+			return true;
+		}
+		return false;
 	}
 
 	// Goes to next hall and returns if that hall is last or not.
@@ -95,6 +115,7 @@ public class BuildingModeHandler {
 			PageManager.getInstance().showPlayModePage(gridDesigns);
 		}
 		currentGameHall += 1;
+		notifyListeners();
 		return false;
 	}
 
@@ -104,6 +125,7 @@ public class BuildingModeHandler {
 
 	public boolean removeObjectAt(int row, int col){
 		GridDesign currentHall = gridDesigns[currentGameHall];
+		notifyListeners();
 		return currentHall.removeObject(row, col);
 	}
 

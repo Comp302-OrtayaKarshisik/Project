@@ -7,6 +7,7 @@ import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
 import domain.Textures;
+import listeners.BuildModeListener;
 import ui.Graphics.TileSetImageGetter;
 import ui.Swing.Panels.HallPanelHolder;
 
@@ -19,7 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 
-public class BuildModePage extends Page implements ActionListener {
+public class BuildModePage extends Page implements ActionListener, BuildModeListener {
 	
 	
 	private BuildingModeHandler buildingModeHandler; 
@@ -55,6 +56,8 @@ public class BuildModePage extends Page implements ActionListener {
     public  BuildingModeHandler getBuildingModeHandler() {
         return buildingModeHandler;
     }
+
+
     
     protected void initUI() {
     	
@@ -99,7 +102,7 @@ public class BuildModePage extends Page implements ActionListener {
         buttonPanel.add(exitButton);
         
         // Info text area
-        
+        subscribeListeners();
         infoTextArea = new JTextArea(5, 20);
         infoTextArea.setBackground(Color.GRAY);
         infoTextArea.setEditable(false);
@@ -107,11 +110,8 @@ public class BuildModePage extends Page implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(infoTextArea);
         scrollPane.setViewportView(infoTextArea);
         objectChooserPanel.add(scrollPane, BorderLayout.SOUTH);
-        infoTextArea.append("Hall 1\n");
-
+        infoTextArea.setText("Hall: 1\nObjects placed: 0\nMinimum to place: " + buildingModeHandler.getCurrentHall().getMinObjectLimit());
         initializeChoiceListeners();
-
-
     }
 
     private void createObjectButtons(String folderPath){
@@ -151,7 +151,11 @@ public class BuildModePage extends Page implements ActionListener {
 
 
     }
-    
+
+    private void subscribeListeners() {
+    	buildingModeHandler.addListener(this);
+    }
+
     private void drawObjectImage() {
     	//buildingModeHandler.placeObject();
     }
@@ -189,7 +193,7 @@ public class BuildModePage extends Page implements ActionListener {
                 contButton.setText("Start Game");
             }
             int currentHall = buildingModeHandler.getCurrentGameHall() + 1;
-            infoTextArea.setText("Hall " +currentHall);
+            //infoTextArea.setText("Hall " +currentHall);
             hallPanel.repaint();
         }
         else
@@ -209,7 +213,13 @@ public class BuildModePage extends Page implements ActionListener {
     } 
  }
 
-class HallPanel extends JPanel implements MouseListener {
+    @Override
+    public void onObjectPlacementOrRemovalEvent(int curHall, int count, int limit) {
+        //have a text display which says, objects placed: count, minimum to place: limit
+        infoTextArea.setText("Hall: "+ curHall + "\nObjects placed: " + count + "\nMinimum to place: " + limit);
+    }
+
+    class HallPanel extends JPanel implements MouseListener {
 
     public final int tileSize = 48;
     public final int maxScreenCol = 16;
