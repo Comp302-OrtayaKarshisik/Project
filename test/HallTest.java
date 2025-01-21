@@ -1,14 +1,15 @@
 import domain.Game;
+import domain.agent.Player;
 import domain.collectables.Enchantment;
 import domain.collectables.EnchantmentType;
 import domain.level.GridDesign;
 import domain.objects.ObjectType;
 import domain.util.Coordinate;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class HallTest {
     int testRow;
     int testColumn;
@@ -38,6 +39,7 @@ class HallTest {
      *
      */
     @Test
+    @Order(1)
     void testHandleChoseBox_enchantment() {
         // creating new enchantment
         Enchantment e = new Enchantment(EnchantmentType.Reveal);
@@ -51,23 +53,33 @@ class HallTest {
     }
 
     /**
-     * Test 2: handleChosenBox - choosing an object to see if
-     * Expect: hall->tile is initialized to a new tile
+     * Test 2: handleChosenBox - choosing one of the objects in the hall that does not contain the rune
+     * Expect: hall->tile is still the object, player->hasRune is false
      *
      */
     @Test
+    @Order(2)
     void testHandleChoseBox_placedObject() {
-        int testColInv = 15 - testColumn;
         // checking first to see it contains an object
+        Coordinate runeloc = game.getDungeon().getCurrentHall().getRuneLocation();
+        testRow = 15 - runeloc.getX();
+        int testColInv = 15 - runeloc.getY();
+
         boolean isObject = game.getDungeon().
                 getCurrentHall().getGrid()[testRow][testColInv].getName().equals(ObjectType.CHEST_CLOSED.toString());
         assertTrue(isObject);
 
-        //checking now that it is an empty tile
+
+
+        // checking now that it is not an empty tile
         game.getPlayer().setLocation(new Coordinate(testRow, testColInv-1));
         game.getDungeon().getCurrentHall().handleChosenBox(game.getPlayer(), new Coordinate(testRow, testColInv));
-        boolean isEmpty = game.getDungeon().getCurrentHall().getGrid()[testRow][testColInv].getName().equals("aa");
-        assertTrue(isEmpty);
+        boolean stillObject = game.getDungeon().getCurrentHall().getGrid()[testRow][testColInv].getName().equals("CHEST_CLOSED");
+        assertTrue(stillObject);
+
+        // checking that the player does not contain the rune
+        boolean playerHasRune = game.getPlayer().isHasRune();
+        assertFalse(playerHasRune);
     }
 
     /**
@@ -76,6 +88,7 @@ class HallTest {
      *
      */
     @Test
+    @Order(3)
     void testHandleChoseBox_placedObjectWithRune() {
         Coordinate runeLocation = game.getDungeon().getCurrentHall().getRuneLocation();
 
