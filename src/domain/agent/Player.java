@@ -212,9 +212,11 @@ public class Player extends Agent implements Serializable {
     }
 
     public void restartEvent() {
+        game = Game.getInstance();
         for (PlayerListener pl : listeners) {
             pl.onHealthEvent(health);
             pl.onRuneEvent(hasRune);
+            pl.onHallChange(game.getDungeon().getCurrentHallIndex());
             for (Map.Entry<EnchantmentType, Integer> entry : this.bag.getEnchantmentCounter().entrySet()) {
                 EnchantmentType enchantmentType = entry.getKey();
                 int count = entry.getValue();

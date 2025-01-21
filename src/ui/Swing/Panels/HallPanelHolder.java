@@ -148,4 +148,9 @@ public class HallPanelHolder extends JPanel {
         return (GamePanel) this.externalPanel;
     }
 
+    public void setCurrentHall(int currentHall) {
+        this.currentHall = currentHall;
+        this.repaint();
+    }
+
 }

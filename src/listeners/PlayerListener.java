@@ -11,4 +11,6 @@ public interface PlayerListener {
     public abstract void onCollectEnch(EnchantmentType type);
 
     public abstract void onRemoveEnch(EnchantmentType type);
+
+    public abstract void onHallChange(int currentHall);
 }

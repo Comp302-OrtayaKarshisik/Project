@@ -131,6 +131,11 @@ public class PlayModePage extends Page implements PlayerListener, GameListener, 
     }
 
     @Override
+    public void onHallChange(int currentHall) {
+        this.panelHolder.setCurrentHall(currentHall);
+    }
+
+    @Override
     public void onGameEvent(Game game) {
         this.buttonPanel.updatePause(game.isPaused());
     }
