@@ -8,6 +8,12 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import listeners.FighterListener;
+import ui.Graphics.SwordGraphics;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class Fighter extends Monster  {
 
     private static final int MOVE_FRAME_LIMIT = 20;
@@ -18,12 +24,18 @@ public class Fighter extends Monster  {
     private boolean lured;
     private Coordinate lureLoc;
 
+    private LinkedList<FighterListener> listeners;
+    public int swordLife;
+
     public Fighter() {
         super();
         setType("fighter");
         this.lured = false;
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
+
+        listeners = new LinkedList<>();
+        SwordGraphics.getInstance(48).subscribe(this);
     }
 
     public void move() {
@@ -84,6 +96,7 @@ public class Fighter extends Monster  {
                     case RIGHT -> getLocation().setX(getLocation().getX() + 1);
                     case LEFT -> getLocation().setX(getLocation().getX() - 1);
                 }
+
             }
         }
     }
@@ -93,6 +106,8 @@ public class Fighter extends Monster  {
         // Ordering of these methods and other will matter.
         if (checkPlayerAdj(Game.getInstance().getPlayer()) &&
                 !Game.getInstance().getPlayer().isInvisible() && attackFrame >= ATTACK_FRAME_LIMIT) {
+            publishFireEvent();
+            swordLife = 30;
             Game.getInstance().getPlayer().reduceHealth();
             Game.getInstance().playSound("src/assets/fighter-sound.wav");
             attackFrame = 0;
@@ -111,5 +126,12 @@ public class Fighter extends Monster  {
 
         return (dy == 0  && dx == 1) || (dy == 1 && dx == 0);
     }
+
+    public void publishFireEvent() {
+        for (FighterListener al : listeners)
+            al.onFireEvent(this);}
+    public void addListener(FighterListener fl) {listeners.add(fl);}
+
+
 
 }
