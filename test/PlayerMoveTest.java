@@ -163,8 +163,8 @@ class PlayerMoveTest{
      */
     @Test
     void moveToNextHallTest() {
-        //door location is at (9,0), given from the design
-        Coordinate doorLoc = new Coordinate(9, 0);
+        //door location is at (3,0), given from the design
+        Coordinate doorLoc = new Coordinate(3, 0);
         player.setLocation(doorLoc);
 
 
