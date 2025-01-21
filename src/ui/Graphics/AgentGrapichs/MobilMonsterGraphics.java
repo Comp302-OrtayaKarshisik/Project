@@ -28,7 +28,7 @@ public abstract class MobilMonsterGraphics extends EntityGraphics implements Fac
             } else if (monster.getDirection() == Direction.RIGHT) {
                 currentImg = rightPic;
             }
-            g.drawImage(currentImg, monster.getLocation().getX()*48,(15 - monster.getLocation().getY())*48 , size, size,null);
+            g.drawImage(currentImg, monster.getLocation().getX()*36,(15 - monster.getLocation().getY())*36 , size, size,null);
         }
     }
 

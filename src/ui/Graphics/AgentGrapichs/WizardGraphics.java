@@ -45,7 +45,7 @@ public class WizardGraphics extends EntityGraphics implements FactoryListener, S
 
     public void draw(Graphics g) {
         for (Wizard w: wizards) {
-            g.drawImage(img, w.getLocation().getX()*48, (15 - w.getLocation().getY())*48, size, size,null);
+            g.drawImage(img, w.getLocation().getX()*36, (15 - w.getLocation().getY())*36, size, size,null);
         }
     }
 

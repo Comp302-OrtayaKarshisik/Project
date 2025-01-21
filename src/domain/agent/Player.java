@@ -27,7 +27,6 @@ public class Player extends Agent implements Serializable {
     private boolean hasRune;
     private boolean invisible;
     private Timer timer; // This methods is for now;
-    private Coordinate doorCoordinate;
 
     public Player() {
         listeners = new LinkedList<>();
@@ -36,10 +35,9 @@ public class Player extends Agent implements Serializable {
         hasRune = false;
         invisible = false;
         setLocation(new Coordinate(0,0));
-        doorCoordinate = new Coordinate(9, 0);
         timer = new Timer();
         setDirection(Direction.STOP);
-        PlayerGraphics.getInstance(48).setPlayer(this);
+        PlayerGraphics.getInstance(36).setPlayer(this);
     }
 
     /**
@@ -154,6 +152,8 @@ public class Player extends Agent implements Serializable {
             }
         }
 
+        Coordinate doorCoordinate = Game.getInstance().getDungeon().getDoorCoordinate();
+
         // for getting to the next Hall
         if (currDirection == Direction.DOWN && hasRune && location.equals(doorCoordinate)) {
             this.location.setLocation(0, 0);
@@ -212,9 +212,11 @@ public class Player extends Agent implements Serializable {
     }
 
     public void restartEvent() {
+        game = Game.getInstance();
         for (PlayerListener pl : listeners) {
             pl.onHealthEvent(health);
             pl.onRuneEvent(hasRune);
+            pl.onHallChange(game.getDungeon().getCurrentHallIndex());
             for (Map.Entry<EnchantmentType, Integer> entry : this.bag.getEnchantmentCounter().entrySet()) {
                 EnchantmentType enchantmentType = entry.getKey();
                 int count = entry.getValue();

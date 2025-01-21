@@ -137,14 +137,14 @@ public class Game implements Serializable {
         gameRestarted = true;
         this.listeners = new LinkedList<>();
         this.player.recreateGame();
-        PlayerGraphics.getInstance(48).setPlayer(this.player);
+        PlayerGraphics.getInstance(36).setPlayer(this.player);
         this.dungeon.recreateGame();
     }
 
     public void continueGame() {
         EnchantmentFactory.getInstance().continueGame(enchantments, passedTimeEnch);
         MonsterFactory.getInstance().continueGame(agents, passedTimeMonster);
-        ArrowGraphics.getInstance(48).onNewGameEvent();
+        ArrowGraphics.getInstance(36).onNewGameEvent();
         executor.execute(new Update());
     }
 
@@ -152,7 +152,7 @@ public class Game implements Serializable {
         MonsterFactory.getInstance().newGame();
         EnchantmentFactory.getInstance().newGame();
 
-        ArrowGraphics.getInstance(48).onNewGameEvent();
+        ArrowGraphics.getInstance(36).onNewGameEvent();
         //Executor runs the method instead of threads
         executor.execute(new Update());
     }
@@ -167,7 +167,7 @@ public class Game implements Serializable {
 
         MonsterFactory.getInstance().gameOver();
         EnchantmentFactory.getInstance().gameOver();
-        ArrowGraphics.getInstance(48).onGameOverEvent();
+        ArrowGraphics.getInstance(36).onGameOverEvent();
 
         instance = null;
     }
@@ -257,7 +257,6 @@ public class Game implements Serializable {
     public void handleChosenBox(Player player, Coordinate c1) {
         dungeon.getCurrentHall().handleChosenBox(player,c1);
     }
-
 
     public void openHall() {}
     public void createVictoryScreen() {}

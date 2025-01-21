@@ -12,66 +12,50 @@ import java.util.List;
 //singleton pattern is used
 
 public class BuildingModeHandler {
-	
+
 	private static BuildingModeHandler instance;
-	
+
 	private Game game;
 
 	private int gameHallCount = 4;
 
 	private GridDesign[] gridDesigns = new GridDesign[gameHallCount];
 
-	private int currentGameHall = 0;
+	public final int[] limits = {6, 9, 13, 17};
 
 	private ObjectType selectedObject;
 
 	private List<BuildModeListener> listeners;
 
 	private BuildingModeHandler() {
-		int[] limits = {6, 9, 13, 17};
 		this.game = Game.getInstance();
 		Textures.createSprites();
 		for(int i = 0; i < gridDesigns.length; i++){
 			gridDesigns[i] = new GridDesign(16,16,limits[i]);
 		}
 		listeners = new java.util.ArrayList<>();
-
 	}
 
 	public static BuildingModeHandler recreateBuildingModeHandler() {
 		instance = new BuildingModeHandler();
 		return instance;
 	}
-	
-	 public static BuildingModeHandler getInstance() {
-			if (instance == null) {
-				instance = new BuildingModeHandler();
-			}
-			return instance;
+
+	public static BuildingModeHandler getInstance() {
+		if (instance == null) {
+			instance = new BuildingModeHandler();
 		}
-
-	private void notifyListeners() {
-		for(BuildModeListener listener : listeners) {
-			listener.onObjectPlacementOrRemovalEvent(getCurrentGameHall() + 1, getCurrentHall().getPlacedObjectCount(), getCurrentHall().getMinObjectLimit());
-		}
+		return instance;
 	}
 
-	public void addListener(BuildModeListener listener) {
-		listeners.add(listener);
-	}
-
-	public GridDesign getCurrentHall(){
-		return gridDesigns[currentGameHall];
-	}
 
 	public void setSelectedObject(ObjectType object) {
 		this.selectedObject = object;
 	}
+
 	public ObjectType getSelectedObject(){
 		return this.selectedObject;
 	}
-
-
 
 	/**
 	 * Requires:
@@ -87,10 +71,10 @@ public class BuildingModeHandler {
 	 *    placeObject() method will return false and not be placed.
 	 *  - Returns true if placement is successful, false otherwise.
 	 */
-	public  boolean placeObjectAt(int row, int col) {
+	public  boolean placeObjectAt(int row, int col, int currentDesign) {
 		if(selectedObject == null) return false;
-		GridDesign currentHall = gridDesigns[currentGameHall];
-        if (currentHall.placeObject(row,col,selectedObject))
+		GridDesign currentHall = gridDesigns[currentDesign];
+		if (currentHall.placeObject(row,col,selectedObject))
 		{
 			notifyListeners();
 			return true;
@@ -99,34 +83,52 @@ public class BuildingModeHandler {
 	}
 
 	// Goes to next hall and returns if that hall is last or not.
-	public boolean goNextHall() {
-		GridDesign currentHall = gridDesigns[currentGameHall];
-		if(!currentHall.isPlacementComplete())
-		{
-			System.out.println("You need to place at least " + (currentHall.getMinObjectLimit() - currentHall.getPlacedObjectCount()) + " more objects.");
-			return false;
-		}
-		if(currentGameHall == gameHallCount - 2){
-			currentGameHall += 1;
-			System.out.println("Last hall.");
-			return true;
-		}
-		if(currentGameHall == gameHallCount -1) {
+	public void startGame() {
+		if(areAllHallsComplete())
 			PageManager.getInstance().showPlayModePage(gridDesigns);
+	}
+
+	public int getRemainingObject(int hallIndex) {
+		int remaining = limits[hallIndex] - gridDesigns[hallIndex].getPlacedObjectCount();
+		return Math.max(0, remaining);
+	}
+
+	public void fillHallsRandomly() {
+		for(int i = 0; i < 4; i++) {
+			int limit = limits[i] - gridDesigns[i].getPlacedObjectCount();
+			if (limit <= 0) {
+				continue;
+			}
+			int doubleBoxCount = Game.random.nextInt(limit/3 + 1);
+			int chestCount = Game.random.nextInt(limit/3 + 1);
+			int chestFullCount = Game.random.nextInt(limit/3 + 1);
+			int boxCount = limit - doubleBoxCount - chestCount - chestFullCount;
+
+			fillWithObjectRandomly(doubleBoxCount, i , ObjectType.DOUBLE_BOX);
+			fillWithObjectRandomly(chestCount, i , ObjectType.CHEST_CLOSED);
+			fillWithObjectRandomly(chestFullCount, i , ObjectType.CHEST_FULL_GOLD);
+			fillWithObjectRandomly(boxCount, i , ObjectType.BOX);
 		}
-		currentGameHall += 1;
 		notifyListeners();
-		return false;
 	}
 
-	public int getCurrentGameHall() {
-		return currentGameHall;
+	private void fillWithObjectRandomly(int count, int hallIndex, ObjectType type) {
+		for(int i = 0; i < count; i++) {
+			int row = Game.random.nextInt(1, 15);
+			int column = Game.random.nextInt(1, 15);
+			while(isObjectPresent(row, column, hallIndex)) {
+				row = Game.random.nextInt(1, 15);
+				column = Game.random.nextInt(1, 15);
+			}
+			gridDesigns[hallIndex].placeObject(row, column, type);
+		}
 	}
 
-	public boolean removeObjectAt(int row, int col){
-		GridDesign currentHall = gridDesigns[currentGameHall];
+	public boolean removeObjectAt(int row, int col, int currentDesign){
+		GridDesign currentHall = gridDesigns[currentDesign];
+		boolean res =  currentHall.removeObject(row, col);
 		notifyListeners();
-		return currentHall.removeObject(row, col);
+		return res;
 	}
 
 	public boolean areAllHallsComplete() {
@@ -138,11 +140,23 @@ public class BuildingModeHandler {
 		return true;
 	}
 
+	public GridDesign getHall(int hallNumber) {
+		return gridDesigns[hallNumber];
+	}
 
-
-	public boolean isObjectPresent (int row, int col) {
-		GridDesign currentHall = getCurrentHall();
+	public boolean isObjectPresent (int row, int col, int hallNumber) {
+		GridDesign currentHall = getHall(hallNumber);
 		return currentHall.isObjectPresent(row,col);
+	}
+
+	private void notifyListeners() {
+		for(BuildModeListener listener : listeners) {
+			listener.onObjectPlacementOrRemovalEvent();
+		}
+	}
+
+	public void addListener(BuildModeListener listener) {
+		listeners.add(listener);
 	}
 
 	/*
@@ -168,8 +182,8 @@ public class BuildingModeHandler {
 	public void initializePlayMode() {
 		
 	}*/
-	
-	
-	
-	
+
+
+
+
 }

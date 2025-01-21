@@ -37,9 +37,8 @@ public class Textures {
 	}
 
 	for (File file : folder2.listFiles()) {
-
 		try {
-			sprites.put(file.getName().replaceAll(".png", ""), ImageIO.read(file));
+			sprites.put(file.getName().substring(2).replaceAll("\\.png$", ""), ImageIO.read(file));
 		} catch (IOException e) {
 			System.err.println("[Utils][Textures]: Exception reading "+file.getName());
 		}

@@ -36,7 +36,7 @@ public class Archer extends Monster {
         moveFrame = 0;
         attackFrame = ATTACK_FRAME_LIMIT;
 
-        ArrowGraphics.getInstance(48).subscribe(this);
+        ArrowGraphics.getInstance(36).subscribe(this);
 
     }
 

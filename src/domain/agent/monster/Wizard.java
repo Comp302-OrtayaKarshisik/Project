@@ -45,7 +45,7 @@ public class Wizard extends Monster{
 
     public void  disappear() {
         System.out.println("Wizard disappeared!");
-        WizardGraphics.getInstance(48).onDeletionEventOne(this);
+        WizardGraphics.getInstance(36).onDeletionEventOne(this);
         Game.getInstance().removeMonster(this);
         //!!!!!!!!!!!!!I did a remove method to game class pls check !!!!!!!!!!11
     }
