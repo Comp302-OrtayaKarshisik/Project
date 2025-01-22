@@ -177,4 +177,8 @@ public class Hall implements Serializable {
     public Coordinate getRuneLocation() {
         return runeLocation;
     }
+
+    public ArrayList<Coordinate> getRuneLocations(){
+        return runeLocations;
+    }
 }

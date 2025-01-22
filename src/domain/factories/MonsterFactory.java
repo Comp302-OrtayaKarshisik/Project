@@ -13,6 +13,7 @@ import ui.Graphics.AgentGrapichs.ArcherGraphics;
 import ui.Graphics.AgentGrapichs.FighterGraphics;
 import ui.Graphics.AgentGrapichs.MobilMonsterGraphics;
 import ui.Graphics.AgentGrapichs.WizardGraphics;
+import ui.Graphics.ArrowGraphics;
 import ui.Graphics.EnchantmentGraphics;
 
 import java.util.LinkedList;
@@ -49,6 +50,7 @@ public class MonsterFactory {
 
     public void nextHall() {
        publishNextHallEvent();
+       ArrowGraphics.getInstance(36).nextHall();
 
        schedule.shutdownNow();
        schedule = Executors.newSingleThreadScheduledExecutor();

@@ -11,5 +11,4 @@ public interface ArcherListener {
     public abstract void onNewGameEvent();
 
     public abstract void onGameOverEvent();
-
 }

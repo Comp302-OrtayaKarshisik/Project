@@ -89,4 +89,8 @@ public class ArrowGraphics extends EntityGraphics implements ArcherListener {
         arrows = null;
     }
 
+    public void nextHall(){
+        arrows.clear();
+    }
+
 }
