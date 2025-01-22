@@ -62,7 +62,7 @@ public class PlayModeMenu extends JPanel implements MouseListener {
     public void displayLives(Graphics g) {
         BufferedImage heart = Textures.getSprite("heart");
         for (int i = 0; i < lives; i++) {
-            g.drawImage(heart, 40 + i*45, 300, 32, 32, null);
+            g.drawImage(heart, 40 + (i % 3)*45, 300 + (i/3) * 45, 32, 32, null);
         }
     }
 

@@ -132,6 +132,13 @@ public class Fighter extends Monster  {
             al.onFireEvent(this);}
     public void addListener(FighterListener fl) {listeners.add(fl);}
 
+    public void prepareSaveGame() {
+        this.listeners = null;
+    }
 
+    public void recreateGame() {
+        this.listeners = new LinkedList<>();
+        listeners.add(SwordGraphics.getInstance(36));
+    }
 
 }
