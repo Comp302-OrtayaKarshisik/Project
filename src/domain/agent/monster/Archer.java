@@ -50,6 +50,7 @@ public class Archer extends Monster {
 
     public void recreateGame() {
         this.listeners = new LinkedList<>();
+        ArrowGraphics.getInstance(36).subscribe(this);
     }
 
     public void publishArrowActivationEvent() {
